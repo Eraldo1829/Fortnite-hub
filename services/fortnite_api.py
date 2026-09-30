@@ -1,3 +1,4 @@
+```python
 import os
 import requests
 
@@ -36,12 +37,11 @@ def get_shop():
 def get_text_value(value):
 
     """
-    Estrae in modo sicuro il testo da un campo
-    che può essere stringa oppure dizionario.
+    Estrae in modo sicuro un valore testuale.
+    Il campo può essere una stringa oppure un dizionario.
     """
 
     if isinstance(value, str):
-
         return value
 
     if isinstance(value, dict):
@@ -96,6 +96,7 @@ def prepare_shop(shop):
         if not isinstance(first_item, dict):
             continue
 
+
         # =========================
         # TYPE
         # =========================
@@ -137,7 +138,7 @@ def prepare_shop(shop):
 
 
         # =========================
-        # IMMAGINE
+        # IMAGE
         # =========================
 
         images = first_item.get(
@@ -206,6 +207,8 @@ def get_category_name(item):
     ).lower()
 
 
+    # OUTFIT
+
     if (
         item_type == "outfit"
         or "outfit" in display_type
@@ -215,6 +218,8 @@ def get_category_name(item):
         return "👕 Outfit"
 
 
+    # EMOTE
+
     if (
         item_type == "emote"
         or "emote" in display_type
@@ -222,6 +227,8 @@ def get_category_name(item):
 
         return "💃 Emote"
 
+
+    # PICKAXE
 
     if (
         item_type == "pickaxe"
@@ -232,6 +239,8 @@ def get_category_name(item):
         return "⛏️ Picconi"
 
 
+    # BACK BLING
+
     if (
         item_type == "backpack"
         or "back bling" in display_type
@@ -240,6 +249,8 @@ def get_category_name(item):
 
         return "🎒 Back Bling"
 
+
+    # GLIDER
 
     if (
         item_type == "glider"
@@ -250,6 +261,8 @@ def get_category_name(item):
         return "🪂 Deltaplani"
 
 
+    # WRAP
+
     if (
         item_type == "wrap"
         or "wrap" in display_type
@@ -257,6 +270,8 @@ def get_category_name(item):
 
         return "🎨 Wrap"
 
+
+    # MUSIC
 
     if (
         item_type == "music"
@@ -267,6 +282,8 @@ def get_category_name(item):
         return "🎵 Musica"
 
 
+    # LOADING SCREEN
+
     if (
         item_type == "loadingscreen"
         or "loading" in display_type
@@ -274,6 +291,8 @@ def get_category_name(item):
 
         return "🖼️ Schermate di caricamento"
 
+
+    # CONTRAIL
 
     if (
         item_type == "contrail"
@@ -293,26 +312,34 @@ def group_shop_items(items):
     for item in items:
 
         series = item.get("series")
+
         item_set = item.get("set")
 
-        category = get_category_name(item)
+        category = get_category_name(
+            item
+        )
 
 
-        # Prima prova a usare la serie
+        # =========================
+        # DETERMINA GRUPPO
+        # =========================
+
         if series:
 
             group_name = series
 
-        # Poi il set
         elif item_set:
 
             group_name = item_set
 
-        # Altrimenti categoria
         else:
 
             group_name = category
 
+
+        # =========================
+        # CREA GRUPPO
+        # =========================
 
         if group_name not in groups:
 
@@ -322,16 +349,21 @@ def group_shop_items(items):
 
                 "category": category,
 
-                "items": []
+                "shop_items": []
 
             }
 
 
-        groups[group_name]["items"].append(
-            item
-        )
+        # =========================
+        # AGGIUNGI OGGETTO
+        # =========================
+
+        groups[group_name][
+            "shop_items"
+        ].append(item)
 
 
     return list(
         groups.values()
     )
+```
