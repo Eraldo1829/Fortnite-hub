@@ -64,7 +64,8 @@ def create_database():
             username TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
@@ -120,11 +121,6 @@ def create_database():
 
     # ========================================================
     # NOTIFICATION LOG
-    #
-    # Tiene traccia delle notifiche già inviate.
-    #
-    # In questo modo la stessa skin non genera
-    # 10 email durante lo stesso giorno.
     # ========================================================
 
     cursor.execute("""
@@ -142,17 +138,16 @@ def create_database():
             sent_at TIMESTAMP
                 DEFAULT CURRENT_TIMESTAMP,
 
-            UNIQUE(user_id, item_id, shop_date)
+            UNIQUE(
+                user_id,
+                item_id,
+                shop_date
+            )
         )
     """)
 
     # ========================================================
     # NOTIFICATION SETTINGS
-    #
-    # Una riga per utente.
-    #
-    # enabled = 1 -> notifiche attive
-    # enabled = 0 -> notifiche disattivate
     # ========================================================
 
     cursor.execute("""
