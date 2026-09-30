@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Tutti gli Item - Fortnite Hub</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b1020;
+            color: white;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1400px, 94%);
+            margin: 0 auto;
+        }
+
+        .topbar {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: #11182b;
+        }
+
+        .topbar-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: #1b2642;
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-button:hover {
+            background: #26375f;
+        }
+
+        .hero {
+            padding: 35px 0 25px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #aeb8d0;
+        }
+
+        .search-box {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 220px;
+            padding: 14px 16px;
+            border: 1px solid #293757;
+            border-radius: 10px;
+            background: #121b30;
+            color: white;
+            font-size: 16px;
+        }
+
+        .search-box button {
+            padding: 14px 22px;
+            border: 0;
+            border-radius: 10px;
+            background: #5d7cff;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0 30px;
+        }
+
+        .category-button {
+            padding: 9px 13px;
+            border-radius: 999px;
+            background: #151f36;
+            border: 1px solid #293757;
+            color: #dce3f5;
+        }
+
+        .category-button.active {
+            background: #5d7cff;
+            border-color: #5d7cff;
+            color: white;
+        }
+
+        .results-info {
+            margin-bottom: 18px;
+            color: #9da9c4;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fill,
+                minmax(180px, 1fr)
+            );
+            gap: 18px;
+            padding-bottom: 50px;
+        }
+
+        .item-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #121a2e;
+            border: 1px solid rgba(255,255,255,0.07);
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .item-card:hover {
+            transform: translateY(-4px);
+            border-color: #536fff;
+        }
+
+        .item-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+            background: #1a243c;
+        }
+
+        .item-content {
+            padding: 14px;
+        }
+
+        .item-name {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .item-category {
+            color: #9da9c4;
+            font-size: 13px;
+        }
+
+        .item-rarity {
+            margin-top: 7px;
+            font-size: 13px;
+            color: #c8d0e3;
+        }
+
+        .favorite {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.65);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .favorite.active {
+            color: #ff4d78;
+        }
+
+        .empty {
+            padding: 50px 20px;
+            text-align: center;
+            color: #9da9c4;
+        }
+
+        @media (max-width: 600px) {
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .items-grid {
+                grid-template-columns: repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+                gap: 12px;
+            }
+
+            .item-content {
+                padding: 11px;
+            }
+
+            .item-name {
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="topbar">
+
+        <div class="container topbar-inner">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                🎮 Fortnite Hub
+            </a>
+
+            <div class="nav">
+
+                <a
+                    href="{{ url_for('skins') }}"
+                    class="nav-button"
+                >
+                    🛒 Item Shop
+                </a>
+
+                <a
+                    href="{{ url_for('all_items') }}"
+                    class="nav-button"
+                >
+                    📚 Tutti gli Item
+                </a>
+
+                {% if session.get("user_id") %}
+
+                    <a
+                        href="{{ url_for('favorites') }}"
+                        class="nav-button"
+                    >
+                        ⭐ Preferiti
+                    </a>
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="nav-button"
+                    >
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('login') }}"
+                        class="nav-button"
+                    >
+                        Login
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <main class="container">
+
+        <section class="hero">
+
+            <h1>
+                📚 Tutti gli Item
+            </h1>
+
+            <p>
+                Esplora il catalogo completo degli oggetti di Fortnite.
+            </p>
+
+            <form
+                method="GET"
+                action="{{ url_for('all_items') }}"
+                class="search-box"
+            >
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Cerca un item..."
+                >
+
+                {% if selected_category %}
+
+                    <input
+                        type="hidden"
+                        name="category"
+                        value="{{ selected_category }}"
+                    >
+
+                {% endif %}
+
+                <button type="submit">
+                    🔎 Cerca
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <div class="categories">
+
+            <a
+                href="{{ url_for('all_items') }}"
+                class="category-button {% if not selected_category %}active{% endif %}"
+            >
+                🌐 Tutti
+            </a>
+
+            {% for category in categories %}
+
+                <a
+                    href="{{ url_for('all_items', category=category, q=search_query) }}"
+                    class="category-button {% if selected_category == category %}active{% endif %}"
+                >
+                    {{ category }}
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="results-info">
+
+            {% if search_query %}
+
+                Risultati per:
+                <strong>{{ search_query }}</strong>
+
+                ·
+
+            {% endif %}
+
+            {{ cosmetics|length }} item trovati
+
+        </div>
+
+
+        {% if cosmetics %}
+
+            <div class="items-grid">
+
+                {% for item in cosmetics %}
+
+                    <div class="item-card">
+
+                        <a
+                            href="{{ url_for('all_item_detail', item_id=item.id) }}"
+                        >
+
+                            {% if item.image %}
+
+                                <img
+                                    src="{{ item.image }}"
+                                    alt="{{ item.name }}"
+                                    class="item-image"
+                                    loading="lazy"
+                                >
+
+                            {% else %}
+
+                                <div class="item-image"></div>
+
+                            {% endif %}
+
+                            <div class="item-content">
+
+                                <div class="item-name">
+                                    {{ item.name }}
+                                </div>
+
+                                <div class="item-category">
+                                    {{ item._category }}
+                                </div>
+
+                                {% if item._rarity %}
+
+                                    <div class="item-rarity">
+                                        ⭐ {{ item._rarity }}
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </a>
+
+
+                        {% if session.get("user_id") %}
+
+                            <button
+                                type="button"
+                                class="favorite
+                                {% if item._is_favorite %}
+                                    active
+                                {% endif %}"
+                                data-item-id="{{ item._item_id }}"
+                                data-item-name="{{ item._item_name }}"
+                                data-image="{{ item._image_url or '' }}"
+                                onclick="toggleFavorite(this)"
+                            >
+
+                                {% if item._is_favorite %}
+                                    ♥
+                                {% else %}
+                                    ♡
+                                {% endif %}
+
+                            </button>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <h2>Nessun item trovato</h2>
+
+                <p>
+                    Prova a modificare la ricerca o la categoria.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+
+    <script>
+
+        async function toggleFavorite(button) {
+
+            const itemId =
+                button.dataset.itemId;
+
+            const itemName =
+                button.dataset.itemName;
+
+            const image =
+                button.dataset.image;
+
+            try {
+
+                const response =
+                    await fetch(
+                        "{{ url_for('favorite_toggle') }}",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                item_id:
+                                    itemId,
+
+                                item_name:
+                                    itemName,
+
+                                image_url:
+                                    image,
+
+                                item: {
+                                    id:
+                                        itemId,
+
+                                    name:
+                                        itemName,
+
+                                    image:
+                                        image
+                                }
+
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!data.success) {
+
+                    alert(
+                        data.message
+                        || "Errore."
+                    );
+
+                    return;
+                }
+
+                if (data.is_favorite) {
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    button.innerHTML = "♥";
+
+                } else {
+
+                    button.classList.remove(
+                        "active"
+                    );
+
+                    button.innerHTML = "♡";
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Errore durante il salvataggio del preferito."
+                );
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>
