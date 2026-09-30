@@ -19,278 +19,532 @@
         }
 
         body {
+
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #0b1020;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #20242d 0%,
+                    #101218 45%,
+                    #08090d 100%
+                );
+
             color: white;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            min-height: 100vh;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .container {
-            width: min(1500px, 94%);
-            margin: 0 auto;
-        }
 
         /* ====================================================
-           TOPBAR
+           NAVBAR
         ==================================================== */
 
-        .topbar {
-            padding: 18px 0;
-            background: #11182b;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+        .navbar {
+
+            width: 100%;
+
+            padding:
+                16px 24px;
+
+            background:
+                rgba(
+                    10,
+                    11,
+                    16,
+                    0.94
+                );
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
         }
 
-        .topbar-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
 
         .logo {
-            font-size: 26px;
-            font-weight: 800;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+            letter-spacing: 0.5px;
         }
 
-        .nav {
+
+        .nav-links {
+
             display: flex;
-            gap: 10px;
+
+            align-items: center;
+
+            gap: 8px;
+
             flex-wrap: wrap;
         }
 
-        .nav-button {
-            display: inline-block;
-            padding: 10px 15px;
-            border-radius: 10px;
-            background: #1b2642;
-            color: white;
-            font-weight: 600;
-            transition: 0.2s;
+
+        .nav-links a {
+
+            color: #d9d9df;
+
+            text-decoration: none;
+
+            padding:
+                8px 12px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            transition:
+                background 0.2s,
+                color 0.2s;
         }
 
-        .nav-button:hover {
-            background: #293961;
+
+        .nav-links a:hover {
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            color: white;
         }
+
 
         /* ====================================================
-           HERO
+           CONTAINER
         ==================================================== */
 
-        .hero {
-            padding: 35px 0 20px;
+        .container {
+
+            width: min(
+                1500px,
+                calc(100% - 32px)
+            );
+
+            margin:
+                0 auto;
+
+            padding:
+                32px 0 50px;
         }
 
-        .hero h1 {
-            margin: 0 0 10px;
-            font-size: 34px;
+
+        h1 {
+
+            margin:
+                0 0 8px;
+
+            font-size:
+                clamp(
+                    28px,
+                    4vw,
+                    42px
+                );
         }
 
-        .hero p {
-            margin: 0;
-            color: #aeb8d0;
+
+        .subtitle {
+
+            color:
+                #9da3b1;
+
+            margin:
+                0 0 28px;
+
+            font-size:
+                15px;
         }
+
 
         /* ====================================================
            SEARCH
         ==================================================== */
 
         .search-box {
-            margin-top: 22px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.04
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            border-radius:
+                16px;
+
+            padding:
+                16px;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        .search-form {
 
             display: flex;
 
             gap: 10px;
 
-            flex-wrap: wrap;
+            width: 100%;
         }
 
-        .search-box input {
+
+        .search-input {
+
             flex: 1;
 
-            min-width: 250px;
+            min-width: 0;
 
-            padding: 14px 16px;
+            background:
+                #171922;
 
-            border: 1px solid #293757;
-
-            border-radius: 10px;
-
-            background: #121b30;
+            border:
+                1px solid
+                #303441;
 
             color: white;
 
-            font-size: 16px;
+            border-radius:
+                10px;
+
+            padding:
+                13px 15px;
+
+            font-size:
+                15px;
 
             outline: none;
         }
 
-        .search-box input:focus {
-            border-color: #5d7cff;
+
+        .search-input:focus {
+
+            border-color:
+                #6c63ff;
         }
 
-        .search-box button {
-            padding: 14px 22px;
+
+        .search-button {
 
             border: 0;
 
-            border-radius: 10px;
-
-            background: #5d7cff;
+            background:
+                #6c63ff;
 
             color: white;
 
-            font-weight: 700;
+            border-radius:
+                10px;
+
+            padding:
+                0 20px;
+
+            font-weight:
+                700;
 
             cursor: pointer;
+
+            transition:
+                transform 0.2s,
+                opacity 0.2s;
         }
 
-        .search-box button:hover {
-            background: #6e8aff;
+
+        .search-button:hover {
+
+            transform:
+                translateY(-1px);
+
+            opacity:
+                0.9;
         }
 
-        .clear-button {
-            display: inline-flex;
-
-            align-items: center;
-
-            padding: 0 15px;
-
-            border-radius: 10px;
-
-            background: #1b2642;
-
-            color: #cbd4e8;
-        }
 
         /* ====================================================
            CATEGORIES
         ==================================================== */
 
         .categories {
+
             display: flex;
 
-            gap: 10px;
+            gap: 8px;
 
             flex-wrap: wrap;
 
-            margin: 20px 0 30px;
+            margin-bottom:
+                28px;
         }
 
-        .category-button {
-            display: inline-block;
 
-            padding: 10px 14px;
+        .category {
 
-            border-radius: 10px;
+            text-decoration: none;
 
-            background: #151f36;
+            color:
+                #c8ccd6;
 
-            color: #b9c4da;
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.04
+                );
 
-            border: 1px solid rgba(255,255,255,0.06);
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
 
-            transition: 0.2s;
+            border-radius:
+                999px;
+
+            padding:
+                9px 14px;
+
+            font-size:
+                13px;
+
+            transition:
+                background 0.2s,
+                color 0.2s,
+                border 0.2s;
         }
 
-        .category-button:hover {
-            background: #293961;
+
+        .category:hover {
+
+            background:
+                rgba(
+                    108,
+                    99,
+                    255,
+                    0.16
+                );
 
             color: white;
+
+            border-color:
+                rgba(
+                    108,
+                    99,
+                    255,
+                    0.5
+                );
         }
 
-        .category-button.active {
-            background: #5d7cff;
+
+        .category.active {
+
+            background:
+                #6c63ff;
 
             color: white;
+
+            border-color:
+                #6c63ff;
         }
+
 
         /* ====================================================
-           INFO
+           RESULTS INFO
         ==================================================== */
 
         .results-info {
-            margin-bottom: 20px;
 
-            color: #8f9bb7;
+            display: flex;
 
-            font-size: 14px;
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom:
+                16px;
+
+            color:
+                #a7adba;
+
+            font-size:
+                14px;
         }
 
-        .results-info strong {
-            color: white;
+
+        .results-count {
+
+            font-weight:
+                700;
+
+            color:
+                #ffffff;
         }
+
 
         /* ====================================================
            GRID
         ==================================================== */
 
-        .items-grid {
+        .grid {
+
             display: grid;
 
             grid-template-columns:
                 repeat(
                     auto-fill,
-                    minmax(190px, 1fr)
+                    minmax(
+                        190px,
+                        1fr
+                    )
                 );
 
-            gap: 18px;
-
-            padding-bottom: 50px;
+            gap:
+                16px;
         }
+
 
         /* ====================================================
            CARD
         ==================================================== */
 
-        .item-card {
+        .card {
+
             position: relative;
 
-            overflow: hidden;
+            background:
+                linear-gradient(
+                    180deg,
+                    #1b1e27 0%,
+                    #12141a 100%
+                );
 
-            border-radius: 16px;
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.07
+                );
 
-            background: #121a2e;
+            border-radius:
+                16px;
 
-            border: 1px solid rgba(255,255,255,0.07);
+            overflow:
+                hidden;
+
+            min-width:
+                0;
 
             transition:
-                transform 0.2s ease,
-                border-color 0.2s ease;
+                transform 0.2s,
+                border-color 0.2s,
+                box-shadow 0.2s;
         }
 
-        .item-card:hover {
-            transform: translateY(-4px);
 
-            border-color: #536fff;
+        .card:hover {
+
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(
+                    108,
+                    99,
+                    255,
+                    0.5
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.35
+                );
         }
 
-        .item-link {
+
+        .card-link {
+
+            color: inherit;
+
+            text-decoration: none;
+
             display: block;
         }
 
-        /* ====================================================
-           IMAGE
-        ==================================================== */
 
-        .item-image-wrapper {
+        .image-wrapper {
+
             position: relative;
 
             width: 100%;
 
-            aspect-ratio: 1 / 1;
+            aspect-ratio:
+                1 / 1;
 
-            background: #18233b;
+            background:
+                #0d0f14;
 
             overflow: hidden;
         }
 
+
         .item-image {
+
             width: 100%;
 
             height: 100%;
@@ -298,12 +552,63 @@
             object-fit: cover;
 
             display: block;
+
+            transition:
+                transform 0.3s;
         }
 
-        .placeholder {
-            width: 100%;
 
-            height: 100%;
+        .card:hover
+        .item-image {
+
+            transform:
+                scale(1.04);
+        }
+
+
+        /* ====================================================
+           FAVORITE BUTTON
+        ==================================================== */
+
+        .favorite-button {
+
+            position: absolute;
+
+            top: 10px;
+
+            right: 10px;
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius:
+                50%;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.15
+                );
+
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.62
+                );
+
+            color:
+                white;
+
+            font-size:
+                19px;
+
+            cursor: pointer;
 
             display: flex;
 
@@ -311,13 +616,38 @@
 
             justify-content: center;
 
-            font-size: 40px;
+            z-index: 10;
 
-            color: #71809e;
+            transition:
+                transform 0.2s,
+                background 0.2s;
         }
 
+
+        .favorite-button:hover {
+
+            transform:
+                scale(1.08);
+
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.8
+                );
+        }
+
+
+        .favorite-button.active {
+
+            color:
+                #ff4f81;
+        }
+
+
         /* ====================================================
-           V-BUCKS PRICE
+           PRICE
         ==================================================== */
 
         .price {
@@ -334,177 +664,166 @@
 
             gap: 6px;
 
-            padding: 7px 10px;
+            padding:
+                6px 9px;
 
-            border-radius: 8px;
+            border-radius:
+                8px;
 
-            background: rgba(0,0,0,0.82);
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.75
+                );
+
+            font-weight:
+                800;
+
+            font-size:
+                14px;
 
             color: white;
 
-            font-size: 14px;
-
-            font-weight: 700;
-
-            z-index: 2;
+            backdrop-filter:
+                blur(5px);
         }
+
 
         .vbucks-icon {
 
-            width: 20px;
+            width:
+                19px;
 
-            height: 20px;
+            height:
+                19px;
 
-            object-fit: contain;
+            object-fit:
+                contain;
 
-            display: block;
+            display:
+                block;
         }
 
-        /* ====================================================
-           NON SHOP
-        ==================================================== */
-
-        .not-in-shop {
-
-            position: absolute;
-
-            left: 10px;
-
-            bottom: 10px;
-
-            padding: 6px 9px;
-
-            border-radius: 7px;
-
-            background: rgba(0,0,0,0.72);
-
-            color: #aeb8d0;
-
-            font-size: 11px;
-
-            z-index: 2;
-        }
-
-        /* ====================================================
-           BUNDLE
-        ==================================================== */
 
         .bundle-label {
 
             position: absolute;
 
-            top: 10px;
-
-            left: 10px;
-
-            padding: 6px 9px;
-
-            border-radius: 7px;
-
-            background: rgba(0,0,0,0.72);
-
-            color: #dbe3f7;
-
-            font-size: 11px;
-
-            z-index: 2;
-        }
-
-        /* ====================================================
-           FAVORITE
-        ==================================================== */
-
-        .favorite-button {
-
-            position: absolute;
-
-            top: 10px;
-
             right: 10px;
 
-            width: 40px;
+            bottom: 10px;
 
-            height: 40px;
+            padding:
+                5px 8px;
 
-            border: 0;
+            border-radius:
+                7px;
 
-            border-radius: 50%;
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.72
+                );
 
-            background: rgba(0,0,0,0.72);
+            color:
+                #dfe3ea;
 
-            color: white;
+            font-size:
+                11px;
 
-            font-size: 22px;
-
-            cursor: pointer;
-
-            z-index: 5;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            transition: 0.2s;
+            font-weight:
+                700;
         }
 
-        .favorite-button:hover {
-
-            background: rgba(0,0,0,0.92);
-
-            transform: scale(1.08);
-        }
-
-        .favorite-button.active {
-
-            color: #ff4d78;
-        }
 
         /* ====================================================
-           CONTENT
+           CARD CONTENT
         ==================================================== */
 
-        .item-content {
+        .card-content {
 
-            padding: 14px;
+            padding:
+                13px;
         }
+
 
         .item-name {
 
-            font-size: 16px;
+            font-size:
+                15px;
 
-            line-height: 1.3;
+            font-weight:
+                800;
 
-            font-weight: 700;
+            color:
+                white;
 
-            margin-bottom: 7px;
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+
+            margin-bottom:
+                7px;
         }
 
-        .item-category {
 
-            color: #8f9bb7;
+        .item-type {
 
-            font-size: 13px;
+            color:
+                #9da3b1;
+
+            font-size:
+                12px;
+
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
         }
 
-        .item-rarity {
 
-            margin-top: 5px;
+        .not-in-shop {
 
-            color: #71809e;
+            margin-top:
+                9px;
 
-            font-size: 12px;
+            display:
+                inline-block;
+
+            color:
+                #777d8a;
+
+            font-size:
+                11px;
+
+            padding:
+                4px 7px;
+
+            border-radius:
+                6px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.04
+                );
         }
 
-        .item-series {
-
-            margin-top: 5px;
-
-            color: #66738f;
-
-            font-size: 12px;
-        }
 
         /* ====================================================
            EMPTY
@@ -512,66 +831,284 @@
 
         .empty {
 
-            padding: 70px 20px;
+            text-align:
+                center;
 
-            text-align: center;
+            padding:
+                70px 20px;
 
-            color: #9da9c4;
+            color:
+                #858b99;
         }
 
-        .empty h2 {
+
+        .empty-title {
+
+            font-size:
+                22px;
+
+            font-weight:
+                800;
+
+            color:
+                #ffffff;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        /* ====================================================
+           PAGINATION
+        ==================================================== */
+
+        .pagination {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top:
+                32px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .page-button {
+
+            text-decoration: none;
 
             color: white;
 
-            margin-bottom: 10px;
+            background:
+                #1b1e27;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.1
+                );
+
+            border-radius:
+                10px;
+
+            padding:
+                10px 16px;
+
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+
+            transition:
+                background 0.2s,
+                border 0.2s;
         }
+
+
+        .page-button:hover {
+
+            background:
+                #262a35;
+
+            border-color:
+                rgba(
+                    108,
+                    99,
+                    255,
+                    0.5
+                );
+        }
+
+
+        .page-number {
+
+            color:
+                #9da3b1;
+
+            font-size:
+                13px;
+
+            padding:
+                10px 5px;
+        }
+
 
         /* ====================================================
            MOBILE
         ==================================================== */
 
-        @media (max-width: 700px) {
+        @media (
+            max-width: 700px
+        ) {
 
-            .hero h1 {
+            .navbar {
 
-                font-size: 28px;
+                padding:
+                    13px 15px;
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
             }
 
-            .items-grid {
+
+            .nav-links {
+
+                width: 100%;
+
+                overflow-x:
+                    auto;
+
+                flex-wrap:
+                    nowrap;
+
+                padding-bottom:
+                    2px;
+            }
+
+
+            .nav-links a {
+
+                white-space:
+                    nowrap;
+            }
+
+
+            .container {
+
+                width:
+                    min(
+                        100% - 20px,
+                        1500px
+                    );
+
+                padding-top:
+                    24px;
+            }
+
+
+            .search-form {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .search-button {
+
+                height:
+                    45px;
+            }
+
+
+            .grid {
 
                 grid-template-columns:
                     repeat(
                         2,
-                        minmax(0, 1fr)
+                        minmax(
+                            0,
+                            1fr
+                        )
                     );
 
-                gap: 12px;
+                gap:
+                    10px;
             }
 
-            .item-content {
 
-                padding: 11px;
+            .card {
+
+                border-radius:
+                    12px;
             }
+
+
+            .card-content {
+
+                padding:
+                    10px;
+            }
+
 
             .item-name {
 
-                font-size: 14px;
+                font-size:
+                    13px;
             }
+
+
+            .favorite-button {
+
+                width:
+                    34px;
+
+                height:
+                    34px;
+
+                top:
+                    7px;
+
+                right:
+                    7px;
+
+                font-size:
+                    17px;
+            }
+
 
             .price {
 
-                font-size: 12px;
+                left:
+                    7px;
 
-                padding: 6px 8px;
+                bottom:
+                    7px;
+
+                padding:
+                    5px 7px;
+
+                font-size:
+                    12px;
             }
+
 
             .vbucks-icon {
 
-                width: 18px;
+                width:
+                    17px;
 
-                height: 18px;
+                height:
+                    17px;
             }
 
+
+            .bundle-label {
+
+                right:
+                    7px;
+
+                bottom:
+                    7px;
+
+                font-size:
+                    9px;
+
+                padding:
+                    4px 6px;
+            }
         }
 
     </style>
@@ -582,695 +1119,563 @@
 <body>
 
 
-    <!-- ====================================================
-         TOPBAR
-    ==================================================== -->
+<!-- ========================================================
+     NAVBAR
+========================================================= -->
 
-    <div class="topbar">
+<nav class="navbar">
 
-        <div class="container topbar-inner">
+    <a
+        href="{{ url_for('home') }}"
+        class="logo"
+    >
+        Fortnite Hub
+    </a>
 
+
+    <div class="nav-links">
+
+        <a
+            href="{{ url_for('skins') }}"
+        >
+            Item Shop
+        </a>
+
+        <a
+            href="{{ url_for('all_items') }}"
+        >
+            Tutti gli Item
+        </a>
+
+        <a
+            href="{{ url_for('shop_history') }}"
+        >
+            Storico Shop
+        </a>
+
+        {% if session.get("user_id") %}
 
             <a
-                href="{{ url_for('home') }}"
-                class="logo"
+                href="{{ url_for('favorites') }}"
             >
-                🎮 Fortnite Hub
+                Preferiti
             </a>
 
+            <a
+                href="{{ url_for('logout') }}"
+            >
+                Logout
+            </a>
 
-            <div class="nav">
+        {% else %}
+
+            <a
+                href="{{ url_for('login') }}"
+            >
+                Login
+            </a>
+
+            <a
+                href="{{ url_for('register') }}"
+            >
+                Registrati
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
 
 
-                <a
-                    href="{{ url_for('skins') }}"
-                    class="nav-button"
+<!-- ========================================================
+     MAIN
+========================================================= -->
+
+<main class="container">
+
+
+    <h1>
+        Tutti gli Item
+    </h1>
+
+
+    <p class="subtitle">
+
+        Esplora il catalogo Fortnite e
+        cerca qualsiasi cosmetico.
+
+    </p>
+
+
+    <!-- ====================================================
+         SEARCH
+    ===================================================== -->
+
+    <div class="search-box">
+
+        <form
+            method="GET"
+            action="{{ url_for('all_items') }}"
+            class="search-form"
+        >
+
+            <input
+                type="text"
+                name="q"
+                value="{{ search_query }}"
+                class="search-input"
+                placeholder="Cerca una skin, emote, piccone..."
+                autocomplete="off"
+            >
+
+            {% if selected_category %}
+
+                <input
+                    type="hidden"
+                    name="category"
+                    value="{{ selected_category }}"
                 >
-                    🛒 Item Shop
-                </a>
 
+            {% endif %}
 
-                <a
-                    href="{{ url_for('all_items') }}"
-                    class="nav-button"
-                >
-                    📚 Tutti gli Item
-                </a>
+            <button
+                type="submit"
+                class="search-button"
+            >
+                Cerca
+            </button>
 
-
-                <a
-                    href="{{ url_for('shop_history') }}"
-                    class="nav-button"
-                >
-                    📅 Storico Shop
-                </a>
-
-
-                {% if session.get("user_id") %}
-
-
-                    <a
-                        href="{{ url_for('favorites') }}"
-                        class="nav-button"
-                    >
-                        ⭐ Preferiti
-                    </a>
-
-
-                    <a
-                        href="{{ url_for('logout') }}"
-                        class="nav-button"
-                    >
-                        Logout
-                    </a>
-
-
-                {% else %}
-
-
-                    <a
-                        href="{{ url_for('login') }}"
-                        class="nav-button"
-                    >
-                        Login
-                    </a>
-
-
-                    <a
-                        href="{{ url_for('register') }}"
-                        class="nav-button"
-                    >
-                        Registrati
-                    </a>
-
-
-                {% endif %}
-
-
-            </div>
-
-
-        </div>
+        </form>
 
     </div>
 
 
     <!-- ====================================================
-         MAIN
-    ==================================================== -->
+         CATEGORIES
+    ===================================================== -->
 
-    <main class="container">
+    <div class="categories">
 
-
-        <section class="hero">
-
-
-            <h1>
-                📚 Tutti gli Item
-            </h1>
-
-
-            <p>
-                Esplora il catalogo completo degli oggetti di Fortnite.
-            </p>
-
-
-            <!-- =================================================
-                 SEARCH
-            ================================================== -->
-
-            <form
-                method="GET"
-                action="{{ url_for('all_items') }}"
-                class="search-box"
-            >
-
-
-                {% if selected_category %}
-
-                    <input
-                        type="hidden"
-                        name="category"
-                        value="{{ selected_category }}"
-                    >
-
-                {% endif %}
-
-
-                <input
-                    type="text"
-                    name="q"
-                    value="{{ search_query }}"
-                    placeholder="Cerca skin, emote, piccone..."
-                    autocomplete="off"
-                >
-
-
-                <button type="submit">
-                    🔎 Cerca
-                </button>
-
-
-                {% if search_query or selected_category %}
-
-                    <a
-                        href="{{ url_for('all_items') }}"
-                        class="clear-button"
-                    >
-                        ✕ Cancella filtri
-                    </a>
-
-                {% endif %}
-
-
-            </form>
-
-
-        </section>
-
-
-        <!-- ====================================================
-             CATEGORIES
-        ==================================================== -->
-
-        <div class="categories">
-
-
-            <a
-                href="{{ url_for('all_items') }}"
-                class="category-button
+        <a
+            href="{{ url_for('all_items') }}"
+            class="
+                category
                 {% if not selected_category %}
                     active
-                {% endif %}"
-            >
-                🌐 Tutti
-            </a>
+                {% endif %}
+            "
+        >
+            Tutti
+        </a>
 
 
-            {% for category in categories %}
+        {% for category in categories %}
 
-
-                <a
-                    href="{{ url_for(
+            <a
+                href="{{
+                    url_for(
                         'all_items',
                         category=category,
                         q=search_query
-                    ) }}"
-                    class="category-button
+                    )
+                }}"
+                class="
+                    category
                     {% if selected_category == category %}
                         active
-                    {% endif %}"
-                >
+                    {% endif %}
+                "
+            >
+                {{ category }}
+            </a>
 
-                    {{ category }}
+        {% endfor %}
 
-                </a>
+    </div>
 
 
-            {% endfor %}
+    <!-- ====================================================
+         RESULTS INFO
+    ===================================================== -->
 
+    <div class="results-info">
+
+        <div>
+
+            Risultati:
+            <span class="results-count">
+                {{ total_results }}
+            </span>
 
         </div>
 
 
-        <!-- ====================================================
-             RESULTS INFO
-        ==================================================== -->
+        {% if total_results > 0 %}
 
-        {% if cosmetics %}
+            <div>
 
-            <div class="results-info">
-
-                Visualizzati:
-
+                Pagina
                 <strong>
-                    {{ cosmetics|length }}
+                    {{ page }}
                 </strong>
 
-                oggetti
-
-                {% if selected_category %}
-
-                    nella categoria
-
-                    <strong>
-                        {{ selected_category }}
-                    </strong>
-
-                {% endif %}
-
-                {% if search_query %}
-
-                    per
-
-                    <strong>
-                        "{{ search_query }}"
-                    </strong>
-
-                {% endif %}
-
             </div>
-
-
-            <!-- =================================================
-                 ITEMS
-            ================================================== -->
-
-            <div class="items-grid">
-
-
-                {% for item in cosmetics %}
-
-
-                    <div class="item-card">
-
-
-                        <a
-                            href="{{ url_for(
-                                'all_item_detail',
-                                item_id=item.id
-                            ) }}"
-                            class="item-link"
-                        >
-
-
-                            <div class="item-image-wrapper">
-
-
-                                {% if item.image %}
-
-
-                                    <img
-                                        src="{{ item.image }}"
-                                        alt="{{ item.name }}"
-                                        class="item-image"
-                                        loading="lazy"
-                                    >
-
-
-                                {% else %}
-
-
-                                    <div class="placeholder">
-                                        🎮
-                                    </div>
-
-
-                                {% endif %}
-
-
-                                <!-- =================================
-                                     PREZZO SHOP
-                                ================================== -->
-
-
-                                {% if item._shop_price is not none %}
-
-
-                                    <div class="price">
-
-
-                                        <img
-                                            src="https://fortnite-api.com/images/vbucks.png"
-                                            alt="V-Bucks"
-                                            class="vbucks-icon"
-                                        >
-
-
-                                        {{ item._shop_price }}
-
-
-                                    </div>
-
-
-                                    {% if item._shop_bundle %}
-
-
-                                        <div class="bundle-label">
-                                            📦 Bundle
-                                        </div>
-
-
-                                    {% endif %}
-
-
-                                {% else %}
-
-
-                                    <div class="not-in-shop">
-                                        Non nello Shop
-                                    </div>
-
-
-                                {% endif %}
-
-
-                            </div>
-
-
-                            <div class="item-content">
-
-
-                                <div class="item-name">
-
-                                    {{ item.name }}
-
-                                </div>
-
-
-                                {% if item._category %}
-
-
-                                    <div class="item-category">
-
-                                        {{ item._category }}
-
-                                    </div>
-
-
-                                {% endif %}
-
-
-                                {% if item._rarity %}
-
-
-                                    <div class="item-rarity">
-
-                                        ⭐
-                                        {{ item._rarity }}
-
-                                    </div>
-
-
-                                {% endif %}
-
-
-                                {% if item.series %}
-
-
-                                    <div class="item-series">
-
-                                        {{ item.series }}
-
-                                    </div>
-
-
-                                {% endif %}
-
-
-                            </div>
-
-
-                        </a>
-
-
-                        <!-- =====================================
-                             FAVORITE
-                        ====================================== -->
-
-
-                        {% if session.get("user_id") %}
-
-
-                            <button
-                                type="button"
-                                class="favorite-button
-                                {% if item._is_favorite %}
-                                    active
-                                {% endif %}"
-                                data-item-id="{{ item._item_id }}"
-                                data-item-name="{{ item._item_name }}"
-                                data-image="{{ item._image_url or '' }}"
-                                data-item-data='{{ item | tojson | forceescape }}'
-                                onclick="toggleFavorite(this, event)"
-                            >
-
-
-                                {% if item._is_favorite %}
-
-                                    ♥️
-
-                                {% else %}
-
-                                    ♡
-
-                                {% endif %}
-
-
-                            </button>
-
-
-                        {% endif %}
-
-
-                    </div>
-
-
-                {% endfor %}
-
-
-            </div>
-
-
-        {% else %}
-
-
-            <!-- =================================================
-                 EMPTY
-            ================================================== -->
-
-            <section class="empty">
-
-
-                {% if search_query %}
-
-
-                    <h2>
-                        Nessun risultato
-                    </h2>
-
-
-                    <p>
-
-                        Non abbiamo trovato oggetti per:
-
-                        <strong>
-                            "{{ search_query }}"
-                        </strong>
-
-                    </p>
-
-
-                    <p>
-                        Prova con un altro nome.
-                    </p>
-
-
-                {% elif selected_category %}
-
-
-                    <h2>
-                        Nessun item
-                    </h2>
-
-
-                    <p>
-                        Non ci sono oggetti in questa categoria.
-                    </p>
-
-
-                {% else %}
-
-
-                    <h2>
-                        Catalogo non disponibile
-                    </h2>
-
-
-                    <p>
-                        Non è stato possibile caricare gli oggetti.
-                    </p>
-
-
-                {% endif %}
-
-
-            </section>
-
 
         {% endif %}
 
+    </div>
 
-    </main>
 
+    <!-- ====================================================
+         GRID
+    ===================================================== -->
 
-    <!-- ========================================================
-         FAVORITE JAVASCRIPT
-    ========================================================= -->
+    {% if cosmetics %}
 
+        <div class="grid">
 
-    {% if session.get("user_id") %}
+            {% for item in cosmetics %}
 
+                <div
+                    class="card"
+                    data-item-id="{{ item._item_id }}"
+                >
 
-        <script>
+                    <a
+                        href="{{
+                            url_for(
+                                'all_item_detail',
+                                item_id=item._item_id
+                            )
+                        }}"
+                        class="card-link"
+                    >
 
+                        <div class="image-wrapper">
 
-            async function toggleFavorite(
-                button,
-                event
-            ) {
+                            {% if item._image_url %}
 
+                                <img
+                                    src="{{ item._image_url }}"
+                                    alt="{{ item._item_name }}"
+                                    class="item-image"
+                                    loading="lazy"
+                                >
 
-                if (event) {
+                            {% endif %}
 
-                    event.preventDefault();
 
-                    event.stopPropagation();
+                            <!-- ==================================
+                                 PRICE
+                            =================================== -->
 
-                }
+                            {% if item._shop_price is not none %}
 
+                                <div class="price">
 
-                const itemId =
-                    button.dataset.itemId;
+                                    <img
+                                        src="{{
+                                            url_for(
+                                                'static',
+                                                filename='vbucks.svg'
+                                            )
+                                        }}"
+                                        alt="V-Bucks"
+                                        class="vbucks-icon"
+                                    >
 
+                                    {{ item._shop_price }}
 
-                const itemName =
-                    button.dataset.itemName;
+                                </div>
 
+                            {% endif %}
 
-                const image =
-                    button.dataset.image;
 
+                            <!-- ==================================
+                                 BUNDLE
+                            =================================== -->
 
-                let itemData = {};
+                            {% if item._shop_bundle %}
 
+                                <div class="bundle-label">
+                                    Bundle
+                                </div>
 
-                try {
+                            {% endif %}
 
-                    if (
-                        button.dataset.itemData
-                    ) {
+                        </div>
 
-                        itemData = JSON.parse(
-                            button.dataset.itemData
-                        );
 
-                    }
+                        <div class="card-content">
 
-                } catch (error) {
+                            <div
+                                class="item-name"
+                                title="{{ item._item_name }}"
+                            >
+                                {{ item._item_name }}
+                            </div>
 
-                    console.error(
-                        "Errore lettura dati item:",
-                        error
-                    );
 
-                }
+                            <div class="item-type">
 
+                                {{ item._category }}
 
-                try {
+                            </div>
 
 
-                    const response =
-                        await fetch(
-                            "{{ url_for('favorite_toggle') }}",
-                            {
+                            {% if item._shop_price is none %}
 
-                                method: "POST",
+                                <div class="not-in-shop">
+                                    Non nello Shop
+                                </div>
 
-                                headers: {
+                            {% endif %}
 
-                                    "Content-Type":
-                                        "application/json"
+                        </div>
 
-                                },
+                    </a>
 
-                                body: JSON.stringify({
 
-                                    item_id:
-                                        itemId,
+                    <!-- ==========================================
+                         FAVORITE
+                    =========================================== -->
 
-                                    item_name:
-                                        itemName,
+                    <button
+                        type="button"
+                        class="
+                            favorite-button
+                            {% if item._is_favorite %}
+                                active
+                            {% endif %}
+                        "
+                        onclick="toggleFavorite(event, this)"
+                        data-item-id="{{ item._item_id }}"
+                        data-item-name="{{ item._item_name }}"
+                        data-image-url="{{ item._image_url or '' }}"
+                    >
+                        {% if item._is_favorite %}
+                            ♥
+                        {% else %}
+                            ♡
+                        {% endif %}
+                    </button>
 
-                                    image_url:
-                                        image,
+                </div>
 
-                                    item:
-                                        itemData
+            {% endfor %}
 
-                                })
+        </div>
 
-                            }
-                        );
 
+    {% else %}
 
-                    const data =
-                        await response.json();
+        <div class="empty">
 
+            <div class="empty-title">
+                Nessun item trovato
+            </div>
 
-                    if (!data.success) {
+            <div>
+                Prova a modificare la ricerca
+                o la categoria.
+            </div>
 
-
-                        alert(
-                            data.message
-                            ||
-                            "Errore durante il salvataggio del preferito."
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    if (data.is_favorite) {
-
-
-                        button.classList.add(
-                            "active"
-                        );
-
-
-                        button.innerHTML =
-                            "♥️";
-
-
-                    } else {
-
-
-                        button.classList.remove(
-                            "active"
-                        );
-
-
-                        button.innerHTML =
-                            "♡";
-
-
-                    }
-
-
-                } catch (error) {
-
-
-                    console.error(
-                        error
-                    );
-
-
-                    alert(
-                        "Errore durante il salvataggio del preferito."
-                    );
-
-                }
-
-            }
-
-
-        </script>
-
+        </div>
 
     {% endif %}
+
+
+    <!-- ====================================================
+         PAGINATION
+    ===================================================== -->
+
+    {% if total_results > 0 %}
+
+        <div class="pagination">
+
+
+            {% if page > 1 %}
+
+                <a
+                    class="page-button"
+                    href="{{
+                        url_for(
+                            'all_items',
+                            q=search_query,
+                            category=selected_category,
+                            page=page - 1
+                        )
+                    }}"
+                >
+                    ← Precedente
+                </a>
+
+            {% endif %}
+
+
+            <div class="page-number">
+
+                Pagina {{ page }}
+
+            </div>
+
+
+            {% if has_next %}
+
+                <a
+                    class="page-button"
+                    href="{{
+                        url_for(
+                            'all_items',
+                            q=search_query,
+                            category=selected_category,
+                            page=page + 1
+                        )
+                    }}"
+                >
+                    Successiva →
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+</main>
+
+
+<!-- ========================================================
+     FAVORITE JAVASCRIPT
+========================================================= -->
+
+<script>
+
+async function toggleFavorite(
+    event,
+    button
+) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    const itemId =
+        button.dataset.itemId;
+
+    const itemName =
+        button.dataset.itemName;
+
+    const imageUrl =
+        button.dataset.imageUrl;
+
+
+    if (!itemId) {
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "{{ url_for('favorite_toggle') }}",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            item_id:
+                                itemId,
+
+                            item_name:
+                                itemName,
+
+                            image_url:
+                                imageUrl,
+
+                            item: {
+
+                                id:
+                                    itemId,
+
+                                name:
+                                    itemName,
+
+                                image:
+                                    imageUrl
+                            }
+                        })
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            window.location.href =
+                "{{ url_for('login') }}";
+
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.success
+        ) {
+
+            if (
+                data.is_favorite
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+
+                button.textContent =
+                    "♥";
+
+            } else {
+
+                button.classList.remove(
+                    "active"
+                );
+
+                button.textContent =
+                    "♡";
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Errore preferito:",
+            error
+        );
+
+    }
+
+}
+
+</script>
 
 
 </body>
