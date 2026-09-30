@@ -40,7 +40,7 @@
 
         header {
 
-            height: 80px;
+            min-height: 80px;
 
             padding: 12px 50px;
 
@@ -49,6 +49,8 @@
             justify-content: space-between;
 
             align-items: center;
+
+            gap: 25px;
 
             background: rgba(7, 10, 17, 0.85);
 
@@ -70,6 +72,8 @@
             display: flex;
 
             align-items: center;
+
+            flex-shrink: 0;
         }
 
 
@@ -85,7 +89,13 @@
 
             display: flex;
 
-            gap: 30px;
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 25px;
+
+            flex-wrap: wrap;
         }
 
 
@@ -104,6 +114,153 @@
         nav a:hover {
 
             color: #5ee7ff;
+
+        }
+
+
+        /* =========================
+           AUTH BUTTONS
+        ========================= */
+
+        .auth-area {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            flex-shrink: 0;
+        }
+
+
+        .auth-button {
+
+            text-decoration: none;
+
+            padding: 9px 16px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.2s,
+                box-shadow 0.2s,
+                background 0.2s;
+        }
+
+
+        .login-button {
+
+            color: #d9e2ff;
+
+            border:
+                1px solid rgba(94, 231, 255, 0.35);
+
+            background:
+                rgba(20, 27, 43, 0.8);
+        }
+
+
+        .login-button:hover {
+
+            color: white;
+
+            border-color: #5ee7ff;
+
+            box-shadow:
+                0 0 15px rgba(94, 231, 255, 0.18);
+
+            transform: translateY(-1px);
+        }
+
+
+        .register-button {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #28dfff,
+                    #714cff,
+                    #d82cff
+                );
+
+            border: none;
+        }
+
+
+        .register-button:hover {
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 0 20px rgba(113, 76, 255, 0.45);
+        }
+
+
+        /* =========================
+           USER
+        ========================= */
+
+        .user-button {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 9px 14px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(25, 33, 53, 0.9);
+
+            border:
+                1px solid rgba(94, 231, 255, 0.25);
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .user-button:hover {
+
+            border-color: #5ee7ff;
+
+            box-shadow:
+                0 0 15px rgba(94, 231, 255, 0.15);
+        }
+
+
+        .logout-button {
+
+            color: #ffb4c4;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .logout-button:hover {
+
+            color: #ff6b8a;
 
         }
 
@@ -478,6 +635,37 @@
            MOBILE
         ========================= */
 
+        @media (max-width: 1000px) {
+
+            header {
+
+                padding: 12px 25px;
+
+            }
+
+            nav {
+
+                gap: 16px;
+
+            }
+
+            .auth-area {
+
+                gap: 7px;
+
+            }
+
+            .auth-button {
+
+                padding: 8px 12px;
+
+                font-size: 13px;
+
+            }
+
+        }
+
+
         @media (max-width: 700px) {
 
             header {
@@ -511,6 +699,14 @@
             nav a {
 
                 font-size: 14px;
+            }
+
+
+            .auth-area {
+
+                justify-content: center;
+
+                flex-wrap: wrap;
             }
 
 
@@ -563,27 +759,94 @@
 
         <div class="logo">
 
-            <img
-                src="{{ url_for('static', filename='logo.png') }}"
-                alt="Fortnite Hub"
-            >
+            <a href="/">
+
+                <img
+                    src="{{ url_for('static', filename='logo.png') }}"
+                    alt="Fortnite Hub"
+                >
+
+            </a>
 
         </div>
 
 
         <nav>
 
-            <a href="/">Home</a>
+            <a href="/">
+                Home
+            </a>
 
-            <a href="/skins">Shop</a>
+            <a href="/skins">
+                Shop
+            </a>
 
-            <a href="/players">Players</a>
+            <a href="/players">
+                Players
+            </a>
 
-            <a href="/leaks">Leaks</a>
+            <a href="/leaks">
+                Leaks
+            </a>
 
-            <a href="/news">News</a>
+            <a href="/news">
+                News
+            </a>
 
         </nav>
+
+
+        <!-- =========================
+             ACCOUNT AREA
+        ========================= -->
+
+        <div class="auth-area">
+
+            {% if session.get("user_id") %}
+
+                <a
+                    href="/profile"
+                    class="user-button"
+                >
+
+                    👤 {{ session.get("username") }}
+
+                </a>
+
+
+                <a
+                    href="/logout"
+                    class="logout-button"
+                >
+
+                    Esci
+
+                </a>
+
+            {% else %}
+
+                <a
+                    href="/login"
+                    class="auth-button login-button"
+                >
+
+                    🔐 Accedi
+
+                </a>
+
+
+                <a
+                    href="/register"
+                    class="auth-button register-button"
+                >
+
+                    ✨ Registrati
+
+                </a>
+
+            {% endif %}
+
+        </div>
 
     </header>
 
