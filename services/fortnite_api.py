@@ -1,19 +1,14 @@
 import os
-import time
 import requests
 
 
 API_BASE_URL = "https://fortnite-api.com"
 
-
 # ============================================================
-# CACHE TUTTI GLI ITEM
+# CONFIGURAZIONE
 # ============================================================
 
-_cosmetics_cache = None
-_cosmetics_cache_time = 0
-
-COSMETICS_CACHE_SECONDS = 900
+API_TIMEOUT = 20
 
 
 # ============================================================
@@ -25,6 +20,7 @@ def get_shop():
     api_key = os.getenv("FORTNITE_API_KEY")
 
     if not api_key:
+        print("FORTNITE_API_KEY non configurata.")
         return None
 
     url = f"{API_BASE_URL}/v2/shop"
@@ -38,15 +34,26 @@ def get_shop():
         response = requests.get(
             url,
             headers=headers,
-            timeout=20
+            timeout=API_TIMEOUT
         )
 
         if response.status_code != 200:
+
+            print(
+                "Errore Shop API:",
+                response.status_code
+            )
+
             return None
 
         return response.json()
 
-    except requests.RequestException:
+    except requests.RequestException as error:
+
+        print(
+            "Errore richiesta Shop:",
+            error
+        )
 
         return None
 
@@ -58,6 +65,7 @@ def get_shop():
 def get_text_value(value):
 
     if isinstance(value, str):
+
         return value
 
     if isinstance(value, dict):
@@ -79,9 +87,6 @@ def get_text_value(value):
 def prepare_shop(shop):
 
     if not shop:
-        return []
-
-    if "data" not in shop:
         return []
 
     data = shop.get("data")
@@ -108,7 +113,7 @@ def prepare_shop(shop):
         if not isinstance(br_items, list):
             continue
 
-        if len(br_items) == 0:
+        if not br_items:
             continue
 
         first_item = br_items[0]
@@ -118,27 +123,40 @@ def prepare_shop(shop):
 
         raw_type = first_item.get("type")
 
-        type_name = get_text_value(raw_type)
+        type_name = get_text_value(
+            raw_type
+        )
 
         if not type_name:
             type_name = "Cosmetico"
 
         raw_series = first_item.get("series")
 
-        series_name = get_text_value(raw_series)
+        series_name = get_text_value(
+            raw_series
+        )
 
         raw_set = first_item.get("set")
 
-        set_name = get_text_value(raw_set)
+        set_name = get_text_value(
+            raw_set
+        )
 
-        images = first_item.get("images", {})
+        images = first_item.get(
+            "images",
+            {}
+        )
 
         if not isinstance(images, dict):
             images = {}
 
-        image = images.get("icon")
+        image = (
+            images.get("icon")
+            or images.get("featured")
+        )
 
         item = {
+
             "shop_index": len(items),
 
             "id": first_item.get("id"),
@@ -269,7 +287,9 @@ def group_shop_items(items):
 
         item_set = item.get("set")
 
-        category = get_category_name(item)
+        category = get_category_name(
+            item
+        )
 
         if series:
 
@@ -286,41 +306,52 @@ def group_shop_items(items):
         if group_name not in groups:
 
             groups[group_name] = {
+
                 "name": group_name,
+
                 "category": category,
+
                 "shop_items": []
             }
 
-        groups[group_name]["shop_items"].append(item)
+        groups[
+            group_name
+        ]["shop_items"].append(
+            item
+        )
 
-    return list(groups.values())
+    return list(
+        groups.values()
+    )
 
 
 # ============================================================
 # TUTTI GLI ITEM
+#
+# IMPORTANTE:
+# NON viene più mantenuta una gigantesca cache globale.
+# Ogni richiesta carica i dati e poi la memoria viene liberata
+# quando la richiesta termina.
 # ============================================================
 
 def get_all_cosmetics():
 
-    global _cosmetics_cache
-    global _cosmetics_cache_time
-
-    current_time = time.time()
-
-    if (
-        _cosmetics_cache is not None
-        and
-        current_time - _cosmetics_cache_time
-        < COSMETICS_CACHE_SECONDS
-    ):
-        return _cosmetics_cache
-
-    api_key = os.getenv("FORTNITE_API_KEY")
+    api_key = os.getenv(
+        "FORTNITE_API_KEY"
+    )
 
     if not api_key:
+
+        print(
+            "FORTNITE_API_KEY non configurata."
+        )
+
         return []
 
-    url = f"{API_BASE_URL}/v2/cosmetics/br"
+    url = (
+        f"{API_BASE_URL}"
+        "/v2/cosmetics/br"
+    )
 
     headers = {
         "Authorization": api_key
@@ -350,32 +381,63 @@ def get_all_cosmetics():
 
         result = response.json()
 
-        data = result.get("data", [])
+        data = result.get(
+            "data",
+            []
+        )
 
         if not isinstance(data, list):
+
             return []
 
         cosmetics = []
 
         for cosmetic in data:
 
-            if not isinstance(cosmetic, dict):
+            if not isinstance(
+                cosmetic,
+                dict
+            ):
                 continue
+
+            # ==================================================
+            # IMMAGINI
+            # ==================================================
 
             images = cosmetic.get(
                 "images",
                 {}
             )
 
-            if not isinstance(images, dict):
+            if not isinstance(
+                images,
+                dict
+            ):
                 images = {}
+
+            image = (
+                images.get("icon")
+                or images.get("featured")
+            )
+
+            # ==================================================
+            # TIPO
+            # ==================================================
 
             item_type = cosmetic.get(
                 "type",
                 {}
             )
 
-            if isinstance(item_type, dict):
+            if isinstance(
+                item_type,
+                dict
+            ):
+
+                type_value = (
+                    item_type.get("value")
+                    or ""
+                )
 
                 type_display = (
                     item_type.get(
@@ -386,77 +448,113 @@ def get_all_cosmetics():
 
             else:
 
-                type_display = str(
+                type_value = str(
                     item_type or ""
                 )
+
+                type_display = (
+                    str(
+                        item_type or ""
+                    )
+                )
+
+            # ==================================================
+            # RARITY
+            # ==================================================
 
             rarity = cosmetic.get(
                 "rarity",
                 {}
             )
 
-            if isinstance(rarity, dict):
+            if isinstance(
+                rarity,
+                dict
+            ):
 
                 rarity_name = (
                     rarity.get(
                         "displayValue"
                     )
-                    or
-                    rarity.get(
+                    or rarity.get(
                         "value"
                     )
-                    or
-                    "Sconosciuta"
+                    or "Sconosciuta"
                 )
 
             else:
 
                 rarity_name = str(
-                    rarity or
-                    "Sconosciuta"
+                    rarity
+                    or "Sconosciuta"
                 )
+
+            # ==================================================
+            # SERIES
+            # ==================================================
 
             series = cosmetic.get(
                 "series"
             )
 
-            if isinstance(series, dict):
+            if isinstance(
+                series,
+                dict
+            ):
 
                 series_name = (
                     series.get("name")
-                    or
-                    series.get("displayValue")
-                    or
-                    series.get("value")
-                    or
-                    ""
+                    or series.get(
+                        "displayValue"
+                    )
+                    or series.get(
+                        "value"
+                    )
+                    or ""
                 )
 
             else:
 
-                series_name = series or ""
+                series_name = (
+                    series or ""
+                )
+
+            # ==================================================
+            # SET
+            # ==================================================
 
             item_set = cosmetic.get(
                 "set"
             )
 
-            if isinstance(item_set, dict):
+            if isinstance(
+                item_set,
+                dict
+            ):
 
                 set_name = (
                     item_set.get("text")
-                    or
-                    item_set.get("name")
-                    or
-                    item_set.get("displayValue")
-                    or
-                    item_set.get("value")
-                    or
-                    ""
+                    or item_set.get("name")
+                    or item_set.get(
+                        "displayValue"
+                    )
+                    or item_set.get(
+                        "value"
+                    )
+                    or ""
                 )
 
             else:
 
-                set_name = item_set or ""
+                set_name = (
+                    item_set or ""
+                )
+
+            # ==================================================
+            # ITEM LEGGERO
+            #
+            # Manteniamo solo i dati che il sito utilizza.
+            # ==================================================
 
             item = {
 
@@ -474,11 +572,28 @@ def get_all_cosmetics():
                     ""
                 ),
 
-                "type": item_type,
+                "type": {
+                    "value": type_value,
+                    "displayValue": type_display
+                },
 
                 "displayType": type_display,
 
-                "rarity": rarity,
+                "rarity": {
+                    "value": (
+                        rarity.get("value", "")
+                        if isinstance(
+                            rarity,
+                            dict
+                        )
+                        else str(
+                            rarity or ""
+                        )
+                    ),
+
+                    "displayValue":
+                        rarity_name
+                },
 
                 "_rarity": rarity_name,
 
@@ -486,13 +601,11 @@ def get_all_cosmetics():
 
                 "set": set_name,
 
-                "images": images,
+                "images": {
+                    "icon": image
+                },
 
-                "image": (
-                    images.get("icon")
-                    or
-                    images.get("featured")
-                ),
+                "image": image,
 
                 "introduction": cosmetic.get(
                     "introduction"
@@ -518,14 +631,14 @@ def get_all_cosmetics():
             }
 
             item["_category"] = (
-                get_cosmetic_category(item)
+                get_cosmetic_category(
+                    item
+                )
             )
 
-            cosmetics.append(item)
-
-        _cosmetics_cache = cosmetics
-
-        _cosmetics_cache_time = current_time
+            cosmetics.append(
+                item
+            )
 
         print(
             "Tutti gli Item caricati:",
@@ -543,6 +656,15 @@ def get_all_cosmetics():
 
         return []
 
+    except Exception as error:
+
+        print(
+            "Errore elaborazione Tutti gli Item:",
+            error
+        )
+
+        return []
+
 
 # ============================================================
 # CATEGORIA COSMETICO
@@ -554,28 +676,38 @@ def get_cosmetic_category(item):
         "type"
     )
 
-    if isinstance(raw_type, dict):
+    if isinstance(
+        raw_type,
+        dict
+    ):
 
         type_value = str(
-            raw_type.get("value")
+            raw_type.get(
+                "value"
+            )
             or ""
         ).lower()
 
         type_display = str(
-            raw_type.get("displayValue")
+            raw_type.get(
+                "displayValue"
+            )
             or ""
         ).lower()
 
     else:
 
         type_value = str(
-            raw_type or ""
+            raw_type
+            or ""
         ).lower()
 
         type_display = ""
 
     display_type = str(
-        item.get("displayType")
+        item.get(
+            "displayType"
+        )
         or ""
     ).lower()
 
@@ -591,52 +723,63 @@ def get_cosmetic_category(item):
         "outfit" in combined
         or "skin" in combined
     ):
+
         return "👕 Outfit"
 
     if (
         "backpack" in combined
         or "back bling" in combined
     ):
+
         return "🎒 Back Bling"
 
     if (
         "pickaxe" in combined
         or "harvesting" in combined
     ):
+
         return "⛏️ Picconi"
 
     if "glider" in combined:
+
         return "🪂 Deltaplani"
 
     if "emote" in combined:
+
         return "💃 Emote"
 
     if "wrap" in combined:
+
         return "🎨 Wrap"
 
     if "loading" in combined:
+
         return "🖼️ Schermate di caricamento"
 
     if "contrail" in combined:
+
         return "✨ Scie"
 
     if (
         "music" in combined
         or "music pack" in combined
     ):
+
         return "🎵 Musica"
 
     if "spray" in combined:
+
         return "🎨 Spray"
 
     if "banner" in combined:
+
         return "🏳️ Banner"
 
     return "📦 Altri oggetti"
 
 
 # ============================================================
-# PREZZI ITEM DELLO SHOP ATTUALE
+# PREZZI SHOP ATTUALE
 # ============================================================
 
 def get_current_shop_prices():
@@ -644,48 +787,83 @@ def get_current_shop_prices():
     shop = get_shop()
 
     if not shop:
+
         return {}
 
-    data = shop.get("data")
+    data = shop.get(
+        "data"
+    )
 
-    if not isinstance(data, dict):
+    if not isinstance(
+        data,
+        dict
+    ):
+
         return {}
 
-    entries = data.get("entries", [])
+    entries = data.get(
+        "entries",
+        []
+    )
 
-    if not isinstance(entries, list):
+    if not isinstance(
+        entries,
+        list
+    ):
+
         return {}
 
     prices = {}
 
     for entry in entries:
 
-        if not isinstance(entry, dict):
+        if not isinstance(
+            entry,
+            dict
+        ):
             continue
 
-        final_price = entry.get("finalPrice")
+        final_price = entry.get(
+            "finalPrice"
+        )
 
         if final_price is None:
             continue
 
-        br_items = entry.get("brItems", [])
+        br_items = entry.get(
+            "brItems",
+            []
+        )
 
-        if not isinstance(br_items, list):
+        if not isinstance(
+            br_items,
+            list
+        ):
             continue
 
         for br_item in br_items:
 
-            if not isinstance(br_item, dict):
+            if not isinstance(
+                br_item,
+                dict
+            ):
                 continue
 
-            item_id = br_item.get("id")
+            item_id = br_item.get(
+                "id"
+            )
 
             if not item_id:
                 continue
 
-            prices[str(item_id)] = {
+            prices[
+                str(item_id)
+            ] = {
+
                 "price": final_price,
-                "bundle": len(br_items) > 1
+
+                "bundle":
+                    len(br_items) > 1
             }
 
     return prices
