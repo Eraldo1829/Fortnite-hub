@@ -20,6 +20,7 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
+
             background:
                 radial-gradient(
                     circle at top left,
@@ -32,6 +33,7 @@
                     transparent 35%
                 ),
                 #070b16;
+
             color: white;
             min-height: 100vh;
         }
@@ -43,6 +45,7 @@
 
         nav {
             width: 100%;
+
             padding: 15px 30px;
 
             display: flex;
@@ -56,6 +59,7 @@
 
             position: sticky;
             top: 0;
+
             z-index: 1000;
 
             backdrop-filter: blur(15px);
@@ -168,8 +172,6 @@
             max-width: 650px;
 
             margin: 0 auto 45px;
-
-            position: relative;
         }
 
         .search-container input {
@@ -222,7 +224,6 @@
             display: flex;
 
             align-items: center;
-
             justify-content: space-between;
 
             margin-bottom: 20px;
@@ -231,12 +232,6 @@
 
             border-bottom:
                 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .group-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .group-title h2 {
@@ -257,7 +252,7 @@
 
 
         /* =========================
-           SHOP GRID
+           GRID
         ========================= */
 
         .shop-grid {
@@ -270,6 +265,19 @@
                 );
 
             gap: 20px;
+        }
+
+
+        /* =========================
+           CARD LINK
+        ========================= */
+
+        .shop-card-link {
+            text-decoration: none;
+
+            color: inherit;
+
+            display: block;
         }
 
 
@@ -375,7 +383,7 @@
 
 
         /* =========================
-           CARD CONTENT
+           CONTENT
         ========================= */
 
         .card-content {
@@ -451,10 +459,6 @@
             font-weight: 800;
 
             z-index: 5;
-
-            box-shadow:
-                0 4px 15px
-                rgba(0, 0, 0, 0.3);
         }
 
         .favorite-button {
@@ -479,7 +483,7 @@
 
             cursor: pointer;
 
-            z-index: 10;
+            z-index: 20;
 
             transition: 0.2s;
         }
@@ -551,6 +555,7 @@
 
             .home-button {
                 padding: 8px 12px;
+
                 font-size: 13px;
             }
 
@@ -591,13 +596,6 @@
 
             .price {
                 font-size: 13px;
-            }
-
-            .favorite-button {
-                width: 32px;
-                height: 32px;
-
-                font-size: 16px;
             }
 
         }
@@ -648,6 +646,7 @@
             nello Shop di Fortnite.
         </p>
 
+
         {% if shop_date %}
 
             <div class="shop-date">
@@ -659,8 +658,6 @@
 
         {% endif %}
 
-
-        <!-- SEARCH -->
 
         <div class="search-container">
 
@@ -682,6 +679,7 @@
 
     <main id="shopContainer">
 
+
         {% if shop_groups %}
 
 
@@ -692,8 +690,6 @@
                     data-group="{{ group.name|lower }}"
                 >
 
-
-                    <!-- GROUP HEADER -->
 
                     <div class="group-header">
 
@@ -716,116 +712,123 @@
                     </div>
 
 
-                    <!-- ITEMS -->
-
                     <div class="shop-grid">
 
 
                         {% for item in group.shop_items %}
 
 
-                            <article
-                                class="shop-card"
-                                data-name="{{ item.name|lower }}"
-                                onclick="openItem({{ item.shop_index }})"
+                            <!--
+                                LINK REALE ALLA PAGINA DETTAGLIO
+                            -->
+
+                            <a
+                                href="/skins/{{ item.shop_index }}"
+                                class="shop-card-link"
                             >
 
 
-                                {% if item.bundle %}
-
-                                    <div class="bundle-badge">
-                                        BUNDLE
-                                    </div>
-
-                                {% endif %}
+                                <article class="shop-card">
 
 
-                                <!-- FAVORITE -->
+                                    {% if item.bundle %}
 
-                                <button
-                                    class="favorite-button"
-                                    onclick="toggleFavorite(event, '{{ item.name|replace("'", "\\'") }}')"
-                                    aria-label="Preferito"
-                                >
-                                    ♡
-                                </button>
-
-
-                                <!-- IMAGE -->
-
-                                <div class="image-container">
-
-                                    {% if item.image %}
-
-                                        <img
-                                            src="{{ item.image }}"
-                                            alt="{{ item.name }}"
-                                            loading="lazy"
-                                        >
-
-                                    {% else %}
-
-                                        <div
-                                            style="
-                                                color:#65718c;
-                                                font-size:14px;
-                                            "
-                                        >
-                                            Immagine non disponibile
+                                        <div class="bundle-badge">
+                                            BUNDLE
                                         </div>
 
                                     {% endif %}
 
-                                </div>
 
+                                    <!-- FAVORITE -->
 
-                                <!-- CONTENT -->
-
-                                <div class="card-content">
-
-
-                                    <div
-                                        class="item-name"
-                                        title="{{ item.name }}"
+                                    <button
+                                        type="button"
+                                        class="favorite-button"
+                                        data-item-name="{{ item.name }}"
+                                        onclick="toggleFavorite(event, this)"
+                                        aria-label="Preferito"
                                     >
-                                        {{ item.name }}
+                                        ♡
+                                    </button>
+
+
+                                    <!-- IMAGE -->
+
+                                    <div class="image-container">
+
+                                        {% if item.image %}
+
+                                            <img
+                                                src="{{ item.image }}"
+                                                alt="{{ item.name }}"
+                                                loading="lazy"
+                                            >
+
+                                        {% else %}
+
+                                            <div
+                                                style="
+                                                    color:#65718c;
+                                                    font-size:14px;
+                                                "
+                                            >
+                                                Immagine non disponibile
+                                            </div>
+
+                                        {% endif %}
+
                                     </div>
 
 
-                                    <div class="item-type">
+                                    <!-- CONTENT -->
 
-                                        {{ item.type }}
+                                    <div class="card-content">
 
-                                    </div>
+                                        <div
+                                            class="item-name"
+                                            title="{{ item.name }}"
+                                        >
+                                            {{ item.name }}
+                                        </div>
 
 
-                                    <div class="item-bottom">
+                                        <div class="item-type">
 
-
-                                        <div class="price">
-
-                                            {% if item.price is not none %}
-
-                                                {{ item.price }}
-                                                <span class="vbucks">
-                                                    V-Bucks
-                                                </span>
-
-                                            {% else %}
-
-                                                —
-
-                                            {% endif %}
+                                            {{ item.type }}
 
                                         </div>
 
 
+                                        <div class="item-bottom">
+
+                                            <div class="price">
+
+                                                {% if item.price is not none %}
+
+                                                    {{ item.price }}
+
+                                                    <span class="vbucks">
+                                                        V-Bucks
+                                                    </span>
+
+                                                {% else %}
+
+                                                    —
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
                                     </div>
 
-                                </div>
+
+                                </article>
 
 
-                            </article>
+                            </a>
 
 
                         {% endfor %}
@@ -869,8 +872,6 @@
 
         {% endif %}
 
-
-        <!-- NO SEARCH RESULTS -->
 
         <div
             class="no-results"
@@ -941,8 +942,15 @@
 
                 cards.forEach(card => {
 
+                    const link =
+                        card.closest(".shop-card-link");
+
                     const name =
-                        card.dataset.name || "";
+                        card
+                            .querySelector(".item-name")
+                            ?.textContent
+                            .toLowerCase()
+                            .trim() || "";
 
 
                     if (
@@ -950,13 +958,13 @@
                         || search === ""
                     ) {
 
-                        card.style.display = "";
+                        link.style.display = "";
 
                         visibleCards++;
 
                     } else {
 
-                        card.style.display = "none";
+                        link.style.display = "none";
 
                     }
 
@@ -978,7 +986,10 @@
             });
 
 
-            if (totalVisible === 0 && search !== "") {
+            if (
+                totalVisible === 0
+                && search !== ""
+            ) {
 
                 noResults.style.display = "block";
 
@@ -993,10 +1004,16 @@
 
         function toggleFavorite(
             event,
-            itemName
+            button
         ) {
 
+            event.preventDefault();
+
             event.stopPropagation();
+
+
+            const itemName =
+                button.dataset.itemName;
 
 
             let favorites =
@@ -1043,4 +1060,43 @@
 
 
             document
-                .querySelectorAll(".favorite-b
+                .querySelectorAll(".favorite-button")
+                .forEach(button => {
+
+                    const itemName =
+                        button.dataset.itemName;
+
+
+                    if (
+                        favorites.includes(itemName)
+                    ) {
+
+                        button.textContent = "♥";
+
+                    } else {
+
+                        button.textContent = "♡";
+
+                    }
+
+                });
+
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                updateFavoriteButtons();
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
