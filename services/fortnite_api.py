@@ -31,6 +31,7 @@ def get_shop():
 
 
 def prepare_shop(shop):
+
     if not shop or "data" not in shop:
         return []
 
@@ -47,8 +48,24 @@ def prepare_shop(shop):
         if not br_items:
             continue
 
-        # Prendiamo il primo oggetto dell'offerta
         first_item = br_items[0]
+
+        item_type = first_item.get("type", {})
+
+        series = first_item.get("series")
+        item_set = first_item.get("set")
+
+        series_name = None
+        set_name = None
+
+        if isinstance(series, dict):
+            series_name = series.get("name")
+
+        if isinstance(item_set, dict):
+            set_name = item_set.get("text")
+
+            if not set_name:
+                set_name = item_set.get("name")
 
         item = {
             "name": first_item.get(
@@ -61,12 +78,17 @@ def prepare_shop(shop):
                 ""
             ),
 
-            "type": first_item.get(
+            "type": item_type.get(
+                "displayValue",
+                "Cosmetico"
+            ),
+
+            "type_value": first_item.get(
                 "type",
                 {}
             ).get(
-                "displayValue",
-                "Cosmetico"
+                "value",
+                ""
             ),
 
             "image": first_item.get(
@@ -78,10 +100,182 @@ def prepare_shop(shop):
 
             "bundle": len(br_items) > 1,
 
-            # Lista degli oggetti contenuti nel bundle
-            "bundle_items": br_items
+            "bundle_items": br_items,
+
+            "series": series_name,
+
+            "set": set_name
         }
 
         items.append(item)
 
     return items
+
+
+def get_category_name(item):
+
+    """
+    Determina la categoria principale
+    dell'oggetto.
+    """
+
+    item_type = (
+        item.get("type_value")
+        or ""
+    ).lower()
+
+    display_type = (
+        item.get("type")
+        or ""
+    ).lower()
+
+
+    # OUTFIT / SKIN
+
+    if (
+        item_type == "outfit"
+        or "outfit" in display_type
+        or "skin" in display_type
+    ):
+        return "👕 Outfit"
+
+
+    # EMOTE
+
+    if (
+        item_type == "emote"
+        or "emote" in display_type
+    ):
+        return "💃 Emote"
+
+
+    # PICKAXE
+
+    if (
+        item_type == "pickaxe"
+        or "pickaxe" in display_type
+        or "piccone" in display_type
+    ):
+        return "⛏️ Picconi"
+
+
+    # BACK BLING
+
+    if (
+        item_type == "backpack"
+        or "back bling" in display_type
+        or "zaino" in display_type
+    ):
+        return "🎒 Back Bling"
+
+
+    # GLIDER
+
+    if (
+        item_type == "glider"
+        or "glider" in display_type
+        or "deltaplano" in display_type
+    ):
+        return "🪂 Deltaplani"
+
+
+    # WRAP
+
+    if (
+        item_type == "wrap"
+        or "wrap" in display_type
+    ):
+        return "🎨 Wrap"
+
+
+    # MUSIC
+
+    if (
+        item_type == "music"
+        or "music" in display_type
+        or "musica" in display_type
+    ):
+        return "🎵 Musica"
+
+
+    # LOADING SCREEN
+
+    if (
+        item_type == "loadingscreen"
+        or "loading" in display_type
+    ):
+        return "🖼️ Schermate di caricamento"
+
+
+    # TRAIL / CONTRAIL
+
+    if (
+        item_type == "contrail"
+        or "contrail" in display_type
+    ):
+        return "✨ Scie"
+
+
+    # DEFAULT
+
+    return "📦 Altri oggetti"
+
+
+def group_shop_items(items):
+
+    """
+    Organizza gli oggetti in sezioni.
+
+    Prima vengono considerate le collaborazioni/set.
+    Successivamente il tipo di oggetto.
+    """
+
+    groups = {}
+
+    for item in items:
+
+        series = item.get("series")
+        item_set = item.get("set")
+
+        category = get_category_name(item)
+
+
+        # =========================
+        # COLLAB / SET
+        # =========================
+
+        if series:
+
+            group_name = series
+
+        elif item_set:
+
+            group_name = item_set
+
+        else:
+
+            group_name = category
+
+
+        if group_name not in groups:
+
+            groups[group_name] = {
+                "name": group_name,
+                "category": category,
+                "items": []
+            }
+
+
+        groups[group_name]["items"].append(item)
+
+
+    # =========================
+    # ORDINE
+    # =========================
+
+    ordered_groups = list(
+        groups.values()
+    )
+
+
+    return ordered_groups
