@@ -41,6 +41,7 @@ app.secret_key = os.getenv(
 # DATABASE
 # =========================
 
+# Crea/aggiorna le tabelle all'avvio
 create_database()
 
 
@@ -94,9 +95,8 @@ def register():
             ""
         )
 
-
         # =========================
-        # CONTROLLI
+        # CONTROLLO CAMPI
         # =========================
 
         if not username or not email or not password:
@@ -107,6 +107,10 @@ def register():
             )
 
 
+        # =========================
+        # CONTROLLO USERNAME
+        # =========================
+
         if len(username) < 3:
 
             return render_template(
@@ -114,6 +118,10 @@ def register():
                 error="Lo username deve avere almeno 3 caratteri."
             )
 
+
+        # =========================
+        # CONTROLLO PASSWORD
+        # =========================
 
         if len(password) < 6:
 
@@ -132,6 +140,10 @@ def register():
         cursor = connection.cursor()
 
 
+        # =========================
+        # CONTROLLO UTENTE ESISTENTE
+        # =========================
+
         cursor.execute(
             """
             SELECT id
@@ -144,7 +156,6 @@ def register():
                 email
             )
         )
-
 
         existing_user = cursor.fetchone()
 
@@ -169,7 +180,7 @@ def register():
 
 
         # =========================
-        # CREA UTENTE
+        # CREAZIONE UTENTE
         # =========================
 
         cursor.execute(
@@ -194,6 +205,10 @@ def register():
 
         connection.close()
 
+
+        # =========================
+        # DOPO REGISTRAZIONE
+        # =========================
 
         return redirect(
             url_for("login")
@@ -228,6 +243,10 @@ def login():
         )
 
 
+        # =========================
+        # DATABASE
+        # =========================
+
         connection = get_database()
 
         cursor = connection.cursor()
@@ -249,7 +268,7 @@ def login():
 
 
         # =========================
-        # VERIFICA PASSWORD
+        # CONTROLLO LOGIN
         # =========================
 
         if (
@@ -312,6 +331,7 @@ def skins():
     )
 
     shop_date = None
+
 
     if shop and shop.get("data"):
 
