@@ -16,97 +16,149 @@
             padding: 0;
         }
 
+
         body {
             font-family: Arial, sans-serif;
+
             background:
-                radial-gradient(circle at 50% -20%, #243b70 0%, #101522 40%, #070a11 80%);
+                radial-gradient(
+                    circle at 50% -20%,
+                    #243b70 0%,
+                    #101522 40%,
+                    #070a11 80%
+                );
+
             color: white;
+
             min-height: 100vh;
         }
 
-        /* NAVBAR */
+
+        /* =========================
+           NAVBAR
+        ========================= */
 
         header {
+
             height: 80px;
+
             padding: 12px 50px;
 
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
 
             background: rgba(7, 10, 17, 0.85);
 
-            border-bottom: 1px solid rgba(88, 214, 255, 0.15);
+            border-bottom:
+                1px solid rgba(88, 214, 255, 0.15);
 
             backdrop-filter: blur(12px);
 
             position: sticky;
+
             top: 0;
+
             z-index: 10;
         }
 
+
         .logo {
+
             display: flex;
+
             align-items: center;
         }
 
+
         .logo img {
+
             height: 58px;
+
             width: auto;
         }
 
+
         nav {
+
             display: flex;
+
             gap: 30px;
         }
 
+
         nav a {
+
             color: #d9e2ff;
+
             text-decoration: none;
+
             font-weight: 600;
+
             transition: 0.2s;
         }
 
+
         nav a:hover {
+
             color: #5ee7ff;
+
         }
 
 
-        /* HERO */
+        /* =========================
+           HERO
+        ========================= */
 
         .hero {
+
             text-align: center;
 
             padding: 90px 20px 80px;
 
             max-width: 1000px;
+
             margin: auto;
         }
 
+
         .hero h1 {
+
             font-size: 52px;
 
             margin-bottom: 15px;
 
-            background: linear-gradient(
-                90deg,
-                #43e7ff,
-                #6b7cff,
-                #d946ef
-            );
+            background:
+                linear-gradient(
+                    90deg,
+                    #43e7ff,
+                    #6b7cff,
+                    #d946ef
+                );
 
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
         }
 
+
         .hero p {
+
             color: #aeb8d0;
+
             font-size: 19px;
+
             margin-bottom: 35px;
+
+            line-height: 1.6;
         }
 
 
-        /* SEARCH */
+        /* =========================
+           SEARCH
+        ========================= */
 
         .search-box {
 
@@ -118,15 +170,18 @@
 
             padding: 5px;
 
-            background: rgba(20, 27, 43, 0.9);
+            background:
+                rgba(20, 27, 43, 0.9);
 
-            border: 1px solid rgba(94, 231, 255, 0.3);
+            border:
+                1px solid rgba(94, 231, 255, 0.3);
 
             border-radius: 12px;
 
             box-shadow:
                 0 0 30px rgba(58, 215, 255, 0.08);
         }
+
 
         .search-box input {
 
@@ -145,9 +200,12 @@
             font-size: 16px;
         }
 
+
         .search-box input::placeholder {
+
             color: #71809d;
         }
+
 
         .search-box button {
 
@@ -157,12 +215,13 @@
 
             border-radius: 9px;
 
-            background: linear-gradient(
-                135deg,
-                #28dfff,
-                #714cff,
-                #d82cff
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    #28dfff,
+                    #714cff,
+                    #d82cff
+                );
 
             color: white;
 
@@ -173,7 +232,9 @@
             transition: 0.2s;
         }
 
+
         .search-box button:hover {
+
             transform: scale(1.03);
 
             box-shadow:
@@ -181,7 +242,9 @@
         }
 
 
-        /* SECTION */
+        /* =========================
+           SECTION
+        ========================= */
 
         .section {
 
@@ -191,6 +254,7 @@
 
             padding: 0 20px;
         }
+
 
         .section h2 {
 
@@ -202,7 +266,9 @@
         }
 
 
-        /* CARDS */
+        /* =========================
+           CARDS
+        ========================= */
 
         .cards {
 
@@ -213,6 +279,7 @@
 
             gap: 20px;
         }
+
 
         .card {
 
@@ -227,14 +294,93 @@
                     rgba(12, 16, 27, 0.95)
                 );
 
-            border: 1px solid rgba(111, 132, 180, 0.2);
+            border:
+                1px solid rgba(111, 132, 180, 0.2);
 
             border-radius: 16px;
 
-            transition: 0.25s;
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
 
             overflow: hidden;
+
+            text-decoration: none;
+
+            color: white;
+
+            opacity: 0;
+
+            transform: translateY(25px);
+
+            animation:
+                cardAppear 0.7s ease forwards;
         }
+
+
+        /* ANIMAZIONE ENTRATA */
+
+        @keyframes cardAppear {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(25px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+
+        }
+
+
+        /* RITARDO CARD */
+
+        .card:nth-child(1) {
+
+            animation-delay: 0.1s;
+        }
+
+
+        .card:nth-child(2) {
+
+            animation-delay: 0.2s;
+        }
+
+
+        .card:nth-child(3) {
+
+            animation-delay: 0.3s;
+        }
+
+
+        .card:nth-child(4) {
+
+            animation-delay: 0.4s;
+        }
+
+
+        .card:nth-child(5) {
+
+            animation-delay: 0.5s;
+        }
+
+
+        .card:nth-child(6) {
+
+            animation-delay: 0.6s;
+        }
+
+
+        /* LINEA SUPERIORE */
 
         .card::before {
 
@@ -243,9 +389,11 @@
             position: absolute;
 
             top: 0;
+
             left: 0;
 
             width: 100%;
+
             height: 2px;
 
             background:
@@ -261,19 +409,33 @@
             transition: 0.25s;
         }
 
+
+        /* HOVER */
+
         .card:hover {
 
-            transform: translateY(-6px);
+            transform:
+                translateY(-8px)
+                scale(1.02);
 
-            border-color: rgba(94, 231, 255, 0.45);
+            border-color:
+                rgba(94, 231, 255, 0.65);
 
             box-shadow:
-                0 10px 35px rgba(0, 0, 0, 0.35);
+
+                0 15px 40px
+                rgba(40, 210, 255, 0.12),
+
+                0 0 25px
+                rgba(113, 76, 255, 0.10);
         }
 
+
         .card:hover::before {
+
             opacity: 1;
         }
+
 
         .card h3 {
 
@@ -281,6 +443,7 @@
 
             font-size: 20px;
         }
+
 
         .card p {
 
@@ -290,7 +453,9 @@
         }
 
 
-        /* FOOTER */
+        /* =========================
+           FOOTER
+        ========================= */
 
         footer {
 
@@ -299,15 +464,19 @@
             padding: 30px;
 
             border-top:
-                1px solid rgba(88, 214, 255, 0.1);
+                1px solid
+                rgba(88, 214, 255, 0.1);
 
             color: #65718a;
 
-            background: rgba(5, 7, 12, 0.8);
+            background:
+                rgba(5, 7, 12, 0.8);
         }
 
 
-        /* MOBILE */
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 700px) {
 
@@ -322,9 +491,12 @@
                 gap: 12px;
             }
 
+
             .logo img {
+
                 height: 52px;
             }
+
 
             nav {
 
@@ -335,22 +507,30 @@
                 justify-content: center;
             }
 
+
             nav a {
+
                 font-size: 14px;
             }
+
 
             .hero {
 
                 padding-top: 60px;
             }
 
+
             .hero h1 {
+
                 font-size: 38px;
             }
 
+
             .hero p {
+
                 font-size: 16px;
             }
+
 
             .search-box {
 
@@ -359,7 +539,9 @@
                 gap: 5px;
             }
 
+
             .search-box button {
+
                 width: 100%;
             }
 
@@ -373,12 +555,18 @@
 <body>
 
 
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
     <header>
 
         <div class="logo">
 
-            <img src="{{ url_for('static', filename='logo.png') }}"
-                 alt="Fortnite Hub">
+            <img
+                src="{{ url_for('static', filename='logo.png') }}"
+                alt="Fortnite Hub"
+            >
 
         </div>
 
@@ -387,26 +575,35 @@
 
             <a href="/">Home</a>
 
-            <a href="#">Shop</a>
+            <a href="/skins">Shop</a>
 
-            <a href="#">Players</a>
+            <a href="/players">Players</a>
 
-            <a href="#">Leaks</a>
+            <a href="/leaks">Leaks</a>
 
-            <a href="#">News</a>
+            <a href="/news">News</a>
 
         </nav>
 
     </header>
 
 
+    <!-- =========================
+         HERO
+    ========================= -->
+
     <section class="hero">
 
-        <h1>Il tuo Fortnite Hub</h1>
+        <h1>
+            Il tuo Fortnite Hub
+        </h1>
+
 
         <p>
-            Tutto ciò che ti serve per scoprire, monitorare
-            e seguire il mondo di Fortnite.
+
+            Tutto ciò che ti serve per scoprire,
+            monitorare e seguire il mondo di Fortnite.
+
         </p>
 
 
@@ -417,6 +614,7 @@
                 placeholder="Cerca un giocatore..."
             >
 
+
             <button>
                 Cerca
             </button>
@@ -426,84 +624,144 @@
     </section>
 
 
+    <!-- =========================
+         FEATURES
+    ========================= -->
+
     <section class="section">
 
-        <h2>Esplora Fortnite Hub</h2>
+        <h2>
+            Esplora Fortnite Hub
+        </h2>
 
 
         <div class="cards">
 
 
-            <div class="card">
+            <!-- SKIN -->
 
-                <h3>🛍️ Skin Tracker</h3>
+            <a
+                href="/skins"
+                class="card"
+            >
+
+                <h3>
+                    🛍️ Skin Tracker
+                </h3>
 
                 <p>
-                    Controlla lo Shop e scopri quando
-                    tornano le tue skin preferite.
+
+                    Controlla lo Shop e scopri
+                    quando tornano le tue skin preferite.
+
                 </p>
 
-            </div>
+            </a>
 
 
-            <div class="card">
+            <!-- PLAYERS -->
 
-                <h3>👤 Player Tracker</h3>
+            <a
+                href="/players"
+                class="card"
+            >
+
+                <h3>
+                    👤 Player Tracker
+                </h3>
 
                 <p>
+
                     Cerca giocatori e visualizza
                     le loro statistiche.
+
                 </p>
 
-            </div>
+            </a>
 
 
-            <div class="card">
+            <!-- CHESTS -->
 
-                <h3>🎁 Chest Tracker</h3>
+            <a
+                href="/chests"
+                class="card"
+            >
+
+                <h3>
+                    🎁 Chest Tracker
+                </h3>
 
                 <p>
+
                     Esplora la mappa e trova
                     informazioni sui chest.
+
                 </p>
 
-            </div>
+            </a>
 
 
-            <div class="card">
+            <!-- LEAKS -->
 
-                <h3>🔎 Leak Tracker</h3>
+            <a
+                href="/leaks"
+                class="card"
+            >
+
+                <h3>
+                    🔎 Leak Tracker
+                </h3>
 
                 <p>
+
                     Scopri nuovi contenuti,
                     skin e informazioni in arrivo.
+
                 </p>
 
-            </div>
+            </a>
 
 
-            <div class="card">
+            <!-- NEWS -->
 
-                <h3>📰 Fortnite News</h3>
+            <a
+                href="/news"
+                class="card"
+            >
+
+                <h3>
+                    📰 Fortnite News
+                </h3>
 
                 <p>
+
                     Rimani aggiornato sulle
                     ultime novità.
+
                 </p>
 
-            </div>
+            </a>
 
 
-            <div class="card">
+            <!-- NOTIFICHE -->
 
-                <h3>🔔 Notifiche</h3>
+            <a
+                href="/notifications"
+                class="card"
+            >
+
+                <h3>
+                    🔔 Notifiche
+                </h3>
 
                 <p>
+
                     Salva i tuoi contenuti preferiti
                     e ricevi notifiche.
+
                 </p>
 
-            </div>
+            </a>
 
 
         </div>
@@ -511,16 +769,16 @@
     </section>
 
 
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
     <footer>
 
         Fortnite Hub — Community project
 
     </footer>
 
-
-</body>
-
-</html>
 
 </body>
 
