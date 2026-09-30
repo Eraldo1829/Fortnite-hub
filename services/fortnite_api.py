@@ -28,3 +28,41 @@ def get_shop():
 
     except requests.RequestException:
         return None
+
+
+def prepare_shop(shop):
+    if not shop or "data" not in shop:
+        return []
+
+    entries = shop["data"].get("entries", [])
+
+    items = []
+
+    for entry in entries:
+
+        final_price = entry.get("finalPrice")
+
+        br_items = entry.get("brItems", [])
+
+        if not br_items:
+            continue
+
+        # Prendiamo le informazioni dell'offerta
+        first_item = br_items[0]
+
+        item = {
+            "name": first_item.get("name", "Oggetto senza nome"),
+            "description": first_item.get("description", ""),
+            "type": first_item.get("type", {}).get(
+                "displayValue",
+                "Cosmetico"
+            ),
+            "image": first_item.get("images", {}).get("icon"),
+            "price": final_price,
+            "items": br_items,
+            "bundle": len(br_items) > 1
+        }
+
+        items.append(item)
+
+    return items
