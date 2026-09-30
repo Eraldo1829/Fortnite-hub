@@ -10,836 +10,374 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Item Shop | Fortnite Hub</title>
-
+    <title>Item Shop - Fortnite Hub</title>
 
     <style>
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
-
 
         body {
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            min-height: 100vh;
-
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b1020;
             color: white;
-
-            background:
-
-                radial-gradient(
-                    circle at 20% 10%,
-                    rgba(0,217,255,0.13),
-                    transparent 35%
-                ),
-
-                radial-gradient(
-                    circle at 80% 20%,
-                    rgba(168,85,247,0.13),
-                    transparent 35%
-                ),
-
-                #050816;
         }
 
-
-        /* ================================
-           NAVBAR
-        ================================= */
-
-        .navbar {
-
-            height: 72px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            padding: 0 40px;
-
-            position: sticky;
-
-            top: 0;
-
-            z-index: 100;
-
-            background:
-                rgba(5,8,22,0.88);
-
-            backdrop-filter:
-                blur(14px);
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.08);
-        }
-
-
-        .brand {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            color: white;
-
+        a {
+            color: inherit;
             text-decoration: none;
-
-            font-size: 20px;
-
-            font-weight: 800;
         }
 
-
-        .brand img {
-
-            width: 42px;
-
-            height: 42px;
-
-            object-fit: contain;
+        .container {
+            width: min(1400px, 94%);
+            margin: 0 auto;
         }
 
+        /* ==================================================
+           TOPBAR
+        ================================================== */
 
-        .nav-actions {
+        .topbar {
+            padding: 18px 0;
+            background: #11182b;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
 
+        .topbar-inner {
             display: flex;
-
+            justify-content: space-between;
             align-items: center;
-
-            gap: 10px;
-
+            gap: 15px;
             flex-wrap: wrap;
         }
 
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
         .nav-button {
-
-            text-decoration: none;
-
-            color: white;
-
+            display: inline-block;
             padding: 10px 15px;
-
             border-radius: 10px;
-
-            background:
-                rgba(255,255,255,0.06);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.08);
-
-            transition: 0.25s;
+            background: #1b2642;
+            color: white;
+            font-weight: 600;
+            transition: 0.2s;
         }
-
 
         .nav-button:hover {
-
-            background:
-                rgba(0,217,255,0.12);
-
-            border-color:
-                rgba(0,217,255,0.35);
-
-            transform:
-                translateY(-2px);
+            background: #293961;
         }
 
+        /* ==================================================
+           HERO
+        ================================================== */
 
-        /* ================================
-           CONTAINER
-        ================================= */
-
-        .container {
-
-            max-width: 1350px;
-
-            margin: auto;
-
-            padding: 45px 30px 80px;
+        .hero {
+            padding: 35px 0 25px;
         }
 
-
-        /* ================================
-           HEADER
-        ================================= */
-
-        .page-header {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: flex-end;
-
-            gap: 25px;
-
-            margin-bottom: 30px;
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
         }
 
-
-        .page-title h1 {
-
-            font-size:
-                clamp(32px,5vw,52px);
-
-            margin-bottom: 8px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    white,
-                    #00d9ff,
-                    #a855f7
-                );
-
-            -webkit-background-clip: text;
-
-            -webkit-text-fill-color:
-                transparent;
+        .hero p {
+            margin: 0;
+            color: #aeb8d0;
         }
 
+        /* ==================================================
+           SHOP INFO
+        ================================================== */
 
-        .page-title p {
-
-            color:
-                #8b93a7;
-
-            font-size: 14px;
+        .shop-info {
+            margin-top: 20px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            background: #121a2e;
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #b8c2d8;
         }
 
+        .shop-info strong {
+            color: white;
+        }
 
-        /* ================================
+        /* ==================================================
            SEARCH
-        ================================= */
+        ================================================== */
 
         .search-box {
-
-            width:
-                min(100%, 430px);
-        }
-
-
-        .search-box form {
-
+            margin-top: 22px;
             display: flex;
-
-            gap: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-
-        .search-wrapper {
-
-            position: relative;
-
+        .search-box input {
             flex: 1;
-        }
-
-
-        .search-icon {
-
-            position: absolute;
-
-            left: 15px;
-
-            top: 13px;
-
-            font-size: 18px;
-
-            pointer-events: none;
-        }
-
-
-        .search-input {
-
-            width: 100%;
-
-            height: 48px;
-
-            padding:
-                0 15px 0 45px;
-
-            border-radius: 13px;
-
-            outline: none;
-
+            min-width: 220px;
+            padding: 14px 16px;
+            border: 1px solid #293757;
+            border-radius: 10px;
+            background: #121b30;
             color: white;
+            font-size: 16px;
+            outline: none;
+        }
 
-            background:
-                rgba(255,255,255,0.06);
+        .search-box input:focus {
+            border-color: #5d7cff;
+        }
 
-            border:
-                1px solid
-                rgba(255,255,255,0.10);
+        .search-box button {
+            padding: 14px 22px;
+            border: 0;
+            border-radius: 10px;
+            background: #5d7cff;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
+        .search-box button:hover {
+            background: #6e8aff;
+        }
+
+        .clear-search {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 15px;
+            border-radius: 10px;
+            background: #1b2642;
+            color: #cbd4e8;
+        }
+
+        /* ==================================================
+           GROUP
+        ================================================== */
+
+        .shop-group {
+            margin: 35px 0 45px;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .group-title {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .group-category {
+            color: #8f9bb7;
             font-size: 14px;
         }
 
-
-        .search-input::placeholder {
-
-            color:
-                #7d8498;
-        }
-
-
-        .search-input:focus {
-
-            border-color:
-                rgba(0,217,255,0.55);
-
-            box-shadow:
-                0 0 0 3px
-                rgba(0,217,255,0.08);
-        }
-
-
-        .search-button {
-
-            height: 48px;
-
-            padding:
-                0 18px;
-
-            border: none;
-
-            border-radius: 13px;
-
-            color: white;
-
-            font-weight: 800;
-
-            cursor: pointer;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #00bcd4,
-                    #7c3aed
-                );
-        }
-
-
-        /* ================================
-           SEARCH INFO
-        ================================= */
-
-        .search-result {
-
-            margin-bottom: 25px;
-
-            padding: 13px 16px;
-
-            border-radius: 12px;
-
-            color:
-                #aeb6c9;
-
-            background:
-                rgba(255,255,255,0.035);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.07);
-        }
-
-
-        .search-result strong {
-
-            color: white;
-        }
-
-
-        .clear-search {
-
-            color:
-                #00d9ff;
-
-            text-decoration: none;
-
-            margin-left: 8px;
-
-            font-weight: 700;
-        }
-
-
-        /* ================================
-           GROUP
-        ================================= */
-
-        .shop-group {
-
-            margin-bottom: 45px;
-        }
-
-
-        .group-header {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            margin-bottom: 18px;
-        }
-
-
-        .group-header h2 {
-
-            font-size: 23px;
-        }
-
-
-        .group-category {
-
-            color:
-                #7f879b;
-
-            font-size: 12px;
-
-            padding:
-                5px 9px;
-
-            border-radius: 7px;
-
-            background:
-                rgba(255,255,255,0.05);
-        }
-
-
-        .group-line {
-
-            flex: 1;
-
-            height: 1px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(0,217,255,0.35),
-                    transparent
-                );
-        }
-
-
-        /* ================================
+        /* ==================================================
            GRID
-        ================================= */
+        ================================================== */
 
-        .skins-grid {
-
+        .items-grid {
             display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fill,
-                    minmax(190px, 1fr)
-                );
-
+            grid-template-columns: repeat(
+                auto-fill,
+                minmax(190px, 1fr)
+            );
             gap: 18px;
         }
 
-
-        /* ================================
+        /* ==================================================
            CARD
-        ================================= */
+        ================================================== */
 
-        .skin-card {
-
+        .item-card {
             position: relative;
-
             overflow: hidden;
-
-            border-radius: 17px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(255,255,255,0.075),
-                    rgba(255,255,255,0.025)
-                );
-
-            border:
-                1px solid
-                rgba(255,255,255,0.08);
-
+            border-radius: 16px;
+            background: #121a2e;
+            border: 1px solid rgba(255,255,255,0.07);
             transition:
-                transform 0.3s,
-                border-color 0.3s,
-                box-shadow 0.3s;
+                transform 0.2s ease,
+                border-color 0.2s ease;
         }
 
-
-        .skin-card:hover {
-
-            transform:
-                translateY(-6px);
-
-            border-color:
-                rgba(0,217,255,0.42);
-
-            box-shadow:
-                0 18px 40px
-                rgba(0,0,0,0.35);
+        .item-card:hover {
+            transform: translateY(-4px);
+            border-color: #536fff;
         }
 
-
-        .skin-link {
-
+        .item-link {
             display: block;
-
-            color: white;
-
-            text-decoration: none;
         }
 
-
-        /* ================================
-           IMAGE
-        ================================= */
-
-        .skin-image {
-
-            height: 260px;
-
-            padding: 12px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            background:
-                radial-gradient(
-                    circle,
-                    rgba(0,217,255,0.08),
-                    transparent 65%
-                );
-        }
-
-
-        .skin-image img {
-
+        .item-image-wrapper {
+            position: relative;
             width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #18233b;
+            overflow: hidden;
+        }
 
+        .item-image {
+            width: 100%;
             height: 100%;
-
-            object-fit: contain;
-
-            transition:
-                transform 0.35s;
+            object-fit: cover;
+            display: block;
         }
 
-
-        .skin-card:hover
-        .skin-image img {
-
-            transform:
-                scale(1.06);
+        .item-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #71809e;
+            font-size: 40px;
         }
 
+        /* ==================================================
+           PRICE
+        ================================================== */
 
-        .no-image {
-
-            color:
-                #697186;
-
-            font-size:
-                13px;
-
-            text-align:
-                center;
+        .price {
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.75);
+            font-weight: 700;
+            font-size: 14px;
         }
 
-
-        /* ================================
-           INFO
-        ================================= */
-
-        .skin-info {
-
-            padding:
-                13px 15px 15px;
-        }
-
-
-        .skin-name {
-
-            font-size:
-                15px;
-
-            font-weight:
-                800;
-
-            white-space:
-                nowrap;
-
-            overflow:
-                hidden;
-
-            text-overflow:
-                ellipsis;
-        }
-
-
-        .skin-type {
-
-            margin-top:
-                5px;
-
-            color:
-                #7f879b;
-
-            font-size:
-                11px;
-        }
-
-
-        /* ================================
+        /* ==================================================
            FAVORITE
-        ================================= */
+        ================================================== */
 
         .favorite-button {
-
             position: absolute;
-
             top: 10px;
-
             right: 10px;
 
-            width: 38px;
+            width: 40px;
+            height: 40px;
 
-            height: 38px;
-
+            border: 0;
             border-radius: 50%;
 
-            border:
-                1px solid
-                rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.70);
 
             color: white;
 
-            background:
-                rgba(5,8,22,0.72);
-
-            backdrop-filter:
-                blur(8px);
+            font-size: 22px;
 
             cursor: pointer;
 
-            font-size: 17px;
-
             z-index: 5;
 
-            transition:
-                0.25s;
-        }
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
+            transition: 0.2s;
+        }
 
         .favorite-button:hover {
-
-            transform:
-                scale(1.1);
+            background: rgba(0,0,0,0.9);
+            transform: scale(1.08);
         }
-
 
         .favorite-button.active {
-
-            color:
-                #ff4f81;
-
-            border-color:
-                rgba(255,79,129,0.45);
-
-            background:
-                rgba(255,79,129,0.12);
+            color: #ff4d78;
         }
 
+        /* ==================================================
+           CARD CONTENT
+        ================================================== */
 
-        /* ================================
+        .item-content {
+            padding: 14px;
+        }
+
+        .item-name {
+            font-size: 16px;
+            line-height: 1.3;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .item-type {
+            font-size: 13px;
+            color: #9ca8c2;
+        }
+
+        .item-series {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #77839e;
+        }
+
+        /* ==================================================
            EMPTY
-        ================================= */
+        ================================================== */
 
-        .empty-search {
-
+        .empty {
+            padding: 70px 20px;
             text-align: center;
-
-            padding:
-                80px 20px;
-
-            border-radius:
-                20px;
-
-            background:
-                rgba(255,255,255,0.035);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.07);
+            color: #9da9c4;
         }
 
-
-        .empty-search .icon {
-
-            font-size: 50px;
-
-            margin-bottom: 15px;
-        }
-
-
-        .empty-search h2 {
-
+        .empty h2 {
+            color: white;
             margin-bottom: 10px;
         }
 
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
 
-        .empty-search p {
+        @media (max-width: 700px) {
 
-            color:
-                #8b93a7;
+            .hero h1 {
+                font-size: 28px;
+            }
 
-            margin-bottom: 20px;
-        }
-
-
-        .reset-button {
-
-            display: inline-block;
-
-            padding:
-                12px 18px;
-
-            border-radius: 11px;
-
-            color: white;
-
-            text-decoration: none;
-
-            font-weight: 800;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #00bcd4,
-                    #7c3aed
+            .items-grid {
+                grid-template-columns: repeat(
+                    2,
+                    minmax(0, 1fr)
                 );
-        }
 
-
-        /* ================================
-           MOBILE
-        ================================= */
-
-        @media (max-width: 800px) {
-
-            .navbar {
-
-                padding:
-                    0 16px;
+                gap: 12px;
             }
 
-
-            .brand {
-
-                font-size:
-                    17px;
+            .item-content {
+                padding: 11px;
             }
 
-
-            .brand img {
-
-                width:
-                    36px;
-
-                height:
-                    36px;
+            .item-name {
+                font-size: 14px;
             }
 
-
-            .nav-button {
-
-                padding:
-                    9px 12px;
-
-                font-size:
-                    13px;
-            }
-
-
-            .container {
-
-                padding:
-                    30px 16px 60px;
-            }
-
-
-            .page-header {
-
-                display:
-                    block;
-            }
-
-
-            .search-box {
-
-                width:
-                    100%;
-
-                margin-top:
-                    22px;
-            }
-
-
-            .skins-grid {
-
-                grid-template-columns:
-                    repeat(
-                        2,
-                        minmax(0,1fr)
-                    );
-
-                gap:
-                    12px;
-            }
-
-
-            .skin-image {
-
-                height:
-                    210px;
-            }
-
-        }
-
-
-        @media (max-width: 430px) {
-
-            .skins-grid {
-
-                grid-template-columns:
-                    1fr;
-            }
-
-
-            .skin-image {
-
-                height:
-                    300px;
+            .group-title {
+                font-size: 20px;
             }
 
         }
@@ -852,304 +390,381 @@
 <body>
 
 
-    <!-- ================================
-         NAVBAR
-    ================================= -->
+    <!-- ====================================================
+         TOPBAR
+    ===================================================== -->
 
-    <nav class="navbar">
+    <div class="topbar">
 
-
-        <a
-            href="/"
-            class="brand"
-        >
-
-            <img
-                src="{{ url_for('static', filename='logo.png') }}"
-                alt="Fortnite Hub"
-            >
-
-            <span>
-                FORTNITE HUB
-            </span>
-
-        </a>
-
-
-        <div class="nav-actions">
-
-
-            {% if session.get("user_id") %}
-
-                <a
-                    href="/favorites"
-                    class="nav-button"
-                >
-                    ⭐ Preferiti
-                </a>
-
-            {% endif %}
+        <div class="container topbar-inner">
 
 
             <a
-                href="/shop-history"
-                class="nav-button"
+                href="{{ url_for('home') }}"
+                class="logo"
             >
-                📊 Storico
+                🎮 Fortnite Hub
             </a>
 
 
-        </div>
-
-    </nav>
-
-
-    <!-- ================================
-         MAIN
-    ================================= -->
-
-    <main class="container">
-
-
-        <!-- HEADER -->
-
-        <header class="page-header">
-
-
-            <div class="page-title">
-
-                <h1>
-                    Item Shop
-                </h1>
-
-                <p>
-                    Shop Fortnite del
-                    {{ shop_date or "oggi" }}
-                </p>
-
-            </div>
-
-
-            <!-- SEARCH -->
-
-            <div class="search-box">
-
-                <form
-                    method="GET"
-                    action="{{ url_for('skins') }}"
-                >
-
-                    <div class="search-wrapper">
-
-                        <span class="search-icon">
-                            🔎
-                        </span>
-
-                        <input
-                            type="text"
-                            name="q"
-                            class="search-input"
-                            placeholder="Cerca una skin..."
-                            value="{{ search_query or '' }}"
-                            autocomplete="off"
-                        >
-
-                    </div>
-
-
-                    <button
-                        type="submit"
-                        class="search-button"
-                    >
-                        Cerca
-                    </button>
-
-                </form>
-
-            </div>
-
-
-        </header>
-
-
-        <!-- SEARCH INFO -->
-
-        {% if search_query %}
-
-            <div class="search-result">
-
-                Risultati per:
-
-                <strong>
-                    "{{ search_query }}"
-                </strong>
+            <div class="nav">
 
 
                 <a
                     href="{{ url_for('skins') }}"
-                    class="clear-search"
+                    class="nav-button"
                 >
-                    ✕ Cancella
+                    🛒 Item Shop
                 </a>
+
+
+                <a
+                    href="{{ url_for('all_items') }}"
+                    class="nav-button"
+                >
+                    📚 Tutti gli Item
+                </a>
+
+
+                <a
+                    href="{{ url_for('shop_history') }}"
+                    class="nav-button"
+                >
+                    📅 Storico Shop
+                </a>
+
+
+                {% if session.get("user_id") %}
+
+
+                    <a
+                        href="{{ url_for('favorites') }}"
+                        class="nav-button"
+                    >
+                        ⭐ Preferiti
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="nav-button"
+                    >
+                        Logout
+                    </a>
+
+
+                {% else %}
+
+
+                    <a
+                        href="{{ url_for('login') }}"
+                        class="nav-button"
+                    >
+                        Login
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('register') }}"
+                        class="nav-button"
+                    >
+                        Registrati
+                    </a>
+
+
+                {% endif %}
+
 
             </div>
 
-        {% endif %}
+        </div>
+
+    </div>
 
 
-        <!-- ================================
+    <!-- ====================================================
+         MAIN
+    ===================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+
+            <h1>
+                🛒 Item Shop
+            </h1>
+
+
+            <p>
+                Scopri gli oggetti disponibili nello Shop di Fortnite.
+            </p>
+
+
+            {% if shop_date %}
+
+                <div class="shop-info">
+
+                    Shop aggiornato:
+
+                    <strong>
+                        {{ shop_date }}
+                    </strong>
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =============================================
+                 SEARCH
+            ============================================== -->
+
+            <form
+                method="GET"
+                action="{{ url_for('skins') }}"
+                class="search-box"
+            >
+
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Cerca una skin, emote, piccone..."
+                    autocomplete="off"
+                >
+
+
+                <button type="submit">
+                    🔎 Cerca
+                </button>
+
+
+                {% if search_query %}
+
+                    <a
+                        href="{{ url_for('skins') }}"
+                        class="clear-search"
+                    >
+                        ✕ Cancella
+                    </a>
+
+                {% endif %}
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- =================================================
              SHOP GROUPS
-        ================================= -->
+        ================================================== -->
 
-        {% if shop_items %}
+
+        {% if shop_groups %}
 
 
             {% for group in shop_groups %}
 
 
                 {% set group_name = group.name %}
+
                 {% set group_category = group.category %}
+
                 {% set group_items = group.shop_items %}
 
 
-                {% if group_items %}
+                <section class="shop-group">
 
 
-                    <section class="shop-group">
+                    <div class="group-header">
 
 
-                        <div class="group-header">
+                        <div>
 
-
-                            <h2>
+                            <h2 class="group-title">
                                 {{ group_name }}
                             </h2>
 
-
-                            {% if group_category %}
-
-                                <span class="group-category">
-                                    {{ group_category }}
-                                </span>
-
-                            {% endif %}
-
-
-                            <div class="group-line"></div>
-
+                            <div class="group-category">
+                                {{ group_category }}
+                            </div>
 
                         </div>
 
 
-                        <div class="skins-grid">
+                        <div class="group-category">
+
+                            {{ group_items|length }}
+
+                            {% if group_items|length == 1 %}
+                                item
+                            {% else %}
+                                item
+                            {% endif %}
+
+                        </div>
 
 
-                            {% for item in group_items %}
+                    </div>
 
 
-                                <article
-                                    class="skin-card"
+                    <div class="items-grid">
+
+
+                        {% for item in group_items %}
+
+
+                            <div class="item-card">
+
+
+                                <!-- =================================
+                                     CARD LINK
+                                ================================== -->
+
+                                <a
+                                    href="{{ url_for(
+                                        'skin_detail',
+                                        item_index=item._shop_index
+                                    ) }}"
+                                    class="item-link"
                                 >
 
 
-                                    <!-- FAVORITE -->
-
-                                    {% if session.get("user_id") %}
+                                    <div class="item-image-wrapper">
 
 
-                                        <button
-                                            type="button"
-                                            class="favorite-button {% if item._is_favorite %}active{% endif %}"
-                                            data-item-id="{{ item._item_id }}"
-                                            data-item-name="{{ item._item_name }}"
-                                            data-image-url="{{ item._image_url or '' }}"
-                                            data-item='{{ item | tojson | e }}'
-                                            onclick="toggleFavorite(event, this)"
-                                        >
-
-                                            {% if item._is_favorite %}
-                                                ♥
-                                            {% else %}
-                                                ♡
-                                            {% endif %}
-
-                                        </button>
+                                        {% if item.image %}
 
 
-                                    {% endif %}
+                                            <img
+                                                src="{{ item.image }}"
+                                                alt="{{ item.name }}"
+                                                class="item-image"
+                                                loading="lazy"
+                                            >
 
 
-                                    <!-- ITEM LINK -->
+                                        {% else %}
 
-                                    <a
-                                        href="{{ url_for('skin_detail', item_index=item._shop_index) }}"
-                                        class="skin-link"
+
+                                            <div class="item-placeholder">
+                                                🎮
+                                            </div>
+
+
+                                        {% endif %}
+
+
+                                        {% if item.price %}
+
+                                            <div class="price">
+
+                                                🪙
+                                                {{ item.price }}
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                    </div>
+
+
+                                    <div class="item-content">
+
+
+                                        <div class="item-name">
+
+                                            {{ item.name }}
+
+                                        </div>
+
+
+                                        {% if item.type %}
+
+                                            <div class="item-type">
+
+                                                {{ item.type }}
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        {% if item.series %}
+
+                                            <div class="item-series">
+
+                                                {{ item.series }}
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                    </div>
+
+
+                                </a>
+
+
+                                <!-- =================================
+                                     FAVORITE
+                                ================================== -->
+
+
+                                {% if session.get("user_id") %}
+
+
+                                    <button
+                                        type="button"
+                                        class="favorite-button
+                                        {% if item._is_favorite %}
+                                            active
+                                        {% endif %}"
+                                        data-item-id="{{ item._item_id }}"
+                                        data-item-name="{{ item._item_name }}"
+                                        data-image="{{ item._image_url or '' }}"
+                                        onclick="toggleFavorite(this, event)"
                                     >
 
 
-                                        <div class="skin-image">
+                                        {% if item._is_favorite %}
+
+                                            ♥️
+
+                                        {% else %}
+
+                                            ♡
+
+                                        {% endif %}
 
 
-                                            {% if item._image_url %}
+                                    </button>
 
 
-                                                <img
-                                                    src="{{ item._image_url }}"
-                                                    alt="{{ item._item_name }}"
-                                                    loading="lazy"
-                                                >
+                                {% endif %}
 
 
-                                            {% else %}
+                            </div>
 
 
-                                                <span class="no-image">
-                                                    Immagine non disponibile
-                                                </span>
+                        {% endfor %}
 
 
-                                            {% endif %}
+                    </div>
 
 
-                                        </div>
-
-
-                                        <div class="skin-info">
-
-
-                                            <div class="skin-name">
-
-                                                {{ item._item_name }}
-
-                                            </div>
-
-
-                                            <div class="skin-type">
-
-                                                {{ item.type or "Cosmetico" }}
-
-                                            </div>
-
-
-                                        </div>
-
-
-                                    </a>
-
-
-                                </article>
-
-
-                            {% endfor %}
-
-
-                        </div>
-
-
-                    </section>
-
-
-                {% endif %}
+                </section>
 
 
             {% endfor %}
@@ -1158,49 +773,54 @@
         {% else %}
 
 
-            <!-- EMPTY -->
-
-            <section class="empty-search">
-
-
-                <div class="icon">
-                    🔎
-                </div>
+            <!-- =================================================
+                 EMPTY
+            ================================================== -->
 
 
-                <h2>
-                    Nessun item trovato
-                </h2>
+            <section class="empty">
 
 
                 {% if search_query %}
 
+
+                    <h2>
+                        Nessun risultato
+                    </h2>
+
+
                     <p>
 
-                        Nessun item dello Shop corrisponde
-                        alla ricerca
+                        Non abbiamo trovato item per:
 
                         <strong>
-                            "{{ search_query }}"
-                        </strong>.
+                            {{ search_query }}
+                        </strong>
 
                     </p>
+
+
+                    <p>
+
+                        Prova con un altro nome.
+
+                    </p>
+
 
                 {% else %}
 
+
+                    <h2>
+                        Shop non disponibile
+                    </h2>
+
+
                     <p>
-                        Lo Shop non contiene attualmente item.
+                        Non è stato possibile caricare lo Shop.
                     </p>
 
+
                 {% endif %}
-
-
-                <a
-                    href="{{ url_for('skins') }}"
-                    class="reset-button"
-                >
-                    Mostra tutto lo Shop
-                </a>
 
 
             </section>
@@ -1212,78 +832,65 @@
     </main>
 
 
-    <!-- ================================
-         JAVASCRIPT
-    ================================= -->
-
-    <script>
+    <!-- ====================================================
+         FAVORITE JAVASCRIPT
+    ===================================================== -->
 
 
-        async function toggleFavorite(
-            event,
-            button
-        ) {
+    {% if session.get("user_id") %}
 
 
-            event.preventDefault();
-
-            event.stopPropagation();
+        <script>
 
 
-            const itemId =
-                button.dataset.itemId;
+            async function toggleFavorite(
+                button,
+                event
+            ) {
 
 
-            const itemName =
-                button.dataset.itemName;
+                /*
+                 * Evita che il click sul cuore
+                 * apra la pagina dell'item.
+                 */
+
+                if (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+                }
 
 
-            const imageUrl =
-                button.dataset.imageUrl;
+                const itemId =
+                    button.dataset.itemId;
 
 
-            let itemData = {};
+                const itemName =
+                    button.dataset.itemName;
 
 
-            try {
-
-                itemData =
-                    JSON.parse(
-                        button.dataset.item
-                    );
-
-            } catch (error) {
-
-                console.error(
-                    "Errore dati item:",
-                    error
-                );
-
-            }
+                const image =
+                    button.dataset.image;
 
 
-            button.disabled = true;
+                try {
 
 
-            try {
+                    const response =
+                        await fetch(
+                            "{{ url_for('favorite_toggle') }}",
+                            {
 
+                                method: "POST",
 
-                const response =
-                    await fetch(
-                        "/api/favorite/toggle",
-                        {
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
 
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify({
+                                body: JSON.stringify({
 
                                     item_id:
                                         itemId,
@@ -1292,85 +899,94 @@
                                         itemName,
 
                                     image_url:
-                                        imageUrl,
+                                        image,
 
-                                    item:
-                                        itemData
+                                    item: {
+
+                                        id:
+                                            itemId,
+
+                                        name:
+                                            itemName,
+
+                                        image:
+                                            image
+
+                                    }
 
                                 })
 
-                        }
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!data.success) {
+
+
+                        alert(
+                            data.message
+                            ||
+                            "Errore durante il salvataggio."
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    if (data.is_favorite) {
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        button.innerHTML =
+                            "♥️";
+
+
+                    } else {
+
+
+                        button.classList.remove(
+                            "active"
+                        );
+
+
+                        button.innerHTML =
+                            "♡";
+
+                    }
+
+
+                } catch (error) {
+
+
+                    console.error(
+                        error
                     );
 
-
-                const result =
-                    await response.json();
-
-
-                if (
-                    !response.ok
-                    ||
-                    !result.success
-                ) {
 
                     alert(
-                        result.message
-                        ||
-                        "Errore durante l'operazione."
+                        "Errore durante il salvataggio del preferito."
                     );
 
-                    button.disabled =
-                        false;
-
-                    return;
                 }
 
-
-                if (
-                    result.is_favorite
-                ) {
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    button.innerHTML =
-                        "♥";
-
-                } else {
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-                    button.innerHTML =
-                        "♡";
-                }
-
-
-            } catch (error) {
-
-
-                console.error(
-                    "Errore preferiti:",
-                    error
-                );
-
-
-                alert(
-                    "Errore di connessione."
-                );
 
             }
 
 
-            button.disabled =
-                false;
-
-        }
+        </script>
 
 
-    </script>
+    {% endif %}
 
 
 </body>
