@@ -224,6 +224,8 @@
             font-size: 40px;
         }
 
+        /* PREZZO */
+
         .price {
             position: absolute;
             left: 10px;
@@ -241,13 +243,23 @@
 
             font-weight: 700;
             font-size: 14px;
+
+            color: white;
+
+            z-index: 4;
         }
+
+        /* ICONA V-BUCKS LOCALE */
 
         .vbucks-icon {
             width: 20px;
             height: 20px;
+
             object-fit: contain;
+
             display: block;
+
+            flex-shrink: 0;
         }
 
         .favorite-button {
@@ -570,12 +582,17 @@
                                             <div class="price">
 
                                                 <img
-                                                    src="https://fortnite-api.com/images/vbucks.png"
+                                                    src="{{ url_for(
+                                                        'static',
+                                                        filename='vbucks.svg'
+                                                    ) }}"
                                                     alt="V-Bucks"
                                                     class="vbucks-icon"
                                                 >
 
-                                                {{ item.price }}
+                                                <span>
+                                                    {{ item.price }}
+                                                </span>
 
                                             </div>
 
