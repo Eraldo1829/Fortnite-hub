@@ -3,8 +3,7 @@ import requests
 
 
 API_BASE_URL = "https://fortnite-api.com"
-
-API_TIMEOUT = 20
+API_TIMEOUT = 30
 
 
 # ============================================================
@@ -12,10 +11,88 @@ API_TIMEOUT = 20
 # ============================================================
 
 def get_api_key():
+    return os.getenv("FORTNITE_API_KEY")
 
-    return os.getenv(
-        "FORTNITE_API_KEY"
-    )
+
+def get_headers():
+    api_key = get_api_key()
+
+    if not api_key:
+        print("⚠️ FORTNITE_API_KEY non configurata.")
+        return None
+
+    return {
+        "Authorization": api_key
+    }
+
+
+# ============================================================
+# GENERIC REQUEST
+# ============================================================
+
+def api_get(endpoint, params=None, timeout=API_TIMEOUT):
+
+    headers = get_headers()
+
+    if not headers:
+        return None
+
+    url = f"{API_BASE_URL}{endpoint}"
+
+    try:
+
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params or {},
+            timeout=timeout
+        )
+
+        if response.status_code != 200:
+
+            print(
+                f"❌ API error {response.status_code}:",
+                endpoint
+            )
+
+            try:
+                print(
+                    "API response:",
+                    response.text[:500]
+                )
+            except Exception:
+                pass
+
+            return None
+
+        return response.json()
+
+    except requests.Timeout:
+
+        print(
+            "❌ Timeout API:",
+            endpoint
+        )
+
+        return None
+
+    except requests.RequestException as error:
+
+        print(
+            "❌ Errore richiesta API:",
+            error
+        )
+
+        return None
+
+    except ValueError as error:
+
+        print(
+            "❌ Risposta JSON non valida:",
+            error
+        )
+
+        return None
 
 
 # ============================================================
@@ -24,49 +101,14 @@ def get_api_key():
 
 def get_shop():
 
-    api_key = get_api_key()
+    result = api_get(
+        "/v2/shop"
+    )
 
-    if not api_key:
-
-        print(
-            "FORTNITE_API_KEY non configurata."
-        )
-
+    if not result:
         return None
 
-    url = f"{API_BASE_URL}/v2/shop"
-
-    headers = {
-        "Authorization": api_key
-    }
-
-    try:
-
-        response = requests.get(
-            url,
-            headers=headers,
-            timeout=API_TIMEOUT
-        )
-
-        if response.status_code != 200:
-
-            print(
-                "Errore Shop API:",
-                response.status_code
-            )
-
-            return None
-
-        return response.json()
-
-    except requests.RequestException as error:
-
-        print(
-            "Errore richiesta Shop:",
-            error
-        )
-
-        return None
+    return result
 
 
 # ============================================================
@@ -76,7 +118,6 @@ def get_shop():
 def get_text_value(value):
 
     if isinstance(value, str):
-
         return value
 
     if isinstance(value, dict):
@@ -98,90 +139,63 @@ def get_text_value(value):
 def prepare_shop(shop):
 
     if not shop:
-
         return []
 
     data = shop.get("data")
 
     if not isinstance(data, dict):
-
         return []
 
-    entries = data.get(
-        "entries",
-        []
-    )
+    entries = data.get("entries", [])
 
-    if not isinstance(
-        entries,
-        list
-    ):
-
+    if not isinstance(entries, list):
         return []
 
     items = []
 
     for entry in entries:
 
-        if not isinstance(
-            entry,
-            dict
-        ):
-
+        if not isinstance(entry, dict):
             continue
 
-        final_price = entry.get(
-            "finalPrice"
-        )
+        final_price = entry.get("finalPrice")
 
-        br_items = entry.get(
-            "brItems",
-            []
-        )
+        br_items = entry.get("brItems", [])
 
-        if not isinstance(
-            br_items,
-            list
-        ):
-
+        if not isinstance(br_items, list):
             continue
 
         if not br_items:
-
             continue
 
         first_item = br_items[0]
 
-        if not isinstance(
-            first_item,
-            dict
-        ):
-
+        if not isinstance(first_item, dict):
             continue
 
-        raw_type = first_item.get(
-            "type"
-        )
+        raw_type = first_item.get("type")
 
-        type_name = get_text_value(
-            raw_type
-        )
+        type_name = get_text_value(raw_type)
 
         if not type_name:
-
             type_name = "Cosmetico"
 
-        raw_series = first_item.get(
-            "series"
-        )
+        type_value = ""
+
+        if isinstance(raw_type, dict):
+
+            type_value = (
+                raw_type.get("value")
+                or ""
+            )
+
+        raw_series = first_item.get("series")
 
         series_name = get_text_value(
             raw_series
         )
 
-        raw_set = first_item.get(
-            "set"
-        )
+        raw_set = first_item.get("set")
 
         set_name = get_text_value(
             raw_set
@@ -192,11 +206,7 @@ def prepare_shop(shop):
             {}
         )
 
-        if not isinstance(
-            images,
-            dict
-        ):
-
+        if not isinstance(images, dict):
             images = {}
 
         image = (
@@ -229,17 +239,7 @@ def prepare_shop(shop):
                 type_name,
 
             "type_value":
-                (
-                    raw_type.get(
-                        "value",
-                        ""
-                    )
-                    if isinstance(
-                        raw_type,
-                        dict
-                    )
-                    else ""
-                ),
+                type_value,
 
             "image":
                 image,
@@ -260,9 +260,7 @@ def prepare_shop(shop):
                 set_name
         }
 
-        items.append(
-            item
-        )
+        items.append(item)
 
     return items
 
@@ -274,99 +272,72 @@ def prepare_shop(shop):
 def get_category_name(item):
 
     item_type = str(
-        item.get(
-            "type_value"
-        )
+        item.get("type_value")
         or ""
     ).lower()
 
     display_type = str(
-        item.get(
-            "type"
-        )
+        item.get("type")
         or ""
     ).lower()
 
     if (
         item_type == "outfit"
-        or
-        "outfit" in display_type
-        or
-        "skin" in display_type
+        or "outfit" in display_type
+        or "skin" in display_type
     ):
-
         return "👕 Outfit"
 
     if (
         item_type == "emote"
-        or
-        "emote" in display_type
+        or "emote" in display_type
     ):
-
         return "💃 Emote"
 
     if (
         item_type == "pickaxe"
-        or
-        "pickaxe" in display_type
-        or
-        "piccone" in display_type
+        or "pickaxe" in display_type
+        or "piccone" in display_type
     ):
-
         return "⛏️ Picconi"
 
     if (
         item_type == "backpack"
-        or
-        "back bling" in display_type
-        or
-        "zaino" in display_type
+        or "back bling" in display_type
+        or "zaino" in display_type
     ):
-
         return "🎒 Back Bling"
 
     if (
         item_type == "glider"
-        or
-        "glider" in display_type
-        or
-        "deltaplano" in display_type
+        or "glider" in display_type
+        or "deltaplano" in display_type
     ):
-
         return "🪂 Deltaplani"
 
     if (
         item_type == "wrap"
-        or
-        "wrap" in display_type
+        or "wrap" in display_type
     ):
-
         return "🎨 Wrap"
 
     if (
         item_type == "music"
-        or
-        "music" in display_type
-        or
-        "musica" in display_type
+        or "music" in display_type
+        or "musica" in display_type
     ):
-
         return "🎵 Musica"
 
     if (
         item_type == "loadingscreen"
-        or
-        "loading" in display_type
+        or "loading" in display_type
     ):
-
         return "🖼️ Schermate di caricamento"
 
     if (
         item_type == "contrail"
-        or
-        "contrail" in display_type
+        or "contrail" in display_type
     ):
-
         return "✨ Scie"
 
     return "📦 Altri oggetti"
@@ -382,55 +353,33 @@ def group_shop_items(items):
 
     for item in items:
 
-        series = item.get(
-            "series"
-        )
+        series = item.get("series")
+        item_set = item.get("set")
 
-        item_set = item.get(
-            "set"
-        )
-
-        category = get_category_name(
-            item
-        )
+        category = get_category_name(item)
 
         if series:
-
             group_name = series
 
         elif item_set:
-
             group_name = item_set
 
         else:
-
             group_name = category
 
         if group_name not in groups:
 
             groups[group_name] = {
-
-                "name":
-                    group_name,
-
-                "category":
-                    category,
-
-                "shop_items":
-                    []
+                "name": group_name,
+                "category": category,
+                "shop_items": []
             }
 
-        groups[
-            group_name
-        ][
-            "shop_items"
-        ].append(
+        groups[group_name]["shop_items"].append(
             item
         )
 
-    return list(
-        groups.values()
-    )
+    return list(groups.values())
 
 
 # ============================================================
@@ -439,11 +388,7 @@ def group_shop_items(items):
 
 def normalize_cosmetic(cosmetic):
 
-    if not isinstance(
-        cosmetic,
-        dict
-    ):
-
+    if not isinstance(cosmetic, dict):
         return None
 
     images = cosmetic.get(
@@ -451,17 +396,15 @@ def normalize_cosmetic(cosmetic):
         {}
     )
 
-    if not isinstance(
-        images,
-        dict
-    ):
-
+    if not isinstance(images, dict):
         images = {}
 
     image = (
         images.get("icon")
         or
         images.get("featured")
+        or
+        images.get("smallIcon")
     )
 
     raw_type = cosmetic.get(
@@ -469,22 +412,15 @@ def normalize_cosmetic(cosmetic):
         {}
     )
 
-    if isinstance(
-        raw_type,
-        dict
-    ):
+    if isinstance(raw_type, dict):
 
         type_value = (
-            raw_type.get(
-                "value"
-            )
+            raw_type.get("value")
             or ""
         )
 
         type_display = (
-            raw_type.get(
-                "displayValue"
-            )
+            raw_type.get("displayValue")
             or ""
         )
 
@@ -503,22 +439,15 @@ def normalize_cosmetic(cosmetic):
         {}
     )
 
-    if isinstance(
-        rarity,
-        dict
-    ):
+    if isinstance(rarity, dict):
 
         rarity_value = (
-            rarity.get(
-                "value"
-            )
+            rarity.get("value")
             or ""
         )
 
         rarity_display = (
-            rarity.get(
-                "displayValue"
-            )
+            rarity.get("displayValue")
             or rarity_value
             or "Sconosciuta"
         )
@@ -534,21 +463,14 @@ def normalize_cosmetic(cosmetic):
             or "Sconosciuta"
         )
 
-    series = cosmetic.get(
-        "series"
-    )
+    series = cosmetic.get("series")
 
-    if isinstance(
-        series,
-        dict
-    ):
+    if isinstance(series, dict):
 
         series_name = (
             series.get("name")
             or
-            series.get(
-                "displayValue"
-            )
+            series.get("displayValue")
             or
             series.get("value")
             or
@@ -557,27 +479,18 @@ def normalize_cosmetic(cosmetic):
 
     else:
 
-        series_name = (
-            series or ""
-        )
+        series_name = series or ""
 
-    item_set = cosmetic.get(
-        "set"
-    )
+    item_set = cosmetic.get("set")
 
-    if isinstance(
-        item_set,
-        dict
-    ):
+    if isinstance(item_set, dict):
 
         set_name = (
             item_set.get("text")
             or
             item_set.get("name")
             or
-            item_set.get(
-                "displayValue"
-            )
+            item_set.get("displayValue")
             or
             item_set.get("value")
             or
@@ -586,9 +499,7 @@ def normalize_cosmetic(cosmetic):
 
     else:
 
-        set_name = (
-            item_set or ""
-        )
+        set_name = item_set or ""
 
     item = {
 
@@ -674,21 +585,13 @@ def normalize_cosmetic(cosmetic):
             )
     }
 
-    item["_category"] = (
-        get_cosmetic_category(
-            item
-        )
-    )
+    item["_category"] = get_cosmetic_category(item)
 
     return item
 
 
 # ============================================================
 # SEARCH COSMETICS
-#
-# Usa direttamente l'API di ricerca.
-# Questo evita di scaricare tutto il catalogo quando l'utente
-# sta cercando una skin.
 # ============================================================
 
 def search_cosmetics(
@@ -696,22 +599,29 @@ def search_cosmetics(
     category=""
 ):
 
-    api_key = get_api_key()
+    search_query = (
+        search_query or ""
+    ).strip()
 
-    if not api_key:
+    # ========================================================
+    # IMPORTANTE:
+    # /search/all richiede almeno un parametro di ricerca.
+    # Se la ricerca è vuota NON chiamiamo più quell'endpoint.
+    # ========================================================
 
-        return []
+    if not search_query:
 
-    url = (
-        f"{API_BASE_URL}"
-        "/v2/cosmetics/br/search/all"
-    )
+        cosmetics = get_all_cosmetics()
 
-    headers = {
+        if category:
 
-        "Authorization":
-            api_key
-    }
+            cosmetics = [
+                item
+                for item in cosmetics
+                if item.get("_category") == category
+            ]
+
+        return cosmetics
 
     params = {
 
@@ -722,205 +632,102 @@ def search_cosmetics(
             "it",
 
         "matchMethod":
-            "contains"
+            "contains",
+
+        "name":
+            search_query
     }
 
-    search_query = (
-        search_query or ""
-    ).strip()
+    result = api_get(
+        "/v2/cosmetics/br/search/all",
+        params=params
+    )
 
-    if search_query:
+    if not result:
+        return []
 
-        params["name"] = (
-            search_query
+    data = result.get(
+        "data",
+        []
+    )
+
+    if not isinstance(data, list):
+        return []
+
+    cosmetics = []
+
+    for cosmetic in data:
+
+        item = normalize_cosmetic(
+            cosmetic
         )
 
-    try:
+        if item is None:
+            continue
 
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=30
-        )
+        if category:
 
-        if response.status_code != 200:
-
-            print(
-                "Errore ricerca cosmetici:",
-                response.status_code
-            )
-
-            return []
-
-        result = response.json()
-
-        data = result.get(
-            "data",
-            []
-        )
-
-        if not isinstance(
-            data,
-            list
-        ):
-
-            return []
-
-        cosmetics = []
-
-        for cosmetic in data:
-
-            item = normalize_cosmetic(
-                cosmetic
-            )
-
-            if item is None:
-
+            if item.get("_category") != category:
                 continue
 
-            if category:
+        cosmetics.append(item)
 
-                if (
-                    item.get(
-                        "_category"
-                    )
-                    != category
-                ):
-
-                    continue
-
-            cosmetics.append(
-                item
-            )
-
-        return cosmetics
-
-    except requests.RequestException as error:
-
-        print(
-            "Errore ricerca cosmetici:",
-            error
-        )
-
-        return []
-
-    except Exception as error:
-
-        print(
-            "Errore elaborazione ricerca:",
-            error
-        )
-
-        return []
+    return cosmetics
 
 
 # ============================================================
 # TUTTI GLI ITEM
-#
-# NOTA:
-# Per compatibilità con il vecchio app.py questa funzione
-# continua ad esistere.
-#
-# NON viene utilizzata dalla nuova pagina /all-items per
-# effettuare una gigantesca cache permanente.
 # ============================================================
 
 def get_all_cosmetics():
 
-    api_key = get_api_key()
-
-    if not api_key:
-
-        return []
-
-    url = (
-        f"{API_BASE_URL}"
-        "/v2/cosmetics/br"
+    # Endpoint ufficiale per tutti i cosmetici BR.
+    # Fortnite-API documenta /v2/cosmetics/br come
+    # "BR Cosmetics List".
+    result = api_get(
+        "/v2/cosmetics/br",
+        params={
+            "language": "it"
+        },
+        timeout=60
     )
 
-    headers = {
-
-        "Authorization":
-            api_key
-    }
-
-    params = {
-
-        "language":
-            "it"
-    }
-
-    try:
-
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            timeout=30
+    if not result:
+        print(
+            "❌ Impossibile caricare il catalogo cosmetici."
         )
+        return []
 
-        if response.status_code != 200:
+    data = result.get(
+        "data",
+        []
+    )
 
-            print(
-                "Errore API Tutti gli Item:",
-                response.status_code
-            )
-
-            return []
-
-        result = response.json()
-
-        data = result.get(
-            "data",
-            []
-        )
-
-        if not isinstance(
-            data,
-            list
-        ):
-
-            return []
-
-        cosmetics = []
-
-        for cosmetic in data:
-
-            item = normalize_cosmetic(
-                cosmetic
-            )
-
-            if item is not None:
-
-                cosmetics.append(
-                    item
-                )
+    if not isinstance(data, list):
 
         print(
-            "Tutti gli Item caricati:",
-            len(cosmetics)
-        )
-
-        return cosmetics
-
-    except requests.RequestException as error:
-
-        print(
-            "Errore richiesta Tutti gli Item:",
-            error
+            "❌ Formato catalogo cosmetici non valido."
         )
 
         return []
 
-    except Exception as error:
+    cosmetics = []
 
-        print(
-            "Errore elaborazione Tutti gli Item:",
-            error
+    for cosmetic in data:
+
+        item = normalize_cosmetic(
+            cosmetic
         )
 
-        return []
+        if item is not None:
+            cosmetics.append(item)
+
+    print(
+        "✅ Tutti gli Item caricati:",
+        len(cosmetics)
+    )
+
+    return cosmetics
 
 
 # ============================================================
@@ -929,26 +736,17 @@ def get_all_cosmetics():
 
 def get_cosmetic_category(item):
 
-    raw_type = item.get(
-        "type"
-    )
+    raw_type = item.get("type")
 
-    if isinstance(
-        raw_type,
-        dict
-    ):
+    if isinstance(raw_type, dict):
 
         type_value = str(
-            raw_type.get(
-                "value"
-            )
+            raw_type.get("value")
             or ""
         ).lower()
 
         type_display = str(
-            raw_type.get(
-                "displayValue"
-            )
+            raw_type.get("displayValue")
             or ""
         ).lower()
 
@@ -961,9 +759,7 @@ def get_cosmetic_category(item):
         type_display = ""
 
     display_type = str(
-        item.get(
-            "displayType"
-        )
+        item.get("displayType")
         or ""
     ).lower()
 
@@ -977,62 +773,47 @@ def get_cosmetic_category(item):
 
     if (
         "outfit" in combined
-        or
-        "skin" in combined
+        or "skin" in combined
     ):
-
         return "👕 Outfit"
 
     if (
         "backpack" in combined
-        or
-        "back bling" in combined
+        or "back bling" in combined
     ):
-
         return "🎒 Back Bling"
 
     if (
         "pickaxe" in combined
-        or
-        "harvesting" in combined
+        or "harvesting" in combined
     ):
-
         return "⛏️ Picconi"
 
     if "glider" in combined:
-
         return "🪂 Deltaplani"
 
     if "emote" in combined:
-
         return "💃 Emote"
 
     if "wrap" in combined:
-
         return "🎨 Wrap"
 
     if "loading" in combined:
-
         return "🖼️ Schermate di caricamento"
 
     if "contrail" in combined:
-
         return "✨ Scie"
 
     if (
         "music" in combined
-        or
-        "music pack" in combined
+        or "music pack" in combined
     ):
-
         return "🎵 Musica"
 
     if "spray" in combined:
-
         return "🎨 Spray"
 
     if "banner" in combined:
-
         return "🏳️ Banner"
 
     return "📦 Altri oggetti"
@@ -1047,18 +828,11 @@ def get_current_shop_prices():
     shop = get_shop()
 
     if not shop:
-
         return {}
 
-    data = shop.get(
-        "data"
-    )
+    data = shop.get("data")
 
-    if not isinstance(
-        data,
-        dict
-    ):
-
+    if not isinstance(data, dict):
         return {}
 
     entries = data.get(
@@ -1066,22 +840,14 @@ def get_current_shop_prices():
         []
     )
 
-    if not isinstance(
-        entries,
-        list
-    ):
-
+    if not isinstance(entries, list):
         return {}
 
     prices = {}
 
     for entry in entries:
 
-        if not isinstance(
-            entry,
-            dict
-        ):
-
+        if not isinstance(entry, dict):
             continue
 
         final_price = entry.get(
@@ -1089,7 +855,6 @@ def get_current_shop_prices():
         )
 
         if final_price is None:
-
             continue
 
         br_items = entry.get(
@@ -1097,33 +862,20 @@ def get_current_shop_prices():
             []
         )
 
-        if not isinstance(
-            br_items,
-            list
-        ):
-
+        if not isinstance(br_items, list):
             continue
 
         for br_item in br_items:
 
-            if not isinstance(
-                br_item,
-                dict
-            ):
-
+            if not isinstance(br_item, dict):
                 continue
 
-            item_id = br_item.get(
-                "id"
-            )
+            item_id = br_item.get("id")
 
             if not item_id:
-
                 continue
 
-            prices[
-                str(item_id)
-            ] = {
+            prices[str(item_id)] = {
 
                 "price":
                     final_price,
