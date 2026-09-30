@@ -200,6 +200,10 @@ def get_item_id(
     fallback_index=None
 ):
 
+    if not isinstance(item, dict):
+
+        return None
+
     possible_keys = [
         "id",
         "itemId",
@@ -230,6 +234,10 @@ def get_item_id(
 
 def get_item_name(item):
 
+    if not isinstance(item, dict):
+
+        return "Skin senza nome"
+
     possible_keys = [
         "name",
         "displayName",
@@ -252,6 +260,10 @@ def get_item_name(item):
 # ------------------------------------------------------------
 
 def get_item_image(item):
+
+    if not isinstance(item, dict):
+
+        return None
 
     possible_keys = [
         "image",
@@ -776,7 +788,18 @@ def logout():
 @app.route("/skins")
 def skins():
 
-    shop = get_shop()
+    try:
+
+        shop = get_shop()
+
+    except Exception as error:
+
+        print(
+            "❌ Errore caricamento Shop:",
+            error
+        )
+
+        shop = None
 
     if not shop:
 
@@ -785,12 +808,24 @@ def skins():
             items=[],
             groups={},
             search_query="",
-            favorite_ids=set()
+            favorite_ids=set(),
+            shop_date=None
         )
 
-    shop_items = prepare_shop(
-        shop
-    )
+    try:
+
+        shop_items = prepare_shop(
+            shop
+        )
+
+    except Exception as error:
+
+        print(
+            "❌ Errore preparazione Shop:",
+            error
+        )
+
+        shop_items = []
 
     shop_date = get_shop_date(
         shop
@@ -971,20 +1006,117 @@ def all_items():
 
         page = 1
 
-    cosmetics = search_cosmetics(
-        search_query,
-        category
-    )
+    # --------------------------------------------------------
+    # CARICA CATALOGO
+    # --------------------------------------------------------
+
+    try:
+
+        cosmetics = get_all_cosmetics()
+
+    except Exception as error:
+
+        print(
+            "❌ Errore caricamento catalogo:",
+            error
+        )
+
+        cosmetics = []
 
     if not cosmetics:
 
         cosmetics = []
+
+    # --------------------------------------------------------
+    # RICERCA LOCALE
+    # --------------------------------------------------------
+
+    if search_query:
+
+        search_lower = (
+            search_query.lower()
+        )
+
+        filtered_cosmetics = []
+
+        for item in cosmetics:
+
+            name = get_item_name(
+                item
+            ).lower()
+
+            item_id = get_item_id(
+                item
+            )
+
+            item_id_text = (
+                str(item_id).lower()
+                if item_id
+                else ""
+            )
+
+            if (
+                search_lower in name
+                or search_lower in item_id_text
+            ):
+
+                filtered_cosmetics.append(
+                    item
+                )
+
+        cosmetics = filtered_cosmetics
+
+    # --------------------------------------------------------
+    # FILTRO CATEGORIA
+    # --------------------------------------------------------
+
+    if category:
+
+        filtered_cosmetics = []
+
+        category_lower = (
+            category.lower()
+        )
+
+        for item in cosmetics:
+
+            try:
+
+                item_category = (
+                    get_cosmetic_category(
+                        item
+                    )
+                )
+
+            except Exception:
+
+                item_category = ""
+
+            if item_category:
+
+                if (
+                    str(item_category).lower()
+                    == category_lower
+                ):
+
+                    filtered_cosmetics.append(
+                        item
+                    )
+
+        cosmetics = filtered_cosmetics
+
+    # --------------------------------------------------------
+    # PAGINAZIONE
+    # --------------------------------------------------------
 
     per_page = 60
 
     total_items = len(
         cosmetics
     )
+
+    # Compatibilità con all_items.html
+    total_results = total_items
 
     total_pages = max(
         1,
@@ -1011,9 +1143,28 @@ def all_items():
         start:end
     ]
 
-    current_prices = (
-        get_current_shop_prices()
-    )
+    # --------------------------------------------------------
+    # PREZZI ATTUALI
+    # --------------------------------------------------------
+
+    try:
+
+        current_prices = (
+            get_current_shop_prices()
+        )
+
+    except Exception as error:
+
+        print(
+            "⚠️ Errore recupero prezzi Shop:",
+            error
+        )
+
+        current_prices = {}
+
+    # --------------------------------------------------------
+    # PREFERITI
+    # --------------------------------------------------------
 
     favorite_ids = set()
 
@@ -1023,21 +1174,38 @@ def all_items():
             session["user_id"]
         )
 
+    # --------------------------------------------------------
+    # PREPARA ITEM
+    # --------------------------------------------------------
+
     for item in items:
 
         item_id = get_item_id(
             item
         )
 
-        item["_shop_price"] = (
-            current_prices.get(
-                item_id
-            )
-        )
+        if item_id:
 
-        item["_is_favorite"] = (
-            item_id in favorite_ids
-        )
+            item["_shop_price"] = (
+                current_prices.get(
+                    str(item_id)
+                )
+            )
+
+            item["_is_favorite"] = (
+                str(item_id)
+                in favorite_ids
+            )
+
+        else:
+
+            item["_shop_price"] = None
+
+            item["_is_favorite"] = False
+
+    # --------------------------------------------------------
+    # RENDER
+    # --------------------------------------------------------
 
     return render_template(
         "all_items.html",
@@ -1054,6 +1222,8 @@ def all_items():
 
         total_items=total_items,
 
+        total_results=total_results,
+
         favorite_ids=favorite_ids
     )
 
@@ -1069,9 +1239,18 @@ def all_item_detail(
     item_id
 ):
 
-    cosmetics = search_cosmetics(
-        ""
-    )
+    try:
+
+        cosmetics = get_all_cosmetics()
+
+    except Exception as error:
+
+        print(
+            "❌ Errore caricamento catalogo:",
+            error
+        )
+
+        cosmetics = []
 
     item = None
 
@@ -1101,9 +1280,20 @@ def all_item_detail(
         item_id
     )
 
-    current_prices = (
-        get_current_shop_prices()
-    )
+    try:
+
+        current_prices = (
+            get_current_shop_prices()
+        )
+
+    except Exception as error:
+
+        print(
+            "⚠️ Errore recupero prezzo:",
+            error
+        )
+
+        current_prices = {}
 
     current_price = (
         current_prices.get(
@@ -1190,7 +1380,7 @@ def favorite_detail(
         )
 
     # --------------------------------------------------------
-    # Prova ad aggiornare lo storico
+    # AGGIORNA STORICO
     # --------------------------------------------------------
 
     try:
@@ -1220,7 +1410,7 @@ def favorite_detail(
         )
 
     # --------------------------------------------------------
-    # Recupera dati JSON
+    # RECUPERA DATI JSON
     # --------------------------------------------------------
 
     item_data = {}
@@ -1876,10 +2066,6 @@ def tracker_notifications():
 )
 def api_tracker_check():
 
-    # --------------------------------------------------------
-    # Secret configurato su Render
-    # --------------------------------------------------------
-
     cron_secret = os.getenv(
         "CRON_SECRET"
     )
@@ -1887,10 +2073,6 @@ def api_tracker_check():
     request_secret = request.args.get(
         "secret"
     )
-
-    # --------------------------------------------------------
-    # Controllo configurazione
-    # --------------------------------------------------------
 
     if not cron_secret:
 
@@ -1900,20 +2082,12 @@ def api_tracker_check():
                 "CRON_SECRET non configurata"
         }, 500
 
-    # --------------------------------------------------------
-    # Controllo autenticazione
-    # --------------------------------------------------------
-
     if request_secret != cron_secret:
 
         return {
             "success": False,
             "error": "Unauthorized"
         }, 401
-
-    # --------------------------------------------------------
-    # Esegui Tracker
-    # --------------------------------------------------------
 
     try:
 
