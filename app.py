@@ -1,5 +1,4 @@
 import os
-import sqlite3
 
 from flask import (
     Flask,
@@ -15,7 +14,10 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from database.database import create_database
+from database.database import (
+    create_database,
+    get_connection
+)
 
 from services.fortnite_api import (
     get_shop,
@@ -23,6 +25,10 @@ from services.fortnite_api import (
     group_shop_items
 )
 
+
+# =========================
+# FLASK
+# =========================
 
 app = Flask(__name__)
 
@@ -41,19 +47,7 @@ app.secret_key = os.getenv(
 # DATABASE
 # =========================
 
-# Crea/aggiorna le tabelle all'avvio
 create_database()
-
-
-def get_database():
-
-    connection = sqlite3.connect(
-        "fortnite.db"
-    )
-
-    connection.row_factory = sqlite3.Row
-
-    return connection
 
 
 # =========================
@@ -95,6 +89,7 @@ def register():
             ""
         )
 
+
         # =========================
         # CONTROLLO CAMPI
         # =========================
@@ -135,13 +130,13 @@ def register():
         # DATABASE
         # =========================
 
-        connection = get_database()
+        connection = get_connection()
 
         cursor = connection.cursor()
 
 
         # =========================
-        # CONTROLLO UTENTE ESISTENTE
+        # CONTROLLO UTENTE
         # =========================
 
         cursor.execute(
@@ -149,7 +144,7 @@ def register():
             SELECT id
             FROM users
             WHERE username = ?
-               OR email = ?
+            OR email = ?
             """,
             (
                 username,
@@ -180,7 +175,7 @@ def register():
 
 
         # =========================
-        # CREAZIONE UTENTE
+        # CREA UTENTE
         # =========================
 
         cursor.execute(
@@ -207,7 +202,7 @@ def register():
 
 
         # =========================
-        # DOPO REGISTRAZIONE
+        # LOGIN
         # =========================
 
         return redirect(
@@ -247,7 +242,7 @@ def login():
         # DATABASE
         # =========================
 
-        connection = get_database()
+        connection = get_connection()
 
         cursor = connection.cursor()
 
@@ -271,21 +266,20 @@ def login():
         # CONTROLLO LOGIN
         # =========================
 
-        if (
-            user
-            and check_password_hash(
+        if user:
+
+            if check_password_hash(
                 user["password_hash"],
                 password
-            )
-        ):
+            ):
 
-            session["user_id"] = user["id"]
+                session["user_id"] = user["id"]
 
-            session["username"] = user["username"]
+                session["username"] = user["username"]
 
-            return redirect(
-                url_for("home")
-            )
+                return redirect(
+                    url_for("home")
+                )
 
 
         return render_template(
@@ -398,9 +392,17 @@ def skin_detail(item_index):
 
 
 # =========================
-# START SERVER
+# START
 # =========================
 
 if __name__ == "__main__":
 
-    app.run()
+    app.run(
+        host="0.0.0.0",
+        port=int(
+            os.getenv(
+                "PORT",
+                5000
+            )
+        )
+    )
