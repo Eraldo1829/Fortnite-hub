@@ -1,0 +1,125 @@
+name: DEBUG Fortnite Hub Tracker
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: STEP 1 - Checkout
+        uses: actions/checkout@v4
+
+      - name: STEP 2 - Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: STEP 3 - Python version
+        run: |
+          echo "========================================"
+          echo "PYTHON"
+          echo "========================================"
+          python --version
+          pip --version
+
+      - name: STEP 4 - Files
+        run: |
+          echo "========================================"
+          echo "FILES"
+          echo "========================================"
+
+          pwd
+
+          echo ""
+          echo "Repository:"
+          ls -la
+
+          echo ""
+          echo "Workflows:"
+          ls -la .github/workflows || true
+
+          echo ""
+          echo "Services:"
+          ls -la services || true
+
+      - name: STEP 5 - Install dependencies
+        run: |
+          echo "========================================"
+          echo "INSTALLAZIONE"
+          echo "========================================"
+
+          python -m pip install --upgrade pip
+
+          pip install requests flask werkzeug resend
+
+      - name: STEP 6 - Check secrets
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          echo "========================================"
+          echo "SECRETS"
+          echo "========================================"
+
+          if [ -z "$FORTNITE_API_KEY" ]; then
+            echo "❌ FORTNITE_API_KEY MANCANTE"
+          else
+            echo "✅ FORTNITE_API_KEY PRESENTE"
+          fi
+
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "❌ RESEND_API_KEY MANCANTE"
+          else
+            echo "✅ RESEND_API_KEY PRESENTE"
+          fi
+
+      - name: STEP 7 - Import notification service
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          echo "========================================"
+          echo "TEST NOTIFICATION SERVICE"
+          echo "========================================"
+
+          python -c "import services.notification_service; print('✅ notification_service OK')"
+
+      - name: STEP 8 - Import Fortnite API
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+        run: |
+          echo "========================================"
+          echo "TEST FORTNITE API"
+          echo "========================================"
+
+          python -c "from services.fortnite_api import get_shop, prepare_shop; print('✅ fortnite_api OK')"
+
+      - name: STEP 9 - Import tracker
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          echo "========================================"
+          echo "TEST TRACKER"
+          echo "========================================"
+
+          python -c "import tracker; print('✅ tracker.py IMPORT OK')"
+
+      - name: STEP 10 - Run tracker
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          echo "========================================"
+          echo "🔥 AVVIO TRACKER"
+          echo "========================================"
+
+          python tracker.py
+
+          echo ""
+          echo "========================================"
+          echo "🔥 TRACKER TERMINATO"
+          echo "========================================"
