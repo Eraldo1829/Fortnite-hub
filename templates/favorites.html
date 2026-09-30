@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Preferiti - Fortnite Hub</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(
+                    circle at top,
+                    #20205c 0%,
+                    #0b0b20 45%,
+                    #05050f 100%
+                );
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(5, 5, 20, 0.9);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: auto;
+            padding: 50px 25px;
+        }
+
+        .hero {
+            margin-bottom: 35px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #aaa;
+            font-size: 17px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(210px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-content h3 {
+            font-size: 17px;
+            margin-bottom: 7px;
+        }
+
+        .card-content p {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.65);
+            color: #ff4f8b;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .remove-button:hover {
+            background: rgba(0,0,0,0.85);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 20px;
+        }
+
+        .empty h2 {
+            margin-bottom: 12px;
+        }
+
+        .empty p {
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .shop-button {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: #6c5ce7;
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 700px) {
+
+            nav {
+                padding: 0 18px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .container {
+                padding: 30px 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <a
+        href="/"
+        class="logo"
+    >
+        Fortnite Hub
+    </a>
+
+    <div class="nav-links">
+
+        <a href="/skins">
+            🛒 Shop
+        </a>
+
+        <a href="/shop-history">
+            📅 Storico
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="hero">
+
+        <h1>⭐ I tuoi preferiti</h1>
+
+        <p>
+            Le skin che hai salvato nel tuo account.
+        </p>
+
+    </div>
+
+
+    {% if favorites %}
+
+        <div class="grid">
+
+            {% for item in favorites %}
+
+                <div
+                    class="card"
+                    id="favorite-{{ item['item_id'] }}"
+                >
+
+                    {% if item['image_url'] %}
+
+                        <img
+                            src="{{ item['image_url'] }}"
+                            alt="{{ item['item_name'] }}"
+                        >
+
+                    {% endif %}
+
+
+                    <button
+                        class="remove-button"
+                        onclick="removeFavorite(
+                            event,
+                            this,
+                            '{{ item['item_id'] }}'
+                        )"
+                    >
+                        ♥
+                    </button>
+
+
+                    <div class="card-content">
+
+                        <h3>
+                            {{ item['item_name'] or 'Skin' }}
+                        </h3>
+
+                        <p>
+                            Aggiunta ai preferiti
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+
+            <h2>
+                Nessun preferito
+            </h2>
+
+            <p>
+                Vai nello Shop e salva le skin che ti interessano.
+            </p>
+
+            <a
+                href="/skins"
+                class="shop-button"
+            >
+                Vai allo Shop
+            </a>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<script>
+
+async function removeFavorite(
+    event,
+    button,
+    itemId
+) {
+
+    event.preventDefault();
+
+    button.disabled = true;
+
+
+    try {
+
+        const response = await fetch(
+            "/api/favorite/toggle",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    item_id: itemId,
+
+                    item_name: "",
+
+                    image_url: "",
+
+                    item: {}
+
+                })
+
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (data.success && !data.is_favorite) {
+
+            const card = document.getElementById(
+                "favorite-" + itemId
+            );
+
+            if (card) {
+
+                card.remove();
+
+            }
+
+
+            if (
+                document.querySelectorAll(".card").length === 0
+            ) {
+
+                location.reload();
+
+            }
+
+        } else {
+
+            button.disabled = false;
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        button.disabled = false;
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
