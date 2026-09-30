@@ -25,6 +25,10 @@ from services.email_service import (
     send_welcome_email
 )
 
+from services.notification_service import (
+    send_skin_notification
+)
+
 from services.fortnite_api import (
     get_shop,
     prepare_shop,
