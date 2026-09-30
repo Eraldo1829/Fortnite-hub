@@ -123,6 +123,8 @@
             align-items: center;
 
             gap: 10px;
+
+            flex-wrap: wrap;
         }
 
 
@@ -1030,6 +1032,10 @@
 
         <!-- ==================================================
              SHOP
+             
+             NOTA:
+             shop_groups è una LISTA, non un dizionario.
+             Quindi NON dobbiamo usare .items()
         ================================================== -->
 
         {% if shop_items %}
@@ -1038,10 +1044,10 @@
             {% if shop_groups %}
 
 
-                {% for group_name, group_items in shop_groups.items() %}
+                {% for group in shop_groups %}
 
 
-                    {% if group_items %}
+                    {% if group %}
 
 
                         <section class="shop-group">
@@ -1050,7 +1056,17 @@
                             <div class="group-title">
 
                                 <h2>
-                                    {{ group_name }}
+
+                                    {% if group is mapping %}
+
+                                        {{ group.get("name", "Item Shop") }}
+
+                                    {% else %}
+
+                                        Item Shop
+
+                                    {% endif %}
+
                                 </h2>
 
                                 <div class="group-line"></div>
@@ -1059,6 +1075,17 @@
 
 
                             <div class="skins-grid">
+
+
+                                {% if group is mapping %}
+
+                                    {% set group_items = group.get("items", []) %}
+
+                                {% else %}
+
+                                    {% set group_items = group %}
+
+                                {% endif %}
 
 
                                 {% for item in group_items %}
