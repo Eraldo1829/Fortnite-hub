@@ -12,11 +12,13 @@
 
     <title>Tutti gli Item - Fortnite Hub</title>
 
+
     <style>
 
         * {
             box-sizing: border-box;
         }
+
 
         body {
 
@@ -41,24 +43,17 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            NAVBAR
-        ==================================================== */
+        ===================================================== */
 
-        .navbar {
+        .topbar {
 
             width: 100%;
 
-            padding:
-                16px 24px;
+            padding: 18px 0;
 
-            background:
-                rgba(
-                    10,
-                    11,
-                    16,
-                    0.94
-                );
+            background: #11182b;
 
             border-bottom:
                 1px solid
@@ -68,6 +63,18 @@
                     255,
                     0.08
                 );
+        }
+
+
+        .topbar-inner {
+
+            width:
+                min(
+                    1500px,
+                    calc(100% - 32px)
+                );
+
+            margin: 0 auto;
 
             display: flex;
 
@@ -76,12 +83,6 @@
             justify-content: space-between;
 
             gap: 20px;
-
-            position: sticky;
-
-            top: 0;
-
-            z-index: 100;
         }
 
 
@@ -91,15 +92,15 @@
 
             text-decoration: none;
 
-            font-size: 22px;
+            font-size: 26px;
 
-            font-weight: 900;
+            font-weight: 800;
 
-            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
 
-        .nav-links {
+        .nav {
 
             display: flex;
 
@@ -111,7 +112,7 @@
         }
 
 
-        .nav-links a {
+        .nav-button {
 
             color: #d9d9df;
 
@@ -120,9 +121,11 @@
             padding:
                 8px 12px;
 
-            border-radius: 9px;
+            border-radius:
+                9px;
 
-            font-size: 14px;
+            font-size:
+                14px;
 
             transition:
                 background 0.2s,
@@ -130,7 +133,7 @@
         }
 
 
-        .nav-links a:hover {
+        .nav-button:hover {
 
             background:
                 rgba(
@@ -144,16 +147,17 @@
         }
 
 
-        /* ====================================================
-           CONTAINER
-        ==================================================== */
+        /* =====================================================
+           MAIN
+        ===================================================== */
 
         .container {
 
-            width: min(
-                1500px,
-                calc(100% - 32px)
-            );
+            width:
+                min(
+                    1500px,
+                    calc(100% - 32px)
+                );
 
             margin:
                 0 auto;
@@ -190,9 +194,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            SEARCH
-        ==================================================== */
+        ===================================================== */
 
         .search-box {
 
@@ -305,9 +309,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            CATEGORIES
-        ==================================================== */
+        ===================================================== */
 
         .categories {
 
@@ -396,9 +400,9 @@
         }
 
 
-        /* ====================================================
-           RESULTS INFO
-        ==================================================== */
+        /* =====================================================
+           RESULTS
+        ===================================================== */
 
         .results-info {
 
@@ -431,9 +435,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            GRID
-        ==================================================== */
+        ===================================================== */
 
         .grid {
 
@@ -453,9 +457,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            CARD
-        ==================================================== */
+        ===================================================== */
 
         .card {
 
@@ -527,6 +531,10 @@
         }
 
 
+        /* =====================================================
+           IMAGE
+        ===================================================== */
+
         .image-wrapper {
 
             position: relative;
@@ -539,7 +547,8 @@
             background:
                 #0d0f14;
 
-            overflow: hidden;
+            overflow:
+                hidden;
         }
 
 
@@ -566,9 +575,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            FAVORITE BUTTON
-        ==================================================== */
+        ===================================================== */
 
         .favorite-button {
 
@@ -602,11 +611,9 @@
                     0.62
                 );
 
-            color:
-                white;
+            color: white;
 
-            font-size:
-                19px;
+            font-size: 19px;
 
             cursor: pointer;
 
@@ -646,9 +653,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            PRICE
-        ==================================================== */
+        ===================================================== */
 
         .price {
 
@@ -740,9 +747,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            CARD CONTENT
-        ==================================================== */
+        ===================================================== */
 
         .card-content {
 
@@ -825,9 +832,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            EMPTY
-        ==================================================== */
+        ===================================================== */
 
         .empty {
 
@@ -858,9 +865,9 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            PAGINATION
-        ==================================================== */
+        ===================================================== */
 
         .pagination {
 
@@ -875,7 +882,8 @@
             margin-top:
                 32px;
 
-            flex-wrap: wrap;
+            flex-wrap:
+                wrap;
         }
 
 
@@ -943,30 +951,48 @@
         }
 
 
-        /* ====================================================
+        /* =====================================================
            MOBILE
-        ==================================================== */
+        ===================================================== */
 
         @media (
             max-width: 700px
         ) {
 
-            .navbar {
+            .topbar {
 
                 padding:
-                    13px 15px;
+                    14px 0;
+            }
+
+
+            .topbar-inner {
+
+                width:
+                    calc(100% - 20px);
 
                 align-items:
                     flex-start;
 
                 flex-direction:
                     column;
+
+                gap:
+                    12px;
             }
 
 
-            .nav-links {
+            .logo {
 
-                width: 100%;
+                font-size:
+                    23px;
+            }
+
+
+            .nav {
+
+                width:
+                    100%;
 
                 overflow-x:
                     auto;
@@ -979,7 +1005,7 @@
             }
 
 
-            .nav-links a {
+            .nav-button {
 
                 white-space:
                     nowrap;
@@ -989,10 +1015,7 @@
             .container {
 
                 width:
-                    min(
-                        100% - 20px,
-                        1500px
-                    );
+                    calc(100% - 20px);
 
                 padding-top:
                     24px;
@@ -1109,6 +1132,7 @@
                 padding:
                     4px 6px;
             }
+
         }
 
     </style>
@@ -1119,78 +1143,103 @@
 <body>
 
 
-<!-- ========================================================
+<!-- =====================================================
      NAVBAR
-========================================================= -->
+===================================================== -->
 
-<nav class="navbar">
+<nav class="topbar">
 
-    <a
-        href="{{ url_for('home') }}"
-        class="logo"
-    >
-        Fortnite Hub
-    </a>
+    <div class="topbar-inner">
 
 
-    <div class="nav-links">
+        <!-- LOGO ATTUALE -->
 
         <a
-            href="{{ url_for('skins') }}"
+            href="{{ url_for('home') }}"
+            class="logo"
         >
-            Item Shop
+            🎮 Fortnite Hub
         </a>
 
-        <a
-            href="{{ url_for('all_items') }}"
-        >
-            Tutti gli Item
-        </a>
 
-        <a
-            href="{{ url_for('shop_history') }}"
-        >
-            Storico Shop
-        </a>
+        <div class="nav">
 
-        {% if session.get("user_id") %}
 
             <a
-                href="{{ url_for('favorites') }}"
+                href="{{ url_for('skins') }}"
+                class="nav-button"
             >
-                Preferiti
+                Item Shop
             </a>
+
 
             <a
-                href="{{ url_for('logout') }}"
+                href="{{ url_for('all_items') }}"
+                class="nav-button"
             >
-                Logout
+                Tutti gli Item
             </a>
 
-        {% else %}
 
             <a
-                href="{{ url_for('login') }}"
+                href="{{ url_for('shop_history') }}"
+                class="nav-button"
             >
-                Login
+                Storico Shop
             </a>
 
-            <a
-                href="{{ url_for('register') }}"
-            >
-                Registrati
-            </a>
 
-        {% endif %}
+            {% if session.get("user_id") %}
+
+
+                <a
+                    href="{{ url_for('favorites') }}"
+                    class="nav-button"
+                >
+                    Preferiti
+                </a>
+
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="nav-button"
+                >
+                    Logout
+                </a>
+
+
+            {% else %}
+
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="nav-button"
+                >
+                    Login
+                </a>
+
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="nav-button"
+                >
+                    Registrati
+                </a>
+
+
+            {% endif %}
+
+
+        </div>
 
     </div>
 
 </nav>
 
 
-<!-- ========================================================
+<!-- =====================================================
      MAIN
-========================================================= -->
+===================================================== -->
 
 <main class="container">
 
@@ -1208,9 +1257,9 @@
     </p>
 
 
-    <!-- ====================================================
+    <!-- =================================================
          SEARCH
-    ===================================================== -->
+    ================================================== -->
 
     <div class="search-box">
 
@@ -1220,6 +1269,7 @@
             class="search-form"
         >
 
+
             <input
                 type="text"
                 name="q"
@@ -1228,6 +1278,7 @@
                 placeholder="Cerca una skin, emote, piccone..."
                 autocomplete="off"
             >
+
 
             {% if selected_category %}
 
@@ -1239,6 +1290,7 @@
 
             {% endif %}
 
+
             <button
                 type="submit"
                 class="search-button"
@@ -1246,16 +1298,18 @@
                 Cerca
             </button>
 
+
         </form>
 
     </div>
 
 
-    <!-- ====================================================
+    <!-- =================================================
          CATEGORIES
-    ===================================================== -->
+    ================================================== -->
 
     <div class="categories">
+
 
         <a
             href="{{ url_for('all_items') }}"
@@ -1272,6 +1326,7 @@
 
         {% for category in categories %}
 
+
             <a
                 href="{{
                     url_for(
@@ -1287,25 +1342,33 @@
                     {% endif %}
                 "
             >
+
                 {{ category }}
+
             </a>
 
+
         {% endfor %}
+
 
     </div>
 
 
-    <!-- ====================================================
+    <!-- =================================================
          RESULTS INFO
-    ===================================================== -->
+    ================================================== -->
 
     <div class="results-info">
+
 
         <div>
 
             Risultati:
+
             <span class="results-count">
+
                 {{ total_results }}
+
             </span>
 
         </div>
@@ -1316,6 +1379,7 @@
             <div>
 
                 Pagina
+
                 <strong>
                     {{ page }}
                 </strong>
@@ -1324,23 +1388,30 @@
 
         {% endif %}
 
+
     </div>
 
 
-    <!-- ====================================================
-         GRID
-    ===================================================== -->
+    <!-- =================================================
+         ITEMS GRID
+    ================================================== -->
 
     {% if cosmetics %}
 
+
         <div class="grid">
 
+
             {% for item in cosmetics %}
+
 
                 <div
                     class="card"
                     data-item-id="{{ item._item_id }}"
                 >
+
+
+                    <!-- ITEM LINK -->
 
                     <a
                         href="{{
@@ -1352,7 +1423,9 @@
                         class="card-link"
                     >
 
+
                         <div class="image-wrapper">
+
 
                             {% if item._image_url %}
 
@@ -1366,13 +1439,15 @@
                             {% endif %}
 
 
-                            <!-- ==================================
+                            <!-- =========================
                                  PRICE
-                            =================================== -->
+                            ========================== -->
 
                             {% if item._shop_price is not none %}
 
+
                                 <div class="price">
+
 
                                     <img
                                         src="{{
@@ -1385,35 +1460,48 @@
                                         class="vbucks-icon"
                                     >
 
+
                                     {{ item._shop_price }}
 
+
                                 </div>
+
 
                             {% endif %}
 
 
-                            <!-- ==================================
+                            <!-- =========================
                                  BUNDLE
-                            =================================== -->
+                            ========================== -->
 
                             {% if item._shop_bundle %}
 
+
                                 <div class="bundle-label">
+
                                     Bundle
+
                                 </div>
 
+
                             {% endif %}
+
 
                         </div>
 
 
+                        <!-- CARD CONTENT -->
+
                         <div class="card-content">
+
 
                             <div
                                 class="item-name"
                                 title="{{ item._item_name }}"
                             >
+
                                 {{ item._item_name }}
+
                             </div>
 
 
@@ -1426,20 +1514,26 @@
 
                             {% if item._shop_price is none %}
 
+
                                 <div class="not-in-shop">
+
                                     Non nello Shop
+
                                 </div>
+
 
                             {% endif %}
 
+
                         </div>
+
 
                     </a>
 
 
-                    <!-- ==========================================
+                    <!-- =========================
                          FAVORITE
-                    =========================================== -->
+                    ========================== -->
 
                     <button
                         type="button"
@@ -1454,48 +1548,72 @@
                         data-item-name="{{ item._item_name }}"
                         data-image-url="{{ item._image_url or '' }}"
                     >
+
+
                         {% if item._is_favorite %}
-                            ♥
+
+                            ♥️
+
                         {% else %}
+
                             ♡
+
                         {% endif %}
+
+
                     </button>
+
 
                 </div>
 
+
             {% endfor %}
+
 
         </div>
 
 
     {% else %}
 
+
+        <!-- EMPTY -->
+
         <div class="empty">
 
+
             <div class="empty-title">
+
                 Nessun item trovato
+
             </div>
+
 
             <div>
+
                 Prova a modificare la ricerca
                 o la categoria.
+
             </div>
 
+
         </div>
+
 
     {% endif %}
 
 
-    <!-- ====================================================
+    <!-- =================================================
          PAGINATION
-    ===================================================== -->
+    ================================================== -->
 
     {% if total_results > 0 %}
+
 
         <div class="pagination">
 
 
             {% if page > 1 %}
+
 
                 <a
                     class="page-button"
@@ -1508,8 +1626,11 @@
                         )
                     }}"
                 >
+
                     ← Precedente
+
                 </a>
+
 
             {% endif %}
 
@@ -1523,6 +1644,7 @@
 
             {% if has_next %}
 
+
                 <a
                     class="page-button"
                     href="{{
@@ -1534,12 +1656,17 @@
                         )
                     }}"
                 >
+
                     Successiva →
+
                 </a>
+
 
             {% endif %}
 
+
         </div>
+
 
     {% endif %}
 
@@ -1547,9 +1674,9 @@
 </main>
 
 
-<!-- ========================================================
+<!-- =====================================================
      FAVORITE JAVASCRIPT
-========================================================= -->
+===================================================== -->
 
 <script>
 
@@ -1557,6 +1684,7 @@ async function toggleFavorite(
     event,
     button
 ) {
+
 
     event.preventDefault();
 
@@ -1566,8 +1694,10 @@ async function toggleFavorite(
     const itemId =
         button.dataset.itemId;
 
+
     const itemName =
         button.dataset.itemName;
+
 
     const imageUrl =
         button.dataset.imageUrl;
@@ -1576,10 +1706,12 @@ async function toggleFavorite(
     if (!itemId) {
 
         return;
+
     }
 
 
     try {
+
 
         const response =
             await fetch(
@@ -1592,6 +1724,7 @@ async function toggleFavorite(
 
                         "Content-Type":
                             "application/json"
+
                     },
 
                     body:
@@ -1616,8 +1749,11 @@ async function toggleFavorite(
 
                                 image:
                                     imageUrl
+
                             }
+
                         })
+
                 }
             );
 
@@ -1626,10 +1762,13 @@ async function toggleFavorite(
             response.status === 401
         ) {
 
+
             window.location.href =
                 "{{ url_for('login') }}";
 
+
             return;
+
         }
 
 
@@ -1641,35 +1780,46 @@ async function toggleFavorite(
             data.success
         ) {
 
+
             if (
                 data.is_favorite
             ) {
+
 
                 button.classList.add(
                     "active"
                 );
 
+
                 button.textContent =
-                    "♥";
+                    "♥️";
+
 
             } else {
+
 
                 button.classList.remove(
                     "active"
                 );
 
+
                 button.textContent =
                     "♡";
+
             }
+
 
         }
 
+
     } catch (error) {
+
 
         console.error(
             "Errore preferito:",
             error
         );
+
 
     }
 
