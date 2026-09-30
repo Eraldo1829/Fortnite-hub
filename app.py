@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime, date
 
 from flask import (
     Flask,
@@ -270,6 +271,122 @@ def get_favorite_ids(user_id):
     return {
         str(row["item_id"])
         for row in rows
+    }
+
+
+# =========================
+# SHOP HISTORY STATISTICS
+# =========================
+
+def get_item_history_stats(item_id):
+
+    if not item_id:
+        return {
+            "last_date": None,
+            "first_date": None,
+            "days_since": None,
+            "appearances": 0
+        }
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            shop_date
+        FROM shop_history
+        WHERE item_id = ?
+        ORDER BY shop_date ASC
+        """,
+        (str(item_id),)
+    )
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+    if not rows:
+
+        return {
+            "last_date": None,
+            "first_date": None,
+            "days_since": None,
+            "appearances": 0
+        }
+
+    dates = []
+
+    for row in rows:
+
+        shop_date = row["shop_date"]
+
+        if not shop_date:
+            continue
+
+        try:
+
+            parsed_date = datetime.fromisoformat(
+                shop_date.replace(
+                    "Z",
+                    "+00:00"
+                )
+            ).date()
+
+            dates.append(
+                parsed_date
+            )
+
+        except Exception:
+
+            try:
+
+                parsed_date = date.fromisoformat(
+                    shop_date[:10]
+                )
+
+                dates.append(
+                    parsed_date
+                )
+
+            except Exception:
+
+                continue
+
+    if not dates:
+
+        return {
+            "last_date": None,
+            "first_date": None,
+            "days_since": None,
+            "appearances": 0
+        }
+
+    first_date = min(dates)
+
+    last_date = max(dates)
+
+    today = date.today()
+
+    days_since = (
+        today - last_date
+    ).days
+
+    if days_since < 0:
+        days_since = 0
+
+    return {
+        "last_date": last_date.strftime(
+            "%d/%m/%Y"
+        ),
+
+        "first_date": first_date.strftime(
+            "%d/%m/%Y"
+        ),
+
+        "days_since": days_since,
+
+        "appearances": len(dates)
     }
 
 
@@ -574,8 +691,7 @@ def skins():
         )
 
     # =========================
-    # CREA GRUPPI DOPO
-    # DEI FLAG PREFERITI
+    # CREA GRUPPI
     # =========================
 
     shop_groups = group_shop_items(
@@ -632,7 +748,7 @@ def skin_detail(item_index):
     ]
 
     # =========================
-    # DATI SKIN
+    # DATI ITEM
     # =========================
 
     item["_item_id"] = get_item_id(
@@ -648,11 +764,11 @@ def skin_detail(item_index):
         item
     )
 
-    item["_is_favorite"] = False
+    # =========================
+    # PREFERITO
+    # =========================
 
-    # =========================
-    # CONTROLLO PREFERITO
-    # =========================
+    item["_is_favorite"] = False
 
     if login_required():
 
@@ -664,9 +780,42 @@ def skin_detail(item_index):
             item["_item_id"] in favorite_ids
         )
 
+    # =========================
+    # STATISTICHE STORICO
+    # =========================
+
+    history_stats = get_item_history_stats(
+        item["_item_id"]
+    )
+
+    # =========================
+    # SALVA ITEM CORRENTE
+    # NELLO STORICO
+    # =========================
+
+    shop_date = get_shop_date(
+        shop
+    )
+
+    save_shop_history(
+        shop_date,
+        shop_items
+    )
+
+    # =========================
+    # RICALCOLA STATISTICHE
+    # =========================
+
+    history_stats = get_item_history_stats(
+        item["_item_id"]
+    )
+
     return render_template(
         "skin_detail.html",
-        item=item
+
+        item=item,
+
+        history_stats=history_stats
     )
 
 
