@@ -52,9 +52,7 @@
         }
 
 
-        /* =========================
-           NAVBAR
-        ========================= */
+        /* NAVBAR */
 
         .navbar {
 
@@ -132,8 +130,7 @@
                 1px solid
                 rgba(255, 255, 255, 0.08);
 
-            transition:
-                0.25s;
+            transition: 0.25s;
         }
 
 
@@ -150,9 +147,7 @@
         }
 
 
-        /* =========================
-           MAIN
-        ========================= */
+        /* MAIN */
 
         .container {
 
@@ -191,8 +186,7 @@
 
             -webkit-background-clip: text;
 
-            -webkit-text-fill-color:
-                transparent;
+            -webkit-text-fill-color: transparent;
 
             margin-bottom: 12px;
         }
@@ -216,9 +210,7 @@
         }
 
 
-        /* =========================
-           SEARCH
-        ========================= */
+        /* SEARCH */
 
         .search-container {
 
@@ -251,8 +243,7 @@
 
             font-size: 16px;
 
-            transition:
-                0.25s;
+            transition: 0.25s;
         }
 
 
@@ -273,9 +264,7 @@
         }
 
 
-        /* =========================
-           GROUP
-        ========================= */
+        /* GROUP */
 
         .shop-group {
 
@@ -326,16 +315,6 @@
         }
 
 
-        .group-title {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-        }
-
-
         .group-title h2 {
 
             font-size: 24px;
@@ -354,9 +333,7 @@
         }
 
 
-        /* =========================
-           GRID
-        ========================= */
+        /* GRID */
 
         .shop-grid {
 
@@ -372,9 +349,7 @@
         }
 
 
-        /* =========================
-           CARD
-        ========================= */
+        /* CARD */
 
         .shop-card {
 
@@ -429,9 +404,7 @@
         }
 
 
-        /* =========================
-           IMAGE
-        ========================= */
+        /* IMAGE */
 
         .card-image {
 
@@ -478,9 +451,7 @@
         }
 
 
-        /* =========================
-           BADGES
-        ========================= */
+        /* BADGE */
 
         .badge {
 
@@ -529,9 +500,7 @@
         }
 
 
-        /* =========================
-           FAVORITE
-        ========================= */
+        /* FAVORITE */
 
         .favorite {
 
@@ -562,8 +531,7 @@
 
             z-index: 5;
 
-            transition:
-                0.25s;
+            transition: 0.25s;
         }
 
 
@@ -577,9 +545,7 @@
         }
 
 
-        /* =========================
-           CARD INFO
-        ========================= */
+        /* CARD INFO */
 
         .card-info {
 
@@ -644,9 +610,7 @@
         }
 
 
-        /* =========================
-           EMPTY
-        ========================= */
+        /* EMPTY */
 
         .empty {
 
@@ -667,9 +631,7 @@
         }
 
 
-        /* =========================
-           MOBILE
-        ========================= */
+        /* MOBILE */
 
         @media (max-width: 700px) {
 
@@ -776,12 +738,9 @@
 <body>
 
 
-    <!-- =========================
-         NAVBAR
-    ========================= -->
+    <!-- NAVBAR -->
 
     <nav class="navbar">
-
 
         <a
             href="/"
@@ -809,13 +768,10 @@
 
         </a>
 
-
     </nav>
 
 
-    <!-- =========================
-         MAIN
-    ========================= -->
+    <!-- MAIN -->
 
     <main class="container">
 
@@ -823,7 +779,6 @@
         <!-- HERO -->
 
         <section class="hero">
-
 
             <h1>
                 🛍️ Item Shop
@@ -847,16 +802,12 @@
 
             {% endif %}
 
-
         </section>
 
 
-        <!-- =========================
-             SEARCH
-        ========================= -->
+        <!-- SEARCH -->
 
         <div class="search-container">
-
 
             <input
                 id="searchInput"
@@ -866,13 +817,10 @@
                 oninput="searchShop()"
             >
 
-
         </div>
 
 
-        <!-- =========================
-             SHOP GROUPS
-        ========================= -->
+        <!-- SHOP GROUPS -->
 
         {% if shop_groups %}
 
@@ -886,25 +834,21 @@
             >
 
 
-                <!-- GROUP HEADER -->
-
                 <div class="group-header">
 
 
                     <div class="group-title">
 
-
                         <h2>
                             {{ group.name }}
                         </h2>
-
 
                     </div>
 
 
                     <div class="group-count">
 
-                        {{ group.items|length }}
+                        {{ group.shop_items|length }}
                         oggetti
 
                     </div>
@@ -913,12 +857,12 @@
                 </div>
 
 
-                <!-- GROUP ITEMS -->
+                <!-- ITEMS -->
 
                 <div class="shop-grid">
 
 
-                    {% for item in group.items %}
+                    {% for item in group.shop_items %}
 
 
                     <article
@@ -932,23 +876,19 @@
 
                         {% if item.bundle %}
 
-
                         <div class="badge bundle">
 
                             📦 BUNDLE
 
                         </div>
 
-
                         {% else %}
-
 
                         <div class="badge">
 
                             {{ item.type }}
 
                         </div>
-
 
                         {% endif %}
 
@@ -973,16 +913,13 @@
 
                             {% if item.image %}
 
-
                             <img
                                 src="{{ item.image }}"
                                 alt="{{ item.name }}"
                                 loading="lazy"
                             >
 
-
                             {% else %}
-
 
                             <div
                                 style="
@@ -995,7 +932,6 @@
                                 non disponibile
 
                             </div>
-
 
                             {% endif %}
 
@@ -1027,7 +963,6 @@
 
                                 <div class="price">
 
-
                                     {% if item.price is not none %}
 
                                     {{ item.price }}
@@ -1039,12 +974,10 @@
 
                                     {% endif %}
 
-
                                 </div>
 
 
                                 {% if item.bundle %}
-
 
                                 <div class="bundle-count">
 
@@ -1052,7 +985,6 @@
                                     {{ item.bundle_items|length }}
 
                                 </div>
-
 
                                 {% endif %}
 
@@ -1081,8 +1013,6 @@
         {% else %}
 
 
-        <!-- EMPTY -->
-
         <div class="empty">
 
 
@@ -1110,16 +1040,10 @@
     </main>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================= -->
+    <!-- JAVASCRIPT -->
 
     <script>
 
-
-        /* =========================
-           SEARCH
-        ========================= */
 
         function searchShop() {
 
@@ -1143,6 +1067,7 @@
 
             groups.forEach(group => {
 
+
                 const cards =
                     group.querySelectorAll(
                         ".shop-card"
@@ -1153,6 +1078,7 @@
 
 
                 cards.forEach(card => {
+
 
                     const name =
                         card.dataset.name
@@ -1190,19 +1116,17 @@
 
                 }
 
+
             });
 
         }
 
 
-        /* =========================
-           FAVORITE
-        ========================= */
-
         function toggleFavorite(
             event,
             button
         ) {
+
 
             event.stopPropagation();
 
@@ -1230,10 +1154,6 @@
 
         }
 
-
-        /* =========================
-           OPEN ITEM
-        ========================= */
 
         function openItem(index) {
 
