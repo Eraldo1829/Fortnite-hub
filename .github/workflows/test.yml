@@ -25,3 +25,8 @@ jobs:
 
       - name: Test Flask
         run: python -c "from app import app; print('✅ Flask funziona!')"
+
+      - name: Test Fortnite API
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+        run: python api_test.py
