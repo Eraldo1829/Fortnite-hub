@@ -10,7 +10,10 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Preferiti - Fortnite Hub</title>
+    <title>
+        I miei preferiti | Fortnite Hub
+    </title>
+
 
     <style>
 
@@ -20,221 +23,343 @@
             padding: 0;
         }
 
+
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(
-                    circle at top,
-                    #20205c 0%,
-                    #0b0b20 45%,
-                    #05050f 100%
-                );
-            color: white;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
             min-height: 100vh;
-        }
 
-        nav {
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            background: rgba(5, 5, 20, 0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .logo {
             color: white;
-            text-decoration: none;
-            font-size: 24px;
-            font-weight: 800;
+
+            background:
+
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(0, 217, 255, 0.14),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(168, 85, 247, 0.14),
+                    transparent 35%
+                ),
+
+                #050816;
         }
 
-        .nav-links {
+
+        /* ==================================================
+           NAVBAR
+        ================================================== */
+
+        .navbar {
+
+            height: 72px;
+
             display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            background:
+                rgba(5, 8, 22, 0.88);
+
+            backdrop-filter:
+                blur(14px);
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 800;
+
+            font-size: 20px;
+        }
+
+
+        .brand img {
+
+            width: 42px;
+
+            height: 42px;
+
+            object-fit: contain;
+        }
+
+
+        .nav-actions {
+
+            display: flex;
+
+            align-items: center;
+
             gap: 10px;
         }
 
-        .nav-links a {
-            color: white;
+
+        .nav-button {
+
             text-decoration: none;
-            padding: 10px 16px;
+
+            color: white;
+
+            padding:
+                10px 16px;
+
             border-radius: 10px;
-            background: rgba(255,255,255,0.07);
-            transition: 0.2s;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            transition:
+                0.25s;
         }
 
-        .nav-links a:hover {
-            background: rgba(255,255,255,0.15);
+
+        .nav-button:hover {
+
+            background:
+                rgba(0,217,255,0.12);
+
+            border-color:
+                rgba(0,217,255,0.4);
+
+            transform:
+                translateY(-2px);
         }
+
+
+        /* ==================================================
+           CONTAINER
+        ================================================== */
 
         .container {
-            max-width: 1400px;
+
+            max-width: 1250px;
+
             margin: auto;
-            padding: 50px 25px;
+
+            padding:
+                50px 30px 80px;
         }
 
-        .hero {
+
+        /* ==================================================
+           HEADER
+        ================================================== */
+
+        .page-header {
+
             margin-bottom: 35px;
         }
 
-        .hero h1 {
-            font-size: 42px;
+
+        .page-header h1 {
+
+            font-size:
+                clamp(32px, 5vw, 52px);
+
             margin-bottom: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    white,
+                    #00d9ff,
+                    #a855f7
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color:
+                transparent;
         }
 
-        .hero p {
-            color: #a7a7b5;
-            font-size: 16px;
+
+        .page-header p {
+
+            color: #8b93a7;
+
+            font-size: 15px;
         }
 
-        /* =========================
+
+        /* ==================================================
            GRID
-        ========================= */
+        ================================================== */
 
-        .grid {
+        .favorites-grid {
+
             display: grid;
-            grid-template-columns:
-                repeat(auto-fill, minmax(210px, 1fr));
 
-            gap: 22px;
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(210px, 1fr)
+                );
+
+            gap: 20px;
         }
 
-        /* =========================
-           CARD
-        ========================= */
 
-        .card {
+        /* ==================================================
+           CARD
+        ================================================== */
+
+        .favorite-card {
+
             position: relative;
+
             overflow: hidden;
 
             border-radius: 18px;
 
-            background: rgba(255,255,255,0.06);
-
-            border: 1px solid rgba(255,255,255,0.08);
-
-            transition:
-                transform 0.25s,
-                border-color 0.25s,
-                box-shadow 0.25s;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-
-            border-color:
-                rgba(255,255,255,0.25);
-
-            box-shadow:
-                0 15px 35px rgba(0,0,0,0.35);
-        }
-
-        /* =========================
-           IMAGE
-        ========================= */
-
-        .image-container {
-            position: relative;
-
-            width: 100%;
-
-            aspect-ratio: 1 / 1;
-
             background:
+
                 linear-gradient(
-                    135deg,
-                    #171733,
-                    #29295c
+                    145deg,
+                    rgba(255,255,255,0.08),
+                    rgba(255,255,255,0.025)
                 );
 
-            overflow: hidden;
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            transition:
+                transform 0.3s,
+                border-color 0.3s,
+                box-shadow 0.3s;
         }
 
-        .image-container img {
-            width: 100%;
-            height: 100%;
 
-            object-fit: cover;
+        .favorite-card:hover {
+
+            transform:
+                translateY(-7px);
+
+            border-color:
+                rgba(0,217,255,0.45);
+
+            box-shadow:
+                0 18px 45px
+                rgba(0,0,0,0.35);
+        }
+
+
+        /* ==================================================
+           LINK CARD
+        ================================================== */
+
+        .favorite-link {
 
             display: block;
+
+            color: white;
+
+            text-decoration: none;
+        }
+
+
+        /* ==================================================
+           IMAGE
+        ================================================== */
+
+        .favorite-image {
+
+            height: 280px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 15px;
+
+            position: relative;
+
+            background:
+
+                radial-gradient(
+                    circle,
+                    rgba(0,217,255,0.08),
+                    transparent 65%
+                );
+        }
+
+
+        .favorite-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
 
             transition:
                 transform 0.35s;
         }
 
-        .card:hover .image-container img {
-            transform: scale(1.05);
+
+        .favorite-card:hover
+        .favorite-image img {
+
+            transform:
+                scale(1.06);
         }
 
-        /* =========================
-           NO IMAGE
-        ========================= */
 
-        .no-image {
-            width: 100%;
-            height: 100%;
+        /* ==================================================
+           INFO
+        ================================================== */
 
-            display: flex;
+        .favorite-info {
 
-            align-items: center;
-            justify-content: center;
-
-            color: #777;
-
-            font-size: 50px;
+            padding:
+                15px 16px 18px;
         }
 
-        /* =========================
-           REMOVE BUTTON
-        ========================= */
 
-        .remove-button {
-            position: absolute;
+        .favorite-name {
 
-            top: 12px;
-            right: 12px;
+            font-size: 16px;
 
-            width: 42px;
-            height: 42px;
+            font-weight: 800;
 
-            border: none;
-
-            border-radius: 50%;
-
-            background:
-                rgba(0,0,0,0.70);
-
-            color: #ff4f8b;
-
-            font-size: 22px;
-
-            cursor: pointer;
-
-            z-index: 5;
-
-            transition: 0.2s;
-        }
-
-        .remove-button:hover {
-            transform: scale(1.1);
-
-            background:
-                rgba(0,0,0,0.9);
-        }
-
-        /* =========================
-           CONTENT
-        ========================= */
-
-        .card-content {
-            padding: 16px;
-        }
-
-        .card-content h3 {
-            font-size: 17px;
-
-            margin-bottom: 7px;
+            margin-bottom: 6px;
 
             white-space: nowrap;
 
@@ -243,101 +368,246 @@
             text-overflow: ellipsis;
         }
 
-        .card-content p {
-            color: #999;
 
-            font-size: 13px;
+        .favorite-subtitle {
+
+            color: #8b93a7;
+
+            font-size: 12px;
         }
 
-        /* =========================
-           EMPTY
-        ========================= */
 
-        .empty {
-            text-align: center;
+        /* ==================================================
+           REMOVE BUTTON
+        ================================================== */
 
-            padding: 80px 20px;
+        .remove-button {
+
+            width:
+                calc(100% - 30px);
+
+            margin:
+                0 15px 15px;
+
+            padding:
+                11px 14px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
 
             background:
-                rgba(255,255,255,0.04);
+                rgba(239,68,68,0.10);
+
+            color:
+                #fca5a5;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                0.25s;
+        }
+
+
+        .remove-button:hover {
+
+            background:
+                rgba(239,68,68,0.20);
+
+            border-color:
+                rgba(239,68,68,0.35);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* ==================================================
+           EMPTY
+        ================================================== */
+
+        .empty {
+
+            padding:
+                80px 20px;
+
+            text-align: center;
 
             border-radius: 20px;
 
+            background:
+                rgba(255,255,255,0.035);
+
             border:
-                1px solid rgba(255,255,255,0.07);
+                1px solid
+                rgba(255,255,255,0.07);
         }
+
+
+        .empty-icon {
+
+            font-size: 55px;
+
+            margin-bottom: 20px;
+        }
+
 
         .empty h2 {
-            margin-bottom: 12px;
+
+            font-size: 28px;
+
+            margin-bottom: 10px;
         }
 
+
         .empty p {
-            color: #999;
+
+            color: #8b93a7;
 
             margin-bottom: 25px;
         }
 
+
         .shop-button {
+
             display: inline-block;
 
-            padding: 12px 22px;
+            padding:
+                13px 20px;
 
-            border-radius: 10px;
-
-            background: #6c5ce7;
+            border-radius: 12px;
 
             color: white;
 
             text-decoration: none;
 
-            transition: 0.2s;
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00bcd4,
+                    #7c3aed
+                );
+
+            transition:
+                transform 0.25s;
         }
+
 
         .shop-button:hover {
-            background: #7d6df0;
-            transform: translateY(-2px);
+
+            transform:
+                translateY(-3px);
         }
 
-        /* =========================
+
+        /* ==================================================
            MOBILE
-        ========================= */
+        ================================================== */
 
         @media (max-width: 700px) {
 
-            nav {
-                padding: 0 15px;
+            .navbar {
+
+                padding:
+                    0 16px;
             }
 
-            .logo {
-                font-size: 20px;
+
+            .brand {
+
+                font-size: 17px;
             }
 
-            .nav-links a {
-                padding: 8px 10px;
+
+            .brand img {
+
+                width: 36px;
+
+                height: 36px;
+            }
+
+
+            .nav-button {
+
+                padding:
+                    9px 12px;
+
                 font-size: 13px;
             }
 
+
             .container {
-                padding: 30px 15px;
+
+                padding:
+                    30px 16px 60px;
             }
 
-            .hero h1 {
-                font-size: 32px;
-            }
 
-            .grid {
+            .favorites-grid {
+
                 grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
 
                 gap: 12px;
             }
 
-            .card-content {
-                padding: 12px;
+
+            .favorite-image {
+
+                height: 210px;
             }
 
-            .card-content h3 {
+
+            .favorite-info {
+
+                padding:
+                    12px;
+            }
+
+
+            .favorite-name {
+
                 font-size: 14px;
+            }
+
+
+            .remove-button {
+
+                width:
+                    calc(100% - 24px);
+
+                margin:
+                    0 12px 12px;
+
+                font-size: 12px;
+            }
+
+        }
+
+
+        @media (max-width: 430px) {
+
+            .favorites-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .favorite-image {
+
+                height: 300px;
             }
 
         }
@@ -350,283 +620,389 @@
 <body>
 
 
-<!-- =========================
-     NAVBAR
-========================= -->
+    <!-- ==================================================
+         NAVBAR
+    ================================================== -->
 
-<nav>
-
-    <a
-        href="/"
-        class="logo"
-    >
-        Fortnite Hub
-    </a>
+    <nav class="navbar">
 
 
-    <div class="nav-links">
+        <a
+            href="/"
+            class="brand"
+        >
 
-        <a href="/skins">
-            🛒 Shop
+            <img
+                src="{{ url_for('static', filename='logo.png') }}"
+                alt="Fortnite Hub"
+            >
+
+            <span>
+                FORTNITE HUB
+            </span>
+
         </a>
 
-        <a href="/shop-history">
-            📅 Storico
-        </a>
 
-        <a href="/logout">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
-
-
-<!-- =========================
-     CONTENT
-========================= -->
-
-<div class="container">
-
-
-    <div class="hero">
-
-        <h1>
-            ⭐ I tuoi preferiti
-        </h1>
-
-        <p>
-            Tutte le skin che hai salvato nel tuo account.
-        </p>
-
-    </div>
-
-
-    {% if favorites %}
-
-
-        <div class="grid">
-
-
-            {% for item in favorites %}
-
-
-                <div
-                    class="card"
-                    id="favorite-{{ item['_item_id'] }}"
-                >
-
-
-                    <!-- =========================
-                         IMAGE
-                    ========================= -->
-
-                    <div class="image-container">
-
-
-                        {% if item['_image_url'] %}
-
-
-                            <img
-                                src="{{ item['_image_url'] }}"
-                                alt="{{ item['_item_name'] }}"
-                                loading="lazy"
-                            >
-
-
-                        {% else %}
-
-
-                            <div class="no-image">
-                                🎮
-                            </div>
-
-
-                        {% endif %}
-
-
-                        <!-- =========================
-                             REMOVE
-                        ========================= -->
-
-                        <button
-                            class="remove-button"
-                            onclick="removeFavorite(
-                                event,
-                                this,
-                                '{{ item['_item_id'] }}'
-                            )"
-                            title="Rimuovi dai preferiti"
-                        >
-                            ♥
-                        </button>
-
-
-                    </div>
-
-
-                    <!-- =========================
-                         INFO
-                    ========================= -->
-
-                    <div class="card-content">
-
-
-                        <h3>
-                            {{ item['_item_name'] or 'Skin' }}
-                        </h3>
-
-
-                        <p>
-                            ⭐ Nei preferiti
-                        </p>
-
-
-                    </div>
-
-
-                </div>
-
-
-            {% endfor %}
-
-
-        </div>
-
-
-    {% else %}
-
-
-        <div class="empty">
-
-
-            <h2>
-                Nessun preferito
-            </h2>
-
-
-            <p>
-                Vai nello Shop e salva le skin
-                che ti interessano.
-            </p>
-
+        <div class="nav-actions">
 
             <a
                 href="/skins"
-                class="shop-button"
+                class="nav-button"
             >
-                Vai allo Shop
+                ← Shop
             </a>
-
 
         </div>
 
 
-    {% endif %}
+    </nav>
 
 
-</div>
+    <!-- ==================================================
+         MAIN
+    ================================================== -->
+
+    <main class="container">
 
 
-<!-- =========================
-     JAVASCRIPT
-========================= -->
+        <!-- ==================================================
+             HEADER
+        ================================================== -->
 
-<script>
+        <header class="page-header">
 
-async function removeFavorite(
-    event,
-    button,
-    itemId
-) {
-
-    event.preventDefault();
-
-    button.disabled = true;
+            <h1>
+                ⭐ I miei preferiti
+            </h1>
 
 
-    try {
+            <p>
 
-        const response = await fetch(
-            "/api/favorite/toggle",
-            {
-                method: "POST",
+                Le skin che hai salvato su Fortnite Hub.
+                Clicca su una skin per vedere tutte le
+                informazioni e lo storico.
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            </p>
 
-                body: JSON.stringify({
-
-                    item_id: itemId,
-
-                    item_name: "",
-
-                    image_url: "",
-
-                    item: {}
-
-                })
-            }
-        );
+        </header>
 
 
-        const data =
-            await response.json();
+        <!-- ==================================================
+             FAVORITES
+        ================================================== -->
+
+        {% if favorites %}
 
 
-        if (
-            data.success &&
-            !data.is_favorite
+            <section class="favorites-grid">
+
+
+                {% for item in favorites %}
+
+
+                    <article
+                        class="favorite-card"
+                    >
+
+
+                        <!-- ==================================
+                             CLICKABLE AREA
+                        ================================== -->
+
+                        <a
+                            href="{{ url_for('favorite_detail', item_id=item._item_id) }}"
+                            class="favorite-link"
+                        >
+
+
+                            <!-- ==============================
+                                 IMAGE
+                            ============================== -->
+
+                            <div class="favorite-image">
+
+
+                                {% if item._image_url %}
+
+
+                                    <img
+                                        src="{{ item._image_url }}"
+                                        alt="{{ item._item_name }}"
+                                        loading="lazy"
+                                    >
+
+
+                                {% else %}
+
+
+                                    <span>
+                                        Immagine non disponibile
+                                    </span>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                            <!-- ==============================
+                                 INFO
+                            ============================== -->
+
+                            <div class="favorite-info">
+
+
+                                <div class="favorite-name">
+
+                                    {{ item._item_name }}
+
+                                </div>
+
+
+                                <div class="favorite-subtitle">
+
+                                    🔎 Clicca per vedere i dettagli
+
+                                </div>
+
+
+                            </div>
+
+
+                        </a>
+
+
+                        <!-- ==================================
+                             REMOVE
+                        ================================== -->
+
+                        <button
+                            type="button"
+                            class="remove-button"
+                            onclick="removeFavorite(
+                                '{{ item._item_id | e }}',
+                                this
+                            )"
+                        >
+
+                            ♥ Rimuovi dai preferiti
+
+                        </button>
+
+
+                    </article>
+
+
+                {% endfor %}
+
+
+            </section>
+
+
+        {% else %}
+
+
+            <!-- ==================================================
+                 EMPTY STATE
+            ================================================== -->
+
+            <section class="empty">
+
+
+                <div class="empty-icon">
+                    ⭐
+                </div>
+
+
+                <h2>
+                    Nessun preferito
+                </h2>
+
+
+                <p>
+
+                    Non hai ancora aggiunto nessuna skin
+                    ai tuoi preferiti.
+
+                </p>
+
+
+                <a
+                    href="/skins"
+                    class="shop-button"
+                >
+
+                    🛒 Vai allo Shop
+
+                </a>
+
+
+            </section>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <script>
+
+        async function removeFavorite(
+            itemId,
+            button
         ) {
 
+            if (!itemId) {
 
-            const card =
-                document.getElementById(
-                    "favorite-" + itemId
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+
+            const originalText =
+                button.innerHTML;
+
+
+            button.innerHTML =
+                "Rimozione...";
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/api/favorite/toggle",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    item_id:
+                                        itemId
+
+                                })
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !response.ok
+                    || !result.success
+                ) {
+
+                    alert(
+                        result.message
+                        || "Errore durante la rimozione."
+                    );
+
+                    button.disabled = false;
+
+                    button.innerHTML =
+                        originalText;
+
+                    return;
+
+                }
+
+
+                if (
+                    result.is_favorite
+                    === false
+                ) {
+
+                    const card =
+                        button.closest(
+                            ".favorite-card"
+                        );
+
+
+                    if (card) {
+
+                        card.style.opacity =
+                            "0";
+
+                        card.style.transform =
+                            "scale(0.95)";
+
+
+                        setTimeout(
+                            function() {
+
+                                card.remove();
+
+
+                                const remaining =
+                                    document.querySelectorAll(
+                                        ".favorite-card"
+                                    );
+
+
+                                if (
+                                    remaining.length
+                                    === 0
+                                ) {
+
+                                    location.reload();
+
+                                }
+
+                            },
+                            250
+                        );
+
+                    }
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Errore preferiti:",
+                    error
                 );
 
 
-            if (card) {
-
-                card.remove();
-
-            }
+                alert(
+                    "Errore di connessione."
+                );
 
 
-            if (
-                document.querySelectorAll(
-                    ".card"
-                ).length === 0
-            ) {
+                button.disabled = false;
 
-                location.reload();
+                button.innerHTML =
+                    originalText;
 
             }
-
-
-        } else {
-
-            button.disabled = false;
 
         }
 
-
-    } catch (error) {
-
-        console.error(
-            "Errore rimozione preferito:",
-            error
-        );
-
-        button.disabled = false;
-
-    }
-
-}
-
-</script>
+    </script>
 
 
 </body>
