@@ -2,16 +2,10 @@
 <html lang="it">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Skin Tracker - Fortnite Hub</title>
-
+    <title>Skin Tracker | Fortnite Hub</title>
 
     <style>
 
@@ -21,268 +15,270 @@
             padding: 0;
         }
 
-
         body {
-
             font-family: Arial, sans-serif;
-
             background:
-                radial-gradient(
-                    circle at 50% -20%,
-                    #243b70 0%,
-                    #101522 40%,
-                    #070a11 80%
-                );
+                radial-gradient(circle at top left, #101b45, transparent 35%),
+                radial-gradient(circle at bottom right, #241044, transparent 35%),
+                #050711;
 
             color: white;
-
             min-height: 100vh;
         }
 
 
         /* NAVBAR */
 
-        header {
+        nav {
+            height: 75px;
 
-            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-            padding: 12px 50px;
+            padding: 0 5%;
 
+            background: rgba(5, 7, 17, 0.85);
+
+            border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+
+        .logo img {
+            width: 170px;
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+
+        .back {
+            color: #ffffff;
+            text-decoration: none;
+
+            padding: 10px 18px;
+
+            border: 1px solid rgba(0, 220, 255, 0.4);
+
+            border-radius: 10px;
+
+            transition: 0.3s;
+        }
+
+
+        .back:hover {
+            background: rgba(0, 220, 255, 0.12);
+
+            border-color: #00d9ff;
+
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.25);
+        }
+
+
+        /* HEADER */
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 55px 0;
+        }
+
+
+        .header {
+            text-align: center;
+
+            margin-bottom: 40px;
+        }
+
+
+        .header h1 {
+            font-size: 42px;
+
+            margin-bottom: 12px;
+
+            background: linear-gradient(
+                90deg,
+                #00eaff,
+                #ffffff,
+                #a855f7
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .header p {
+            color: #9ca8c7;
+
+            font-size: 16px;
+        }
+
+
+        /* SEARCH */
+
+        .search-box {
+            max-width: 650px;
+
+            margin: 0 auto 45px;
+
+            position: relative;
+        }
+
+
+        .search-box input {
+            width: 100%;
+
+            padding: 16px 20px;
+
+            border-radius: 14px;
+
+            border: 1px solid rgba(0, 220, 255, 0.3);
+
+            background: rgba(10, 15, 35, 0.8);
+
+            color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+
+        .search-box input:focus {
+            border-color: #00eaff;
+
+            box-shadow: 0 0 20px rgba(0, 234, 255, 0.15);
+        }
+
+
+        .search-box input::placeholder {
+            color: #6f7895;
+        }
+
+
+        /* SHOP */
+
+        .shop-header {
             display: flex;
 
             justify-content: space-between;
 
             align-items: center;
 
-            background:
-                rgba(7, 10, 17, 0.85);
-
-            border-bottom:
-                1px solid
-                rgba(88, 214, 255, 0.15);
-
-            backdrop-filter: blur(12px);
-        }
-
-
-        .logo img {
-
-            height: 58px;
-
-            width: auto;
-        }
-
-
-        nav {
-
-            display: flex;
-
-            gap: 30px;
-        }
-
-
-        nav a {
-
-            color: #d9e2ff;
-
-            text-decoration: none;
-
-            font-weight: 600;
-
-            transition: 0.2s;
-        }
-
-
-        nav a:hover {
-
-            color: #5ee7ff;
-        }
-
-
-        /* PAGE */
-
-        .container {
-
-            max-width: 1150px;
-
-            margin: auto;
-
-            padding: 70px 20px;
-        }
-
-
-        .title {
-
-            text-align: center;
-
-            margin-bottom: 45px;
-        }
-
-
-        .title h1 {
-
-            font-size: 44px;
-
-            margin-bottom: 12px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #43e7ff,
-                    #6b7cff,
-                    #d946ef
-                );
-
-            -webkit-background-clip: text;
-
-            -webkit-text-fill-color: transparent;
-        }
-
-
-        .title p {
-
-            color: #aeb8d0;
-
-            font-size: 17px;
-        }
-
-
-        /* SEARCH */
-
-        .search {
-
-            max-width: 700px;
-
-            margin:
-                0 auto 50px;
-
-            display: flex;
-
-            padding: 5px;
-
-            background:
-                rgba(20, 27, 43, 0.9);
-
-            border:
-                1px solid
-                rgba(94, 231, 255, 0.3);
-
-            border-radius: 12px;
-        }
-
-
-        .search input {
-
-            flex: 1;
-
-            padding: 15px;
-
-            background: transparent;
-
-            border: none;
-
-            outline: none;
-
-            color: white;
-
-            font-size: 16px;
-        }
-
-
-        .search button {
-
-            padding:
-                14px 25px;
-
-            border: none;
-
-            border-radius: 9px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #28dfff,
-                    #714cff,
-                    #d82cff
-                );
-
-            color: white;
-
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-
-        /* SHOP */
-
-        .shop-title {
-
             margin-bottom: 25px;
-
-            font-size: 25px;
         }
 
 
-        .skins {
+        .shop-header h2 {
+            font-size: 26px;
+        }
 
+
+        .shop-date {
+            color: #7f8bab;
+
+            font-size: 14px;
+        }
+
+
+        /* GRID */
+
+        .skins-grid {
             display: grid;
 
             grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(220px, 1fr)
-                );
+                repeat(auto-fill, minmax(210px, 1fr));
 
             gap: 22px;
         }
 
 
-        .skin-card {
+        /* CARD */
 
+        .skin-card {
             background:
                 linear-gradient(
                     145deg,
-                    rgba(25, 33, 53, 0.95),
-                    rgba(12, 16, 27, 0.95)
+                    rgba(20, 29, 62, 0.95),
+                    rgba(9, 12, 27, 0.95)
                 );
 
-            border:
-                1px solid
-                rgba(111, 132, 180, 0.2);
+            border: 1px solid rgba(0, 220, 255, 0.15);
 
-            border-radius: 16px;
+            border-radius: 18px;
 
             overflow: hidden;
 
-            transition:
-                0.3s;
+            position: relative;
 
-            animation:
-                cardAppear
-                0.6s ease forwards;
+            transition:
+                transform 0.3s,
+                box-shadow 0.3s,
+                border-color 0.3s;
+
+            animation: appear 0.6s ease forwards;
 
             opacity: 0;
         }
 
 
         .skin-card:hover {
+            transform: translateY(-8px) scale(1.02);
 
-            transform:
-                translateY(-7px);
-
-            border-color:
-                rgba(94, 231, 255, 0.6);
+            border-color: rgba(0, 220, 255, 0.55);
 
             box-shadow:
-                0 15px 35px
-                rgba(40, 210, 255, 0.12);
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 25px rgba(0, 220, 255, 0.12);
         }
 
 
-        .skin-image {
+        @keyframes appear {
 
-            height: 250px;
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* IMAGE */
+
+        .skin-image {
+            width: 100%;
+
+            aspect-ratio: 1 / 1;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #202b55,
+                    #0b0e20
+                );
 
             display: flex;
 
@@ -290,191 +286,190 @@
 
             justify-content: center;
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #17243d,
-                    #111522
-                );
+            overflow: hidden;
+        }
 
-            color: #66738f;
+
+        .skin-image img {
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            transition: 0.4s;
+        }
+
+
+        .skin-card:hover .skin-image img {
+            transform: scale(1.07);
+        }
+
+
+        /* INFO */
+
+        .skin-info {
+            padding: 18px;
+        }
+
+
+        .skin-name {
+            font-size: 17px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .skin-type {
+            color: #8f9ab7;
+
+            font-size: 13px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .price {
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            font-weight: bold;
+
+            color: #ffffff;
 
             font-size: 15px;
         }
 
 
-        .skin-info {
+        .vbucks {
+            width: 19px;
 
-            padding: 20px;
+            height: 19px;
+
+            object-fit: contain;
         }
 
 
-        .skin-info h3 {
-
-            margin-bottom: 8px;
-
-            font-size: 19px;
-        }
-
-
-        .skin-info p {
-
-            color: #8996ae;
-
-            font-size: 14px;
-
-            line-height: 1.5;
-        }
-
+        /* FAVORITE */
 
         .favorite {
+            position: absolute;
 
-            margin-top: 15px;
+            top: 12px;
 
-            width: 100%;
+            right: 12px;
 
-            padding: 10px;
+            width: 38px;
 
-            border:
-                1px solid
-                rgba(94, 231, 255, 0.3);
+            height: 38px;
 
-            border-radius: 8px;
+            border-radius: 50%;
 
-            background:
-                transparent;
+            border: 1px solid rgba(255,255,255,0.2);
 
-            color: #bdefff;
+            background: rgba(5, 7, 17, 0.75);
+
+            color: white;
 
             cursor: pointer;
 
-            transition: 0.2s;
+            font-size: 18px;
+
+            transition: 0.3s;
+
+            z-index: 2;
         }
 
 
         .favorite:hover {
+            transform: scale(1.1);
 
-            background:
-                rgba(94, 231, 255, 0.1);
+            background: rgba(168, 85, 247, 0.5);
 
-            border-color:
-                #5ee7ff;
+            border-color: #a855f7;
         }
 
 
-        /* ANIMATION */
+        /* EMPTY / ERROR */
 
-        @keyframes cardAppear {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(20px);
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-            }
-        }
-
-
-        .skin-card:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .skin-card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .skin-card:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        .skin-card:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-
-        /* FOOTER */
-
-        footer {
-
+        .message {
             text-align: center;
 
-            padding: 30px;
+            padding: 60px 20px;
 
-            margin-top: 70px;
+            color: #8994b2;
 
-            border-top:
-                1px solid
-                rgba(88, 214, 255, 0.1);
-
-            color: #65718a;
+            font-size: 17px;
         }
 
 
         /* MOBILE */
 
-        @media (max-width: 700px) {
+        @media (max-width: 600px) {
 
-            header {
+            .logo img {
+                width: 130px;
+            }
 
-                height: auto;
 
-                padding: 15px 20px;
+            .header h1 {
+                font-size: 32px;
+            }
 
+
+            .container {
+                width: 92%;
+
+                padding-top: 40px;
+            }
+
+
+            .shop-header {
                 flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 8px;
+            }
+
+
+            .skins-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
 
                 gap: 12px;
             }
 
 
-            .logo img {
-
-                height: 52px;
+            .skin-info {
+                padding: 12px;
             }
 
 
-            nav {
-
-                gap: 15px;
-
-                flex-wrap: wrap;
-
-                justify-content: center;
+            .skin-name {
+                font-size: 14px;
             }
 
 
-            .container {
+            .favorite {
+                width: 32px;
 
-                padding-top: 45px;
+                height: 32px;
+
+                font-size: 15px;
             }
 
-
-            .title h1 {
-
-                font-size: 36px;
-            }
-
-
-            .search {
-
-                flex-direction: column;
-
-                gap: 5px;
-            }
-
-
-            .search button {
-
-                width: 100%;
-            }
         }
 
     </style>
@@ -487,37 +482,23 @@
 
     <!-- NAVBAR -->
 
-    <header>
+    <nav>
 
-        <a href="/">
+        <a href="/" class="logo">
 
-            <div class="logo">
-
-                <img
-                    src="{{ url_for('static', filename='logo.png') }}"
-                    alt="Fortnite Hub"
-                >
-
-            </div>
+            <img
+                src="{{ url_for('static', filename='logo.png') }}"
+                alt="Fortnite Hub"
+            >
 
         </a>
 
 
-        <nav>
+        <a href="/" class="back">
+            ← Home
+        </a>
 
-            <a href="/">Home</a>
-
-            <a href="/skins">Shop</a>
-
-            <a href="/players">Players</a>
-
-            <a href="/leaks">Leaks</a>
-
-            <a href="/news">News</a>
-
-        </nav>
-
-    </header>
+    </nav>
 
 
     <!-- CONTENT -->
@@ -525,14 +506,12 @@
     <main class="container">
 
 
-        <div class="title">
+        <div class="header">
 
-            <h1>
-                🛍️ Skin Tracker
-            </h1>
+            <h1>🛍️ Skin Tracker</h1>
 
             <p>
-                Controlla lo Shop e scopri le skin disponibili.
+                Scopri gli oggetti presenti nello Shop di Fortnite
             </p>
 
         </div>
@@ -540,144 +519,210 @@
 
         <!-- SEARCH -->
 
-        <div class="search">
+        <div class="search-box">
 
             <input
                 type="text"
-                placeholder="Cerca una skin..."
+                id="searchInput"
+                placeholder="🔎 Cerca una skin..."
+                onkeyup="searchSkins()"
             >
 
-            <button>
-                Cerca
-            </button>
+        </div>
+
+
+        <!-- SHOP HEADER -->
+
+        <div class="shop-header">
+
+            <h2>Shop di oggi</h2>
+
+            {% if shop and shop.data %}
+
+                <div class="shop-date">
+                    Aggiornato:
+                    {{ shop.data.date }}
+                </div>
+
+            {% endif %}
 
         </div>
 
 
         <!-- SHOP -->
 
-        <h2 class="shop-title">
-            Shop di oggi
-        </h2>
+        {% if shop and shop.data and shop.data.entries %}
+
+            <div class="skins-grid" id="skinsGrid">
 
 
-        <div class="skins">
+                {% for entry in shop.data.entries %}
+
+                    {% if entry.brItems %}
+
+                        {% for item in entry.brItems %}
+
+                            <article
+                                class="skin-card"
+                                data-name="{{ item.name | lower }}"
+                            >
 
 
-            <div class="skin-card">
+                                <button
+                                    class="favorite"
+                                    title="Aggiungi ai preferiti"
+                                    onclick="toggleFavorite(this)"
+                                >
+                                    ♡
+                                </button>
 
-                <div class="skin-image">
-                    Immagine skin
-                </div>
 
-                <div class="skin-info">
+                                <div class="skin-image">
 
-                    <h3>
-                        Skin di esempio
-                    </h3>
+                                    {% if item.images and item.images.icon %}
 
-                    <p>
-                        Ultima comparsa:
-                        non disponibile
-                    </p>
+                                        <img
+                                            src="{{ item.images.icon }}"
+                                            alt="{{ item.name }}"
+                                            loading="lazy"
+                                        >
 
-                    <button class="favorite">
-                        ☆ Aggiungi ai preferiti
-                    </button>
+                                    {% else %}
 
-                </div>
+                                        <span>
+                                            Immagine non disponibile
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="skin-info">
+
+
+                                    <div class="skin-name">
+
+                                        {{ item.name }}
+
+                                    </div>
+
+
+                                    <div class="skin-type">
+
+                                        {{ item.type.displayValue if item.type else "Cosmetico" }}
+
+                                    </div>
+
+
+                                    <div class="price">
+
+                                        {% if entry.finalPrice %}
+
+                                            {% if shop.data.vbuckIcon %}
+
+                                                <img
+                                                    class="vbucks"
+                                                    src="{{ shop.data.vbuckIcon }}"
+                                                    alt="V-Bucks"
+                                                >
+
+                                            {% endif %}
+
+                                            {{ entry.finalPrice }}
+
+                                        {% else %}
+
+                                            Prezzo non disponibile
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                </div>
+
+                            </article>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                {% endfor %}
+
 
             </div>
 
 
-            <div class="skin-card">
+        {% else %}
 
-                <div class="skin-image">
-                    Immagine skin
-                </div>
+            <div class="message">
 
-                <div class="skin-info">
-
-                    <h3>
-                        Skin di esempio
-                    </h3>
-
-                    <p>
-                        Ultima comparsa:
-                        non disponibile
-                    </p>
-
-                    <button class="favorite">
-                        ☆ Aggiungi ai preferiti
-                    </button>
-
-                </div>
+                ⚠️ Impossibile caricare lo Shop al momento.
 
             </div>
 
+        {% endif %}
 
-            <div class="skin-card">
-
-                <div class="skin-image">
-                    Immagine skin
-                </div>
-
-                <div class="skin-info">
-
-                    <h3>
-                        Skin di esempio
-                    </h3>
-
-                    <p>
-                        Ultima comparsa:
-                        non disponibile
-                    </p>
-
-                    <button class="favorite">
-                        ☆ Aggiungi ai preferiti
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="skin-card">
-
-                <div class="skin-image">
-                    Immagine skin
-                </div>
-
-                <div class="skin-info">
-
-                    <h3>
-                        Skin di esempio
-                    </h3>
-
-                    <p>
-                        Ultima comparsa:
-                        non disponibile
-                    </p>
-
-                    <button class="favorite">
-                        ☆ Aggiungi ai preferiti
-                    </button>
-
-                </div>
-
-            </div>
-
-
-        </div>
 
     </main>
 
 
-    <footer>
+    <script>
 
-        Fortnite Hub — Community project
 
-    </footer>
+        function searchSkins() {
+
+            const input =
+                document.getElementById("searchInput");
+
+            const search =
+                input.value.toLowerCase();
+
+            const cards =
+                document.querySelectorAll(".skin-card");
+
+
+            cards.forEach(card => {
+
+                const name =
+                    card.dataset.name;
+
+                if (name.includes(search)) {
+
+                    card.style.display = "";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        function toggleFavorite(button) {
+
+            if (button.textContent.trim() === "♡") {
+
+                button.textContent = "♥";
+
+                button.style.color = "#a855f7";
+
+            } else {
+
+                button.textContent = "♡";
+
+                button.style.color = "white";
+
+            }
+
+        }
+
+
+    </script>
 
 
 </body>
