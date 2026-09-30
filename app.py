@@ -32,16 +32,16 @@ from services.fortnite_api import (
 )
 
 
-# =========================
+# ============================================================
 # FLASK
-# =========================
+# ============================================================
 
 app = Flask(__name__)
 
 
-# =========================
+# ============================================================
 # SECRET KEY
-# =========================
+# ============================================================
 
 app.secret_key = os.getenv(
     "SECRET_KEY",
@@ -49,25 +49,25 @@ app.secret_key = os.getenv(
 )
 
 
-# =========================
+# ============================================================
 # DATABASE
-# =========================
+# ============================================================
 
 create_database()
 
 
-# =========================
+# ============================================================
 # FEATURE DATABASE
-# =========================
+# ============================================================
 
 def create_feature_tables():
 
     connection = get_connection()
     cursor = connection.cursor()
 
-    # =========================
+    # ========================================================
     # PREFERITI
-    # =========================
+    # ========================================================
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS favorites (
@@ -83,9 +83,9 @@ def create_feature_tables():
         )
     """)
 
-    # =========================
+    # ========================================================
     # STORICO SHOP
-    # =========================
+    # ========================================================
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS shop_history (
@@ -108,14 +108,18 @@ def create_feature_tables():
 create_feature_tables()
 
 
-# =========================
+# ============================================================
 # HELPERS
-# =========================
+# ============================================================
 
 def login_required():
 
     return "user_id" in session
 
+
+# ============================================================
+# ITEM ID
+# ============================================================
 
 def get_item_id(item, fallback_index=None):
 
@@ -142,6 +146,10 @@ def get_item_id(item, fallback_index=None):
     return None
 
 
+# ============================================================
+# ITEM NAME
+# ============================================================
+
 def get_item_name(item):
 
     possible_keys = [
@@ -159,6 +167,10 @@ def get_item_name(item):
 
     return "Skin senza nome"
 
+
+# ============================================================
+# ITEM IMAGE
+# ============================================================
 
 def get_item_image(item):
 
@@ -181,6 +193,10 @@ def get_item_image(item):
     return None
 
 
+# ============================================================
+# SHOP DATE
+# ============================================================
+
 def get_shop_date(shop):
 
     if not shop:
@@ -193,6 +209,10 @@ def get_shop_date(shop):
 
     return data.get("date")
 
+
+# ============================================================
+# SAVE SHOP HISTORY
+# ============================================================
 
 def save_shop_history(shop_date, shop_items):
 
@@ -250,6 +270,10 @@ def save_shop_history(shop_date, shop_items):
     connection.close()
 
 
+# ============================================================
+# GET FAVORITE IDS
+# ============================================================
+
 def get_favorite_ids(user_id):
 
     connection = get_connection()
@@ -274,13 +298,14 @@ def get_favorite_ids(user_id):
     }
 
 
-# =========================
+# ============================================================
 # SHOP HISTORY STATISTICS
-# =========================
+# ============================================================
 
 def get_item_history_stats(item_id):
 
     if not item_id:
+
         return {
             "last_date": None,
             "first_date": None,
@@ -293,8 +318,7 @@ def get_item_history_stats(item_id):
 
     cursor.execute(
         """
-        SELECT
-            shop_date
+        SELECT shop_date
         FROM shop_history
         WHERE item_id = ?
         ORDER BY shop_date ASC
@@ -324,6 +348,10 @@ def get_item_history_stats(item_id):
         if not shop_date:
             continue
 
+        # ====================================================
+        # PROVA ISO COMPLETO
+        # ====================================================
+
         try:
 
             parsed_date = datetime.fromisoformat(
@@ -337,21 +365,28 @@ def get_item_history_stats(item_id):
                 parsed_date
             )
 
+            continue
+
+        except Exception:
+            pass
+
+        # ====================================================
+        # PROVA SOLO DATA
+        # ====================================================
+
+        try:
+
+            parsed_date = date.fromisoformat(
+                shop_date[:10]
+            )
+
+            dates.append(
+                parsed_date
+            )
+
         except Exception:
 
-            try:
-
-                parsed_date = date.fromisoformat(
-                    shop_date[:10]
-                )
-
-                dates.append(
-                    parsed_date
-                )
-
-            except Exception:
-
-                continue
+            continue
 
     if not dates:
 
@@ -376,23 +411,28 @@ def get_item_history_stats(item_id):
         days_since = 0
 
     return {
-        "last_date": last_date.strftime(
-            "%d/%m/%Y"
-        ),
 
-        "first_date": first_date.strftime(
-            "%d/%m/%Y"
-        ),
+        "last_date":
+            last_date.strftime(
+                "%d/%m/%Y"
+            ),
 
-        "days_since": days_since,
+        "first_date":
+            first_date.strftime(
+                "%d/%m/%Y"
+            ),
 
-        "appearances": len(dates)
+        "days_since":
+            days_since,
+
+        "appearances":
+            len(dates)
     }
 
 
-# =========================
+# ============================================================
 # HOME
-# =========================
+# ============================================================
 
 @app.route("/")
 def home():
@@ -402,9 +442,9 @@ def home():
     )
 
 
-# =========================
+# ============================================================
 # REGISTER
-# =========================
+# ============================================================
 
 @app.route(
     "/register",
@@ -429,9 +469,9 @@ def register():
             ""
         )
 
-        # =========================
+        # ====================================================
         # CONTROLLO CAMPI
-        # =========================
+        # ====================================================
 
         if not username or not email or not password:
 
@@ -440,9 +480,9 @@ def register():
                 error="Compila tutti i campi."
             )
 
-        # =========================
+        # ====================================================
         # CONTROLLO USERNAME
-        # =========================
+        # ====================================================
 
         if len(username) < 3:
 
@@ -451,9 +491,9 @@ def register():
                 error="Lo username deve avere almeno 3 caratteri."
             )
 
-        # =========================
+        # ====================================================
         # CONTROLLO PASSWORD
-        # =========================
+        # ====================================================
 
         if len(password) < 6:
 
@@ -462,9 +502,9 @@ def register():
                 error="La password deve avere almeno 6 caratteri."
             )
 
-        # =========================
+        # ====================================================
         # DATABASE
-        # =========================
+        # ====================================================
 
         connection = get_connection()
         cursor = connection.cursor()
@@ -493,17 +533,17 @@ def register():
                 error="Username o email già utilizzati."
             )
 
-        # =========================
+        # ====================================================
         # PASSWORD HASH
-        # =========================
+        # ====================================================
 
         password_hash = generate_password_hash(
             password
         )
 
-        # =========================
+        # ====================================================
         # CREAZIONE UTENTE
-        # =========================
+        # ====================================================
 
         cursor.execute(
             """
@@ -525,9 +565,9 @@ def register():
         connection.commit()
         connection.close()
 
-        # =========================
+        # ====================================================
         # EMAIL
-        # =========================
+        # ====================================================
 
         try:
 
@@ -552,9 +592,9 @@ def register():
     )
 
 
-# =========================
+# ============================================================
 # LOGIN
-# =========================
+# ============================================================
 
 @app.route(
     "/login",
@@ -615,9 +655,9 @@ def login():
     )
 
 
-# =========================
+# ============================================================
 # LOGOUT
-# =========================
+# ============================================================
 
 @app.route("/logout")
 def logout():
@@ -629,9 +669,9 @@ def logout():
     )
 
 
-# =========================
+# ============================================================
 # SKINS
-# =========================
+# ============================================================
 
 @app.route("/skins")
 def skins():
@@ -646,18 +686,18 @@ def skins():
         shop
     )
 
-    # =========================
+    # ========================================================
     # SALVA STORICO
-    # =========================
+    # ========================================================
 
     save_shop_history(
         shop_date,
         shop_items
     )
 
-    # =========================
-    # PREFERITI UTENTE
-    # =========================
+    # ========================================================
+    # PREFERITI
+    # ========================================================
 
     favorite_ids = set()
 
@@ -667,9 +707,9 @@ def skins():
             session["user_id"]
         )
 
-    # =========================
-    # AGGIUNGI DATI AGLI ITEM
-    # =========================
+    # ========================================================
+    # DATI EXTRA ITEM
+    # ========================================================
 
     for index, item in enumerate(shop_items):
 
@@ -687,12 +727,13 @@ def skins():
         )
 
         item["_is_favorite"] = (
-            item["_item_id"] in favorite_ids
+            item["_item_id"]
+            in favorite_ids
         )
 
-    # =========================
-    # CREA GRUPPI
-    # =========================
+    # ========================================================
+    # GRUPPI SHOP
+    # ========================================================
 
     shop_groups = group_shop_items(
         shop_items
@@ -711,9 +752,9 @@ def skins():
     )
 
 
-# =========================
-# SKIN DETAIL
-# =========================
+# ============================================================
+# SHOP ITEM DETAIL
+# ============================================================
 
 @app.route(
     "/skins/<int:item_index>"
@@ -747,9 +788,9 @@ def skin_detail(item_index):
         item_index
     ]
 
-    # =========================
+    # ========================================================
     # DATI ITEM
-    # =========================
+    # ========================================================
 
     item["_item_id"] = get_item_id(
         item,
@@ -764,9 +805,9 @@ def skin_detail(item_index):
         item
     )
 
-    # =========================
+    # ========================================================
     # PREFERITO
-    # =========================
+    # ========================================================
 
     item["_is_favorite"] = False
 
@@ -777,21 +818,13 @@ def skin_detail(item_index):
         )
 
         item["_is_favorite"] = (
-            item["_item_id"] in favorite_ids
+            item["_item_id"]
+            in favorite_ids
         )
 
-    # =========================
-    # STATISTICHE STORICO
-    # =========================
-
-    history_stats = get_item_history_stats(
-        item["_item_id"]
-    )
-
-    # =========================
-    # SALVA ITEM CORRENTE
-    # NELLO STORICO
-    # =========================
+    # ========================================================
+    # SALVA SHOP
+    # ========================================================
 
     shop_date = get_shop_date(
         shop
@@ -802,9 +835,9 @@ def skin_detail(item_index):
         shop_items
     )
 
-    # =========================
-    # RICALCOLA STATISTICHE
-    # =========================
+    # ========================================================
+    # STATISTICHE STORICO
+    # ========================================================
 
     history_stats = get_item_history_stats(
         item["_item_id"]
@@ -819,9 +852,159 @@ def skin_detail(item_index):
     )
 
 
-# =========================
+# ============================================================
+# FAVORITE DETAIL
+# ============================================================
+
+@app.route(
+    "/favorites/<path:item_id>"
+)
+def favorite_detail(item_id):
+
+    # ========================================================
+    # LOGIN
+    # ========================================================
+
+    if not login_required():
+
+        return redirect(
+            url_for("login")
+        )
+
+    # ========================================================
+    # CERCA IL PREFERITO DELL'UTENTE
+    # ========================================================
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM favorites
+        WHERE user_id = ?
+        AND item_id = ?
+        LIMIT 1
+        """,
+        (
+            session["user_id"],
+            str(item_id)
+        )
+    )
+
+    row = cursor.fetchone()
+
+    connection.close()
+
+    # ========================================================
+    # PREFERITO NON TROVATO
+    # ========================================================
+
+    if not row:
+
+        return render_template(
+            "skin_detail.html",
+            item=None,
+            history_stats=None
+        ), 404
+
+    # ========================================================
+    # RECUPERA DATI ORIGINALI
+    # ========================================================
+
+    try:
+
+        item = json.loads(
+            row["data_json"]
+            or "{}"
+        )
+
+    except Exception:
+
+        item = {}
+
+    # ========================================================
+    # DATI SALVATI
+    # ========================================================
+
+    item["_item_id"] = row["item_id"]
+
+    item["_item_name"] = (
+        row["item_name"]
+        or get_item_name(item)
+    )
+
+    item["_image_url"] = (
+        row["image_url"]
+        or get_item_image(item)
+    )
+
+    item["_is_favorite"] = True
+
+    # ========================================================
+    # GARANTISCE I CAMPI USATI DAL TEMPLATE
+    # ========================================================
+
+    if not item.get("name"):
+
+        item["name"] = item["_item_name"]
+
+    if not item.get("image"):
+
+        item["image"] = item["_image_url"]
+
+    # ========================================================
+    # AGGIORNA LO STORICO CON LO SHOP ATTUALE
+    # ========================================================
+
+    try:
+
+        shop = get_shop()
+
+        shop_items = prepare_shop(
+            shop
+        )
+
+        shop_date = get_shop_date(
+            shop
+        )
+
+        save_shop_history(
+            shop_date,
+            shop_items
+        )
+
+    except Exception as error:
+
+        print(
+            "Errore aggiornamento storico preferito:",
+            error
+        )
+
+    # ========================================================
+    # STATISTICHE
+    # ========================================================
+
+    history_stats = get_item_history_stats(
+        item["_item_id"]
+    )
+
+    # ========================================================
+    # PAGINA DETTAGLI
+    # ========================================================
+
+    return render_template(
+        "skin_detail.html",
+
+        item=item,
+
+        history_stats=history_stats
+    )
+
+
+# ============================================================
 # ADD FAVORITE
-# =========================
+# ============================================================
 
 @app.route(
     "/favorites/add",
@@ -895,9 +1078,9 @@ def add_favorite():
     )
 
 
-# =========================
+# ============================================================
 # REMOVE FAVORITE
-# =========================
+# ============================================================
 
 @app.route(
     "/favorites/remove",
@@ -940,9 +1123,9 @@ def remove_favorite():
     )
 
 
-# =========================
+# ============================================================
 # FAVORITES PAGE
-# =========================
+# ============================================================
 
 @app.route("/favorites")
 def favorites():
@@ -995,6 +1178,14 @@ def favorites():
 
         item["_is_favorite"] = True
 
+        if not item.get("name"):
+
+            item["name"] = row["item_name"]
+
+        if not item.get("image"):
+
+            item["image"] = row["image_url"]
+
         favorite_items.append(
             item
         )
@@ -1005,9 +1196,9 @@ def favorites():
     )
 
 
-# =========================
+# ============================================================
 # SHOP HISTORY
-# =========================
+# ============================================================
 
 @app.route("/shop-history")
 def shop_history():
@@ -1036,9 +1227,9 @@ def shop_history():
     )
 
 
-# =========================
+# ============================================================
 # SHOP HISTORY DATE
-# =========================
+# ============================================================
 
 @app.route(
     "/shop-history/<path:shop_date>"
@@ -1096,9 +1287,9 @@ def shop_history_date(shop_date):
     )
 
 
-# =========================
+# ============================================================
 # FAVORITE TOGGLE API
-# =========================
+# ============================================================
 
 @app.route(
     "/api/favorite/toggle",
@@ -1221,9 +1412,9 @@ def favorite_toggle():
     }
 
 
-# =========================
+# ============================================================
 # START SERVER
-# =========================
+# ============================================================
 
 if __name__ == "__main__":
 
