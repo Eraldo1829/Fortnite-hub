@@ -11,6 +11,7 @@ from services.fortnite_api import (
 
 app = Flask(__name__)
 
+
 create_database()
 
 
@@ -46,11 +47,8 @@ def skins():
 
     return render_template(
         "skins.html",
-
         shop_items=shop_items,
-
         shop_groups=shop_groups,
-
         shop_date=shop_date
     )
 
@@ -75,8 +73,7 @@ def skin_detail(item_index):
 
     if (
         item_index < 0
-        or
-        item_index >= len(shop_items)
+        or item_index >= len(shop_items)
     ):
 
         return render_template(
