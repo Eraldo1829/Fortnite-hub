@@ -22,3 +22,6 @@ jobs:
 
       - name: Test database
         run: python test.py
+
+      - name: Test Flask
+        run: python -c "from app import app; print('✅ Flask funziona!')"
