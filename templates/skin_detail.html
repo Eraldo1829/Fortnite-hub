@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% if item %}
+            {{ item.name }} | Fortnite Hub
+        {% else %}
+            Skin non trovata | Fortnite Hub
+        {% endif %}
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            min-height: 100vh;
+
+            color: white;
+
+            background:
+
+                radial-gradient(
+                    circle at 20% 10%,
+                    rgba(0, 217, 255, 0.14),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(168, 85, 247, 0.14),
+                    transparent 35%
+                ),
+
+                #050816;
+        }
+
+
+        /* NAVBAR */
+
+        .navbar {
+
+            height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 40px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            background:
+                rgba(5, 8, 22, 0.88);
+
+            backdrop-filter:
+                blur(14px);
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-weight: 800;
+
+            font-size: 20px;
+        }
+
+
+        .brand img {
+
+            width: 42px;
+
+            height: 42px;
+
+            object-fit: contain;
+        }
+
+
+        .back-button {
+
+            text-decoration: none;
+
+            color: white;
+
+            padding: 10px 18px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            transition: 0.25s;
+        }
+
+
+        .back-button:hover {
+
+            background:
+                rgba(0,217,255,0.12);
+
+            border-color:
+                rgba(0,217,255,0.4);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* CONTAINER */
+
+        .container {
+
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding:
+                50px 30px 80px;
+        }
+
+
+        /* ERROR */
+
+        .error {
+
+            text-align: center;
+
+            padding: 100px 20px;
+        }
+
+
+        .error h1 {
+
+            font-size: 42px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .error p {
+
+            color: #8b93a7;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* DETAIL */
+
+        .detail {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.2fr)
+                minmax(0, 0.8fr);
+
+            gap: 50px;
+
+            align-items: center;
+        }
+
+
+        /* IMAGE */
+
+        .image-panel {
+
+            min-height: 620px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 25px;
+
+            background:
+
+                radial-gradient(
+                    circle at center,
+                    rgba(0,217,255,0.12),
+                    transparent 60%
+                ),
+
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.08),
+                    rgba(255,255,255,0.025)
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            box-shadow:
+                0 30px 80px
+                rgba(0,0,0,0.35);
+        }
+
+
+        .image-panel::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+
+            height: 500px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(0,217,255,0.08);
+
+            filter:
+                blur(80px);
+        }
+
+
+        .skin-image {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+
+            max-width: 600px;
+
+            max-height: 600px;
+
+            object-fit: contain;
+
+            transition:
+                transform 0.5s ease;
+        }
+
+
+        .image-panel:hover
+        .skin-image {
+
+            transform:
+                scale(1.04);
+        }
+
+
+        /* INFO */
+
+        .info {
+
+            padding: 15px 0;
+        }
+
+
+        .badge {
+
+            display: inline-block;
+
+            padding:
+                7px 12px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,217,255,0.8),
+                    rgba(168,85,247,0.8)
+                );
+        }
+
+
+        .info h1 {
+
+            font-size:
+                clamp(36px, 5vw, 62px);
+
+            line-height: 1;
+
+            margin-bottom: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    white,
+                    #00d9ff,
+                    #a855f7
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color:
+                transparent;
+        }
+
+
+        .description {
+
+            color: #9ca3af;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* PRICE */
+
+        .price-box {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 18px 20px;
+
+            margin-bottom: 20px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .price-label {
+
+            color: #8b93a7;
+
+            font-size: 13px;
+        }
+
+
+        .price {
+
+            font-size: 23px;
+
+            font-weight: 900;
+        }
+
+
+        /* BUTTONS */
+
+        .actions {
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .button {
+
+            border: none;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            color: white;
+
+            padding:
+                14px 20px;
+
+            border-radius: 12px;
+
+            font-weight: 800;
+
+            font-size: 14px;
+
+            transition:
+                transform 0.25s,
+                box-shadow 0.25s;
+        }
+
+
+        .button:hover {
+
+            transform:
+                translateY(-3px);
+        }
+
+
+        .primary {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00bcd4,
+                    #7c3aed
+                );
+
+            box-shadow:
+                0 10px 30px
+                rgba(124,58,237,0.25);
+        }
+
+
+        .secondary {
+
+            background:
+                rgba(255,255,255,0.07);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+        }
+
+
+        /* FUTURE */
+
+        .future-box {
+
+            margin-top: 30px;
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.07);
+        }
+
+
+        .future-box h3 {
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .future-box p {
+
+            color: #7f889c;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 850px) {
+
+            .navbar {
+
+                padding:
+                    0 18px;
+            }
+
+
+            .brand {
+
+                font-size: 17px;
+            }
+
+
+            .brand img {
+
+                width: 36px;
+
+                height: 36px;
+            }
+
+
+            .container {
+
+                padding:
+                    30px 16px 60px;
+            }
+
+
+            .detail {
+
+                grid-template-columns: 1fr;
+
+                gap: 30px;
+            }
+
+
+            .image-panel {
+
+                min-height: 430px;
+            }
+
+
+            .skin-image {
+
+                max-height: 420px;
+            }
+
+
+            .info h1 {
+
+                font-size: 42px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="/" class="brand">
+
+            <img
+                src="{{ url_for('static', filename='logo.png') }}"
+                alt="Fortnite Hub"
+            >
+
+            <span>
+                FORTNITE HUB
+            </span>
+
+        </a>
+
+
+        <a
+            href="/skins"
+            class="back-button"
+        >
+            ← Shop
+        </a>
+
+    </nav>
+
+
+    <main class="container">
+
+
+        {% if item %}
+
+
+        <div class="detail">
+
+
+            <!-- IMAGE -->
+
+            <section class="image-panel">
+
+                {% if item.image %}
+
+                <img
+                    class="skin-image"
+                    src="{{ item.image }}"
+                    alt="{{ item.name }}"
+                >
+
+                {% else %}
+
+                <div>
+                    Immagine non disponibile
+                </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- INFORMATION -->
+
+            <section class="info">
+
+
+                <div class="badge">
+
+                    {{ item.type }}
+
+                </div>
+
+
+                <h1>
+                    {{ item.name }}
+                </h1>
+
+
+                {% if item.description %}
+
+                <p class="description">
+
+                    {{ item.description }}
+
+                </p>
+
+                {% else %}
+
+                <p class="description">
+
+                    Nessuna descrizione disponibile
+                    per questo oggetto.
+
+                </p>
+
+                {% endif %}
+
+
+                <!-- PRICE -->
+
+                <div class="price-box">
+
+                    <div>
+
+                        <div class="price-label">
+                            Prezzo nello Shop
+                        </div>
+
+                    </div>
+
+
+                    <div class="price">
+
+                        {% if item.price is not none %}
+
+                            {{ item.price }} V-Bucks
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="actions">
+
+                    <button
+                        class="button primary"
+                        onclick="toggleFavorite(this)"
+                    >
+                        ♡ Aggiungi ai preferiti
+                    </button>
+
+
+                    <a
+                        href="/skins"
+                        class="button secondary"
+                    >
+                        ← Torna allo Shop
+                    </a>
+
+                </div>
+
+
+                <!-- FUTURE -->
+
+                <div class="future-box">
+
+                    <h3>
+                        🚀 In arrivo su Fortnite Hub
+                    </h3>
+
+                    <p>
+
+                        In questa scheda potremo aggiungere
+                        lo storico delle apparizioni,
+                        l'ultima volta nello Shop,
+                        il numero di apparizioni,
+                        informazioni sul set e,
+                        successivamente, un viewer 3D
+                        interattivo.
+
+                    </p>
+
+                </div>
+
+
+            </section>
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="error">
+
+            <h1>
+                😕 Oggetto non trovato
+            </h1>
+
+            <p>
+                L'oggetto richiesto non è disponibile
+                nello Shop attuale.
+            </p>
+
+            <a
+                href="/skins"
+                class="button primary"
+            >
+                ← Torna allo Shop
+            </a>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+    <script>
+
+        function toggleFavorite(button) {
+
+            if (
+                button.dataset.favorite === "true"
+            ) {
+
+                button.dataset.favorite = "false";
+
+                button.innerHTML =
+                    "♡ Aggiungi ai preferiti";
+
+                button.style.background =
+                    "linear-gradient(90deg, #00bcd4, #7c3aed)";
+
+            } else {
+
+                button.dataset.favorite = "true";
+
+                button.innerHTML =
+                    "♥ Nei preferiti";
+
+                button.style.background =
+                    "linear-gradient(90deg, #a855f7, #ec4899)";
+
+            }
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
