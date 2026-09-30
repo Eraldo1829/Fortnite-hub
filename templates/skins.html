@@ -2,6 +2,7 @@
 <html lang="it">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,196 +17,248 @@
         }
 
         body {
+
             font-family: Arial, sans-serif;
-            background:
-                radial-gradient(circle at top left, #101b45, transparent 35%),
-                radial-gradient(circle at bottom right, #241044, transparent 35%),
-                #050711;
 
             color: white;
+
             min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 15% 10%,
+                    rgba(0, 220, 255, 0.16),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 20%,
+                    rgba(168, 85, 247, 0.18),
+                    transparent 30%
+                ),
+                #050711;
         }
 
 
         /* NAVBAR */
 
         nav {
+
             height: 75px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             padding: 0 5%;
 
-            background: rgba(5, 7, 17, 0.85);
+            background: rgba(5, 7, 17, 0.88);
 
-            border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+            border-bottom:
+                1px solid rgba(0, 220, 255, 0.15);
 
             position: sticky;
+
             top: 0;
+
             z-index: 100;
 
-            backdrop-filter: blur(10px);
-        }
-
-
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
+            backdrop-filter: blur(15px);
         }
 
 
         .logo img {
-            width: 170px;
-            max-height: 60px;
+
+            width: 165px;
+
+            max-height: 58px;
+
             object-fit: contain;
         }
 
 
         .back {
-            color: #ffffff;
+
             text-decoration: none;
+
+            color: white;
 
             padding: 10px 18px;
 
-            border: 1px solid rgba(0, 220, 255, 0.4);
-
             border-radius: 10px;
+
+            border:
+                1px solid rgba(0, 220, 255, 0.35);
 
             transition: 0.3s;
         }
 
 
         .back:hover {
-            background: rgba(0, 220, 255, 0.12);
 
-            border-color: #00d9ff;
+            border-color: #00eaff;
 
-            box-shadow: 0 0 15px rgba(0, 217, 255, 0.25);
+            background:
+                rgba(0, 234, 255, 0.08);
+
+            box-shadow:
+                0 0 20px rgba(0, 234, 255, 0.15);
         }
 
 
-        /* HEADER */
+        /* MAIN */
 
         .container {
-            width: 90%;
-            max-width: 1400px;
 
-            margin: 0 auto;
+            width: 92%;
 
-            padding: 55px 0;
+            max-width: 1500px;
+
+            margin: auto;
+
+            padding: 55px 0 80px;
         }
 
 
-        .header {
+        .hero {
+
             text-align: center;
 
-            margin-bottom: 40px;
+            margin-bottom: 45px;
         }
 
 
-        .header h1 {
-            font-size: 42px;
+        .hero h1 {
+
+            font-size: clamp(34px, 5vw, 58px);
 
             margin-bottom: 12px;
 
-            background: linear-gradient(
-                90deg,
-                #00eaff,
-                #ffffff,
-                #a855f7
-            );
+            background:
+                linear-gradient(
+                    90deg,
+                    #00eaff,
+                    #ffffff,
+                    #a855f7
+                );
 
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
         }
 
 
-        .header p {
-            color: #9ca8c7;
+        .hero p {
+
+            color: #8e9ab8;
 
             font-size: 16px;
+        }
+
+
+        .shop-date {
+
+            margin-top: 12px;
+
+            color: #66728f;
+
+            font-size: 13px;
         }
 
 
         /* SEARCH */
 
-        .search-box {
-            max-width: 650px;
+        .search-container {
 
-            margin: 0 auto 45px;
+            max-width: 700px;
 
-            position: relative;
+            margin:
+                0 auto 50px;
         }
 
 
-        .search-box input {
+        .search {
+
             width: 100%;
 
-            padding: 16px 20px;
+            padding: 17px 22px;
 
-            border-radius: 14px;
+            border-radius: 15px;
 
-            border: 1px solid rgba(0, 220, 255, 0.3);
+            border:
+                1px solid rgba(0, 220, 255, 0.25);
 
-            background: rgba(10, 15, 35, 0.8);
+            background:
+                rgba(10, 15, 35, 0.85);
 
             color: white;
 
-            font-size: 16px;
-
             outline: none;
+
+            font-size: 16px;
 
             transition: 0.3s;
         }
 
 
-        .search-box input:focus {
+        .search:focus {
+
             border-color: #00eaff;
 
-            box-shadow: 0 0 20px rgba(0, 234, 255, 0.15);
+            box-shadow:
+                0 0 25px rgba(0, 234, 255, 0.12);
         }
 
 
-        .search-box input::placeholder {
-            color: #6f7895;
+        .search::placeholder {
+
+            color: #66728f;
         }
 
 
-        /* SHOP */
+        /* SECTION */
 
-        .shop-header {
+        .section {
+
+            margin-bottom: 55px;
+        }
+
+
+        .section-title {
+
             display: flex;
-
-            justify-content: space-between;
 
             align-items: center;
 
-            margin-bottom: 25px;
+            justify-content: space-between;
+
+            margin-bottom: 22px;
         }
 
 
-        .shop-header h2 {
-            font-size: 26px;
+        .section-title h2 {
+
+            font-size: 27px;
         }
 
 
-        .shop-date {
-            color: #7f8bab;
+        .section-title span {
 
-            font-size: 14px;
+            color: #687594;
+
+            font-size: 13px;
         }
 
 
         /* GRID */
 
-        .skins-grid {
+        .shop-grid {
+
             display: grid;
 
             grid-template-columns:
-                repeat(auto-fill, minmax(210px, 1fr));
+                repeat(auto-fill, minmax(220px, 1fr));
 
             gap: 22px;
         }
@@ -213,123 +266,220 @@
 
         /* CARD */
 
-        .skin-card {
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(20, 29, 62, 0.95),
-                    rgba(9, 12, 27, 0.95)
-                );
-
-            border: 1px solid rgba(0, 220, 255, 0.15);
-
-            border-radius: 18px;
-
-            overflow: hidden;
+        .shop-card {
 
             position: relative;
 
-            transition:
-                transform 0.3s,
-                box-shadow 0.3s,
-                border-color 0.3s;
+            overflow: hidden;
 
-            animation: appear 0.6s ease forwards;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(22, 31, 67, 0.96),
+                    rgba(7, 10, 23, 0.96)
+                );
+
+            border:
+                1px solid rgba(0, 220, 255, 0.12);
+
+            cursor: pointer;
 
             opacity: 0;
+
+            animation:
+                cardAppear 0.6s ease forwards;
+
+            transition:
+                transform 0.3s,
+                border-color 0.3s,
+                box-shadow 0.3s;
         }
 
 
-        .skin-card:hover {
-            transform: translateY(-8px) scale(1.02);
+        .shop-card:hover {
 
-            border-color: rgba(0, 220, 255, 0.55);
+            transform:
+                translateY(-8px);
+
+            border-color:
+                rgba(0, 220, 255, 0.5);
 
             box-shadow:
-                0 15px 40px rgba(0, 0, 0, 0.4),
-                0 0 25px rgba(0, 220, 255, 0.12);
+                0 20px 45px rgba(0, 0, 0, 0.45),
+                0 0 25px rgba(0, 220, 255, 0.1);
         }
 
 
-        @keyframes appear {
+        @keyframes cardAppear {
 
             from {
+
                 opacity: 0;
-                transform: translateY(25px);
+
+                transform:
+                    translateY(25px);
             }
 
             to {
-                opacity: 1;
-                transform: translateY(0);
-            }
 
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
         }
 
 
         /* IMAGE */
 
-        .skin-image {
+        .card-image {
+
             width: 100%;
 
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 1 / 1.05;
+
+            overflow: hidden;
 
             background:
                 radial-gradient(
-                    circle,
-                    #202b55,
-                    #0b0e20
+                    circle at center,
+                    #26335f,
+                    #080b18
                 );
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            overflow: hidden;
         }
 
 
-        .skin-image img {
+        .card-image img {
+
             width: 100%;
 
             height: 100%;
 
             object-fit: cover;
 
-            transition: 0.4s;
+            transition:
+                transform 0.5s;
         }
 
 
-        .skin-card:hover .skin-image img {
-            transform: scale(1.07);
+        .shop-card:hover
+        .card-image img {
+
+            transform:
+                scale(1.08);
+        }
+
+
+        /* BADGE */
+
+        .badge {
+
+            position: absolute;
+
+            top: 12px;
+
+            left: 12px;
+
+            padding: 6px 10px;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            background:
+                rgba(5, 7, 17, 0.8);
+
+            border:
+                1px solid rgba(0, 220, 255, 0.25);
+
+            backdrop-filter: blur(8px);
+        }
+
+
+        .badge.bundle {
+
+            border-color:
+                rgba(168, 85, 247, 0.5);
+
+            color: #d7b5ff;
+        }
+
+
+        /* FAVORITE */
+
+        .favorite {
+
+            position: absolute;
+
+            top: 10px;
+
+            right: 10px;
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid rgba(255,255,255,0.18);
+
+            background:
+                rgba(5, 7, 17, 0.78);
+
+            color: white;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            z-index: 5;
+
+            transition: 0.25s;
+        }
+
+
+        .favorite:hover {
+
+            transform: scale(1.1);
+
+            border-color: #a855f7;
+
+            color: #d7b5ff;
         }
 
 
         /* INFO */
 
-        .skin-info {
-            padding: 18px;
+        .card-info {
+
+            padding: 17px;
         }
 
 
-        .skin-name {
+        .card-name {
+
             font-size: 17px;
 
             font-weight: bold;
-
-            margin-bottom: 8px;
 
             white-space: nowrap;
 
             overflow: hidden;
 
             text-overflow: ellipsis;
+
+            margin-bottom: 7px;
         }
 
 
-        .skin-type {
-            color: #8f9ab7;
+        .card-type {
+
+            color: #7f8baa;
 
             font-size: 13px;
 
@@ -337,22 +487,30 @@
         }
 
 
-        .price {
+        .card-bottom {
+
             display: flex;
 
             align-items: center;
 
-            gap: 7px;
+            justify-content: space-between;
+        }
+
+
+        .price {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
 
             font-weight: bold;
-
-            color: #ffffff;
-
-            font-size: 15px;
         }
 
 
         .vbucks {
+
             width: 19px;
 
             height: 19px;
@@ -361,54 +519,25 @@
         }
 
 
-        /* FAVORITE */
+        .bundle-count {
 
-        .favorite {
-            position: absolute;
+            color: #a855f7;
 
-            top: 12px;
+            font-size: 12px;
 
-            right: 12px;
-
-            width: 38px;
-
-            height: 38px;
-
-            border-radius: 50%;
-
-            border: 1px solid rgba(255,255,255,0.2);
-
-            background: rgba(5, 7, 17, 0.75);
-
-            color: white;
-
-            cursor: pointer;
-
-            font-size: 18px;
-
-            transition: 0.3s;
-
-            z-index: 2;
+            font-weight: bold;
         }
 
 
-        .favorite:hover {
-            transform: scale(1.1);
+        /* EMPTY */
 
-            background: rgba(168, 85, 247, 0.5);
+        .empty {
 
-            border-color: #a855f7;
-        }
-
-
-        /* EMPTY / ERROR */
-
-        .message {
             text-align: center;
 
-            padding: 60px 20px;
+            padding: 70px 20px;
 
-            color: #8994b2;
+            color: #7e89a7;
 
             font-size: 17px;
         }
@@ -416,35 +545,30 @@
 
         /* MOBILE */
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
+
+            nav {
+
+                padding: 0 4%;
+            }
+
 
             .logo img {
+
                 width: 130px;
             }
 
 
-            .header h1 {
-                font-size: 32px;
-            }
-
-
             .container {
-                width: 92%;
+
+                width: 94%;
 
                 padding-top: 40px;
             }
 
 
-            .shop-header {
-                flex-direction: column;
+            .shop-grid {
 
-                align-items: flex-start;
-
-                gap: 8px;
-            }
-
-
-            .skins-grid {
                 grid-template-columns:
                     repeat(2, 1fr);
 
@@ -452,17 +576,28 @@
             }
 
 
-            .skin-info {
+            .card-info {
+
                 padding: 12px;
             }
 
 
-            .skin-name {
+            .card-name {
+
                 font-size: 14px;
             }
 
 
+            .card-type {
+
+                font-size: 11px;
+
+                margin-bottom: 10px;
+            }
+
+
             .favorite {
+
                 width: 32px;
 
                 height: 32px;
@@ -480,249 +615,302 @@
 <body>
 
 
-    <!-- NAVBAR -->
+<nav>
 
-    <nav>
+    <a href="/" class="logo">
 
-        <a href="/" class="logo">
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Fortnite Hub"
+        >
 
-            <img
-                src="{{ url_for('static', filename='logo.png') }}"
-                alt="Fortnite Hub"
-            >
-
-        </a>
+    </a>
 
 
-        <a href="/" class="back">
-            ← Home
-        </a>
+    <a href="/" class="back">
 
-    </nav>
+        ← Home
 
+    </a>
 
-    <!-- CONTENT -->
-
-    <main class="container">
+</nav>
 
 
-        <div class="header">
-
-            <h1>🛍️ Skin Tracker</h1>
-
-            <p>
-                Scopri gli oggetti presenti nello Shop di Fortnite
-            </p>
-
-        </div>
+<main class="container">
 
 
-        <!-- SEARCH -->
+    <header class="hero">
 
-        <div class="search-box">
+        <h1>🛍️ Item Shop</h1>
 
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="🔎 Cerca una skin..."
-                onkeyup="searchSkins()"
-            >
-
-        </div>
+        <p>
+            Tutti gli oggetti presenti nello Shop di Fortnite
+        </p>
 
 
-        <!-- SHOP HEADER -->
+        {% if shop_date %}
 
-        <div class="shop-header">
+            <div class="shop-date">
 
-            <h2>Shop di oggi</h2>
+                Aggiornato:
+                {{ shop_date }}
 
-            {% if shop and shop.data %}
+            </div>
 
-                <div class="shop-date">
-                    Aggiornato:
-                    {{ shop.data.date }}
-                </div>
+        {% endif %}
 
-            {% endif %}
-
-        </div>
+    </header>
 
 
-        <!-- SHOP -->
+    <div class="search-container">
 
-        {% if shop and shop.data and shop.data.entries %}
+        <input
+            id="searchInput"
+            class="search"
+            type="text"
+            placeholder="🔎 Cerca skin, bundle, emote..."
+            oninput="searchShop()"
+        >
 
-            <div class="skins-grid" id="skinsGrid">
-
-
-                {% for entry in shop.data.entries %}
-
-                    {% if entry.brItems %}
-
-                        {% for item in entry.brItems %}
-
-                            <article
-                                class="skin-card"
-                                data-name="{{ item.name | lower }}"
-                            >
+    </div>
 
 
-                                <button
-                                    class="favorite"
-                                    title="Aggiungi ai preferiti"
-                                    onclick="toggleFavorite(this)"
+    {% if shop_items %}
+
+
+        <section class="section">
+
+
+            <div class="section-title">
+
+                <h2>🔥 Shop di oggi</h2>
+
+                <span>
+                    {{ shop_items|length }} offerte
+                </span>
+
+            </div>
+
+
+            <div class="shop-grid" id="shopGrid">
+
+
+                {% for item in shop_items %}
+
+
+                    <article
+                        class="shop-card"
+                        data-name="{{ item.name|lower }}"
+                        onclick="openItem('{{ loop.index }}')"
+                    >
+
+
+                        {% if item.bundle %}
+
+                            <div class="badge bundle">
+
+                                📦 BUNDLE
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="badge">
+
+                                {{ item.type }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <button
+                            class="favorite"
+                            onclick="event.stopPropagation(); toggleFavorite(this)"
+                        >
+
+                            ♡
+
+                        </button>
+
+
+                        <div class="card-image">
+
+                            {% if item.image %}
+
+                                <img
+                                    src="{{ item.image }}"
+                                    alt="{{ item.name }}"
+                                    loading="lazy"
                                 >
-                                    ♡
-                                </button>
+
+                            {% else %}
+
+                                <span>
+                                    Immagine non disponibile
+                                </span>
+
+                            {% endif %}
+
+                        </div>
 
 
-                                <div class="skin-image">
+                        <div class="card-info">
 
-                                    {% if item.images and item.images.icon %}
 
-                                        <img
-                                            src="{{ item.images.icon }}"
-                                            alt="{{ item.name }}"
-                                            loading="lazy"
-                                        >
+                            <div class="card-name">
+
+                                {{ item.name }}
+
+                            </div>
+
+
+                            <div class="card-type">
+
+                                {{ item.type }}
+
+                            </div>
+
+
+                            <div class="card-bottom">
+
+
+                                <div class="price">
+
+                                    {% if item.price %}
+
+                                        {% if shop_date %}
+
+                                            🪙
+
+                                        {% endif %}
+
+                                        {{ item.price }}
 
                                     {% else %}
 
-                                        <span>
-                                            Immagine non disponibile
-                                        </span>
+                                        —
 
                                     {% endif %}
 
                                 </div>
 
 
-                                <div class="skin-info">
+                                {% if item.bundle %}
 
+                                    <div class="bundle-count">
 
-                                    <div class="skin-name">
-
-                                        {{ item.name }}
-
-                                    </div>
-
-
-                                    <div class="skin-type">
-
-                                        {{ item.type.displayValue if item.type else "Cosmetico" }}
+                                        {{ item.items|length }}
+                                        oggetti
 
                                     </div>
 
-
-                                    <div class="price">
-
-                                        {% if entry.finalPrice %}
-
-                                            {% if shop.data.vbuckIcon %}
-
-                                                <img
-                                                    class="vbucks"
-                                                    src="{{ shop.data.vbuckIcon }}"
-                                                    alt="V-Bucks"
-                                                >
-
-                                            {% endif %}
-
-                                            {{ entry.finalPrice }}
-
-                                        {% else %}
-
-                                            Prezzo non disponibile
-
-                                        {% endif %}
-
-                                    </div>
+                                {% endif %}
 
 
-                                </div>
+                            </div>
 
-                            </article>
 
-                        {% endfor %}
+                        </div>
 
-                    {% endif %}
+
+                    </article>
+
 
                 {% endfor %}
 
 
             </div>
 
-
-        {% else %}
-
-            <div class="message">
-
-                ⚠️ Impossibile caricare lo Shop al momento.
-
-            </div>
-
-        {% endif %}
+        </section>
 
 
-    </main>
+    {% else %}
 
 
-    <script>
+        <div class="empty">
+
+            ⚠️ Impossibile caricare lo Shop al momento.
+
+        </div>
 
 
-        function searchSkins() {
-
-            const input =
-                document.getElementById("searchInput");
-
-            const search =
-                input.value.toLowerCase();
-
-            const cards =
-                document.querySelectorAll(".skin-card");
+    {% endif %}
 
 
-            cards.forEach(card => {
-
-                const name =
-                    card.dataset.name;
-
-                if (name.includes(search)) {
-
-                    card.style.display = "";
-
-                } else {
-
-                    card.style.display = "none";
-
-                }
-
-            });
-
-        }
+</main>
 
 
-        function toggleFavorite(button) {
+<script>
 
-            if (button.textContent.trim() === "♡") {
 
-                button.textContent = "♥";
+    function searchShop() {
 
-                button.style.color = "#a855f7";
+        const input =
+            document.getElementById("searchInput");
+
+        const search =
+            input.value.toLowerCase().trim();
+
+        const cards =
+            document.querySelectorAll(".shop-card");
+
+
+        cards.forEach(card => {
+
+            const name =
+                card.dataset.name;
+
+            if (name.includes(search)) {
+
+                card.style.display = "";
 
             } else {
 
-                button.textContent = "♡";
-
-                button.style.color = "white";
+                card.style.display = "none";
 
             }
 
+        });
+
+    }
+
+
+    function toggleFavorite(button) {
+
+        if (button.textContent.trim() === "♡") {
+
+            button.textContent = "♥";
+
+            button.style.color = "#a855f7";
+
+        } else {
+
+            button.textContent = "♡";
+
+            button.style.color = "white";
+
         }
 
+    }
 
-    </script>
+
+    function openItem(index) {
+
+        console.log(
+            "Apertura oggetto:",
+            index
+        );
+
+        /*
+            In futuro qui apriremo
+            la scheda dettagliata
+            con il viewer 3D.
+        */
+    }
+
+
+</script>
 
 
 </body>
