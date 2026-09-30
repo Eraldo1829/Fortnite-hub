@@ -25,6 +25,10 @@ from services.email_service import (
     send_welcome_email
 )
 
+from services.tracker_service import (
+    run_tracker_check
+)
+
 from services.fortnite_api import (
     get_shop,
     prepare_shop,
@@ -37,31 +41,21 @@ from services.fortnite_api import (
 
 
 # ============================================================
-# FLASK
+# APP
 # ============================================================
 
 app = Flask(__name__)
-
-
-# ============================================================
-# SECRET KEY
-# ============================================================
 
 app.secret_key = os.getenv(
     "SECRET_KEY",
     "fortnite-hub-development-key"
 )
 
-
-# ============================================================
-# DATABASE
-# ============================================================
-
 create_database()
 
 
 # ============================================================
-# FEATURE DATABASE
+# FEATURE TABLES
 # ============================================================
 
 def create_feature_tables():
@@ -70,12 +64,14 @@ def create_feature_tables():
 
     cursor = connection.cursor()
 
-    # ========================================================
+    # --------------------------------------------------------
     # FAVORITES
-    # ========================================================
+    # --------------------------------------------------------
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS favorites (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
             user_id INTEGER NOT NULL,
@@ -88,19 +84,25 @@ def create_feature_tables():
 
             data_json TEXT,
 
-            created_at TIMESTAMP
-                DEFAULT CURRENT_TIMESTAMP,
+            created_at
+                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-            UNIQUE(user_id, item_id)
+            UNIQUE(
+                user_id,
+                item_id
+            )
         )
-    """)
+        """
+    )
 
-    # ========================================================
+    # --------------------------------------------------------
     # SHOP HISTORY
-    # ========================================================
+    # --------------------------------------------------------
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS shop_history (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
             shop_date TEXT NOT NULL,
@@ -113,19 +115,25 @@ def create_feature_tables():
 
             data_json TEXT,
 
-            saved_at TIMESTAMP
-                DEFAULT CURRENT_TIMESTAMP,
+            saved_at
+                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-            UNIQUE(shop_date, item_id)
+            UNIQUE(
+                shop_date,
+                item_id
+            )
         )
-    """)
+        """
+    )
 
-    # ========================================================
+    # --------------------------------------------------------
     # NOTIFICATION LOG
-    # ========================================================
+    # --------------------------------------------------------
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS notification_log (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
             user_id INTEGER NOT NULL,
@@ -136,8 +144,8 @@ def create_feature_tables():
 
             item_name TEXT,
 
-            sent_at TIMESTAMP
-                DEFAULT CURRENT_TIMESTAMP,
+            sent_at
+                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
             UNIQUE(
                 user_id,
@@ -145,23 +153,26 @@ def create_feature_tables():
                 shop_date
             )
         )
-    """)
+        """
+    )
 
-    # ========================================================
+    # --------------------------------------------------------
     # NOTIFICATION SETTINGS
-    # ========================================================
+    # --------------------------------------------------------
 
-    cursor.execute("""
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS notification_settings (
+
             user_id INTEGER PRIMARY KEY,
 
-            enabled INTEGER NOT NULL
-                DEFAULT 1,
+            enabled INTEGER NOT NULL DEFAULT 1,
 
-            updated_at TIMESTAMP
-                DEFAULT CURRENT_TIMESTAMP
+            updated_at
+                TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-    """)
+        """
+    )
 
     connection.commit()
 
@@ -180,9 +191,9 @@ def login_required():
     return "user_id" in session
 
 
-# ============================================================
+# ------------------------------------------------------------
 # ITEM ID
-# ============================================================
+# ------------------------------------------------------------
 
 def get_item_id(
     item,
@@ -213,9 +224,9 @@ def get_item_id(
     return None
 
 
-# ============================================================
+# ------------------------------------------------------------
 # ITEM NAME
-# ============================================================
+# ------------------------------------------------------------
 
 def get_item_name(item):
 
@@ -236,9 +247,9 @@ def get_item_name(item):
     return "Skin senza nome"
 
 
-# ============================================================
+# ------------------------------------------------------------
 # ITEM IMAGE
-# ============================================================
+# ------------------------------------------------------------
 
 def get_item_image(item):
 
@@ -262,9 +273,9 @@ def get_item_image(item):
     return None
 
 
-# ============================================================
+# ------------------------------------------------------------
 # SHOP DATE
-# ============================================================
+# ------------------------------------------------------------
 
 def get_shop_date(shop):
 
@@ -272,29 +283,35 @@ def get_shop_date(shop):
 
         return None
 
-    data = shop.get(
-        "data"
-    )
+    data = shop.get("data")
 
-    if not data:
+    if isinstance(data, dict):
 
-        return None
+        shop_date = data.get("date")
 
-    return data.get(
-        "date"
-    )
+        if shop_date:
+
+            return str(shop_date)
+
+    shop_date = shop.get("date")
+
+    if shop_date:
+
+        return str(shop_date)
+
+    return None
 
 
-# ============================================================
+# ------------------------------------------------------------
 # SAVE SHOP HISTORY
-# ============================================================
+# ------------------------------------------------------------
 
 def save_shop_history(
     shop_date,
     shop_items
 ):
 
-    if not shop_date or not shop_items:
+    if not shop_date:
 
         return
 
@@ -302,9 +319,7 @@ def save_shop_history(
 
     cursor = connection.cursor()
 
-    for index, item in enumerate(
-        shop_items
-    ):
+    for index, item in enumerate(shop_items):
 
         item_id = get_item_id(
             item,
@@ -323,15 +338,20 @@ def save_shop_history(
             item
         )
 
-        data_json = json.dumps(
-            item,
-            ensure_ascii=False
-        )
+        try:
+
+            data_json = json.dumps(
+                item,
+                ensure_ascii=False
+            )
+
+        except Exception:
+
+            data_json = "{}"
 
         cursor.execute(
             """
-            INSERT OR IGNORE INTO
-            shop_history
+            INSERT INTO shop_history
             (
                 shop_date,
                 item_id,
@@ -341,6 +361,22 @@ def save_shop_history(
             )
 
             VALUES (?, ?, ?, ?, ?)
+
+            ON CONFLICT(
+                shop_date,
+                item_id
+            )
+
+            DO UPDATE SET
+
+                item_name =
+                    excluded.item_name,
+
+                image_url =
+                    excluded.image_url,
+
+                data_json =
+                    excluded.data_json
             """,
             (
                 shop_date,
@@ -356,9 +392,9 @@ def save_shop_history(
     connection.close()
 
 
-# ============================================================
-# GET FAVORITE IDS
-# ============================================================
+# ------------------------------------------------------------
+# FAVORITE IDS
+# ------------------------------------------------------------
 
 def get_favorite_ids(user_id):
 
@@ -369,7 +405,9 @@ def get_favorite_ids(user_id):
     cursor.execute(
         """
         SELECT item_id
+
         FROM favorites
+
         WHERE user_id = ?
         """,
         (
@@ -387,20 +425,13 @@ def get_favorite_ids(user_id):
     }
 
 
-# ============================================================
-# SHOP HISTORY STATISTICS
-# ============================================================
+# ------------------------------------------------------------
+# ITEM HISTORY STATS
+# ------------------------------------------------------------
 
-def get_item_history_stats(item_id):
-
-    if not item_id:
-
-        return {
-            "last_date": None,
-            "first_date": None,
-            "days_since": None,
-            "appearances": 0
-        }
+def get_item_history_stats(
+    item_id
+):
 
     connection = get_connection()
 
@@ -409,9 +440,12 @@ def get_item_history_stats(item_id):
     cursor.execute(
         """
         SELECT shop_date
+
         FROM shop_history
+
         WHERE item_id = ?
-        ORDER BY shop_date ASC
+
+        ORDER BY shop_date DESC
         """,
         (
             str(item_id),
@@ -422,59 +456,44 @@ def get_item_history_stats(item_id):
 
     connection.close()
 
-    if not rows:
-
-        return {
-            "last_date": None,
-            "first_date": None,
-            "days_since": None,
-            "appearances": 0
-        }
-
     dates = []
 
     for row in rows:
 
-        shop_date = row[
-            "shop_date"
+        raw_date = row["shop_date"]
+
+        if not raw_date:
+
+            continue
+
+        parsed_date = None
+
+        formats = [
+            "%Y-%m-%d",
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%dT%H:%M:%S.%f"
         ]
 
-        if not shop_date:
+        for fmt in formats:
 
-            continue
+            try:
 
-        try:
+                parsed_date = datetime.strptime(
+                    raw_date[:26],
+                    fmt
+                ).date()
 
-            parsed_date = datetime.fromisoformat(
-                shop_date.replace(
-                    "Z",
-                    "+00:00"
-                )
-            ).date()
+                break
 
-            dates.append(
-                parsed_date
-            )
+            except Exception:
 
-            continue
+                continue
 
-        except Exception:
-
-            pass
-
-        try:
-
-            parsed_date = date.fromisoformat(
-                shop_date[:10]
-            )
+        if parsed_date:
 
             dates.append(
                 parsed_date
             )
-
-        except Exception:
-
-            continue
 
     if not dates:
 
@@ -485,13 +504,14 @@ def get_item_history_stats(item_id):
             "appearances": 0
         }
 
-    first_date = min(
-        dates
+    dates = sorted(
+        set(dates),
+        reverse=True
     )
 
-    last_date = max(
-        dates
-    )
+    last_date = dates[0]
+
+    first_date = dates[-1]
 
     today = date.today()
 
@@ -499,12 +519,7 @@ def get_item_history_stats(item_id):
         today - last_date
     ).days
 
-    if days_since < 0:
-
-        days_since = 0
-
     return {
-
         "last_date":
             last_date.strftime(
                 "%d/%m/%Y"
@@ -562,35 +577,11 @@ def register():
             ""
         )
 
-        if (
-            not username
-            or not email
-            or not password
-        ):
+        if not username or not email or not password:
 
             return render_template(
                 "register.html",
                 error="Compila tutti i campi."
-            )
-
-        if len(username) < 3:
-
-            return render_template(
-                "register.html",
-                error=(
-                    "Lo username deve avere "
-                    "almeno 3 caratteri."
-                )
-            )
-
-        if len(password) < 6:
-
-            return render_template(
-                "register.html",
-                error=(
-                    "La password deve avere "
-                    "almeno 6 caratteri."
-                )
             )
 
         connection = get_connection()
@@ -600,19 +591,19 @@ def register():
         cursor.execute(
             """
             SELECT id
+
             FROM users
-            WHERE username = ?
-            OR email = ?
+
+            WHERE email = ?
+
+            LIMIT 1
             """,
             (
-                username,
-                email
+                email,
             )
         )
 
-        existing_user = (
-            cursor.fetchone()
-        )
+        existing_user = cursor.fetchone()
 
         if existing_user:
 
@@ -620,10 +611,7 @@ def register():
 
             return render_template(
                 "register.html",
-                error=(
-                    "Username o email "
-                    "già utilizzati."
-                )
+                error="Email già registrata."
             )
 
         password_hash = (
@@ -632,41 +620,52 @@ def register():
             )
         )
 
-        cursor.execute(
-            """
-            INSERT INTO users
-            (
-                username,
-                email,
-                password_hash
-            )
-
-            VALUES (?, ?, ?)
-            """,
-            (
-                username,
-                email,
-                password_hash
-            )
-        )
-
-        connection.commit()
-
-        connection.close()
-
         try:
 
-            send_welcome_email(
-                email,
-                username
+            cursor.execute(
+                """
+                INSERT INTO users
+                (
+                    username,
+                    email,
+                    password
+                )
+
+                VALUES (?, ?, ?)
+                """,
+                (
+                    username,
+                    email,
+                    password_hash
+                )
             )
+
+            connection.commit()
 
         except Exception as error:
 
+            connection.close()
+
             print(
-                "Errore email:",
+                "❌ Errore registrazione:",
                 error
             )
+
+            return render_template(
+                "register.html",
+                error="Errore durante la registrazione."
+            )
+
+        connection.close()
+
+        # ----------------------------------------------------
+        # EMAIL BENVENUTO
+        # ----------------------------------------------------
+
+        send_welcome_email(
+            email,
+            username
+        )
 
         return redirect(
             url_for("login")
@@ -706,8 +705,12 @@ def login():
         cursor.execute(
             """
             SELECT *
+
             FROM users
+
             WHERE email = ?
+
+            LIMIT 1
             """,
             (
                 email,
@@ -718,31 +721,33 @@ def login():
 
         connection.close()
 
-        if user:
+        if not user:
 
-            if check_password_hash(
-                user["password_hash"],
-                password
-            ):
-
-                session["user_id"] = (
-                    user["id"]
-                )
-
-                session["username"] = (
-                    user["username"]
-                )
-
-                return redirect(
-                    url_for("home")
-                )
-
-        return render_template(
-            "login.html",
-            error=(
-                "Email o password "
-                "non corretti."
+            return render_template(
+                "login.html",
+                error="Email o password non corretti."
             )
+
+        password_hash = user["password"]
+
+        if not check_password_hash(
+            password_hash,
+            password
+        ):
+
+            return render_template(
+                "login.html",
+                error="Email o password non corretti."
+            )
+
+        session["user_id"] = user["id"]
+
+        session["username"] = user["username"]
+
+        session["email"] = user["email"]
+
+        return redirect(
+            url_for("home")
         )
 
     return render_template(
@@ -765,13 +770,23 @@ def logout():
 
 
 # ============================================================
-# SKINS / SHOP
+# SHOP
 # ============================================================
 
 @app.route("/skins")
 def skins():
 
     shop = get_shop()
+
+    if not shop:
+
+        return render_template(
+            "skins.html",
+            items=[],
+            groups={},
+            search_query="",
+            favorite_ids=set()
+        )
 
     shop_items = prepare_shop(
         shop
@@ -790,74 +805,63 @@ def skins():
 
     if login_required():
 
-        favorite_ids = (
-            get_favorite_ids(
-                session["user_id"]
-            )
-        )
-
-    for index, item in enumerate(
-        shop_items
-    ):
-
-        item["_shop_index"] = index
-
-        item["_item_id"] = get_item_id(
-            item,
-            index
-        )
-
-        item["_item_name"] = get_item_name(
-            item
-        )
-
-        item["_image_url"] = get_item_image(
-            item
-        )
-
-        item["_is_favorite"] = (
-            item["_item_id"]
-            in favorite_ids
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
         )
 
     search_query = request.args.get(
-        "q",
+        "search",
         ""
     ).strip()
 
     if search_query:
 
+        filtered_items = []
+
         search_lower = (
             search_query.lower()
         )
 
-        shop_items = [
-            item
-            for item in shop_items
-            if search_lower
-            in item[
-                "_item_name"
-            ].lower()
-        ]
+        for item in shop_items:
 
-    shop_groups = (
-        group_shop_items(
-            shop_items
+            name = get_item_name(
+                item
+            ).lower()
+
+            if search_lower in name:
+
+                filtered_items.append(
+                    item
+                )
+
+        shop_items = filtered_items
+
+    for item in shop_items:
+
+        item_id = get_item_id(
+            item
         )
+
+        item["is_favorite"] = (
+            item_id in favorite_ids
+        )
+
+    groups = group_shop_items(
+        shop_items
     )
 
     return render_template(
         "skins.html",
 
-        shop_items=shop_items,
+        items=shop_items,
 
-        shop_groups=shop_groups,
+        groups=groups,
 
-        shop_date=shop_date,
+        search_query=search_query,
 
         favorite_ids=favorite_ids,
 
-        search_query=search_query
+        shop_date=shop_date
     )
 
 
@@ -868,154 +872,95 @@ def skins():
 @app.route(
     "/skins/<int:item_index>"
 )
-def skin_detail(item_index):
+def skin_detail_by_index(
+    item_index
+):
 
     shop = get_shop()
+
+    if not shop:
+
+        return redirect(
+            url_for("skins")
+        )
 
     shop_items = prepare_shop(
         shop
     )
 
-    if not shop_items:
-
-        return render_template(
-            "skin_detail.html",
-            item=None
-        ), 404
-
     if (
         item_index < 0
-        or
-        item_index >= len(
-            shop_items
-        )
+        or item_index >= len(shop_items)
     ):
 
-        return render_template(
-            "skin_detail.html",
-            item=None
-        ), 404
+        return redirect(
+            url_for("skins")
+        )
 
     item = shop_items[
         item_index
     ]
 
-    item["_item_id"] = get_item_id(
+    item_id = get_item_id(
         item,
         item_index
     )
 
-    item["_item_name"] = get_item_name(
-        item
+    history = get_item_history_stats(
+        item_id
     )
 
-    item["_image_url"] = get_item_image(
-        item
-    )
-
-    item["_is_favorite"] = False
+    is_favorite = False
 
     if login_required():
 
-        favorite_ids = (
-            get_favorite_ids(
-                session["user_id"]
-            )
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
         )
 
-        item["_is_favorite"] = (
-            item["_item_id"]
-            in favorite_ids
+        is_favorite = (
+            item_id in favorite_ids
         )
-
-    shop_date = get_shop_date(
-        shop
-    )
-
-    save_shop_history(
-        shop_date,
-        shop_items
-    )
-
-    history_stats = (
-        get_item_history_stats(
-            item["_item_id"]
-        )
-    )
 
     return render_template(
         "skin_detail.html",
 
         item=item,
 
-        history_stats=history_stats
+        item_id=item_id,
+
+        history=history,
+
+        is_favorite=is_favorite,
+
+        from_shop=True
     )
 
 
 # ============================================================
-# TUTTI GLI ITEM
+# ALL ITEMS
 # ============================================================
 
 @app.route("/all-items")
 def all_items():
 
     search_query = request.args.get(
-        "q",
+        "search",
         ""
     ).strip()
 
-    selected_category = (
-        request.args.get(
-            "category",
-            ""
-        ).strip()
-    )
-
-    categories = [
-
-        "👕 Outfit",
-
-        "🎒 Back Bling",
-
-        "⛏️ Picconi",
-
-        "🪂 Deltaplani",
-
-        "💃 Emote",
-
-        "🎨 Wrap",
-
-        "🖼️ Schermate di caricamento",
-
-        "✨ Scie",
-
-        "🎵 Musica",
-
-        "🎨 Spray",
-
-        "🏳️ Banner",
-
-        "📦 Altri oggetti"
-    ]
-
-    cosmetics = search_cosmetics(
-        search_query=search_query,
-        category=selected_category
-    )
-
-    total_results = len(
-        cosmetics
-    )
-
-    page = request.args.get(
-        "page",
-        "1"
-    )
+    category = request.args.get(
+        "category",
+        ""
+    ).strip()
 
     try:
 
         page = int(
-            page
+            request.args.get(
+                "page",
+                1
+            )
         )
 
     except ValueError:
@@ -1026,7 +971,33 @@ def all_items():
 
         page = 1
 
+    cosmetics = search_cosmetics(
+        search_query,
+        category
+    )
+
+    if not cosmetics:
+
+        cosmetics = []
+
     per_page = 60
+
+    total_items = len(
+        cosmetics
+    )
+
+    total_pages = max(
+        1,
+        (
+            total_items
+            + per_page
+            - 1
+        ) // per_page
+    )
+
+    if page > total_pages:
+
+        page = total_pages
 
     start = (
         page - 1
@@ -1036,15 +1007,11 @@ def all_items():
         start + per_page
     )
 
-    visible_cosmetics = cosmetics[
+    items = cosmetics[
         start:end
     ]
 
-    has_next = (
-        end < total_results
-    )
-
-    shop_prices = (
+    current_prices = (
         get_current_shop_prices()
     )
 
@@ -1052,212 +1019,123 @@ def all_items():
 
     if login_required():
 
-        favorite_ids = (
-            get_favorite_ids(
-                session["user_id"]
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
+        )
+
+    for item in items:
+
+        item_id = get_item_id(
+            item
+        )
+
+        item["_shop_price"] = (
+            current_prices.get(
+                item_id
             )
-        )
-
-    for item in visible_cosmetics:
-
-        item["_item_id"] = get_item_id(
-            item
-        )
-
-        item["_item_name"] = get_item_name(
-            item
-        )
-
-        item["_image_url"] = get_item_image(
-            item
         )
 
         item["_is_favorite"] = (
-            item["_item_id"]
-            in favorite_ids
+            item_id in favorite_ids
         )
-
-        if not item.get(
-            "_category"
-        ):
-
-            item["_category"] = (
-                get_cosmetic_category(
-                    item
-                )
-            )
-
-        item["_shop_price"] = None
-
-        item["_shop_bundle"] = False
-
-        cosmetic_id = str(
-            item.get("id")
-            or ""
-        )
-
-        if cosmetic_id in shop_prices:
-
-            price_data = (
-                shop_prices[
-                    cosmetic_id
-                ]
-            )
-
-            item["_shop_price"] = (
-                price_data.get(
-                    "price"
-                )
-            )
-
-            item["_shop_bundle"] = (
-                price_data.get(
-                    "bundle",
-                    False
-                )
-            )
 
     return render_template(
         "all_items.html",
 
-        cosmetics=visible_cosmetics,
-
-        categories=categories,
-
-        selected_category=selected_category,
+        items=items,
 
         search_query=search_query,
 
-        favorite_ids=favorite_ids,
+        category=category,
 
         page=page,
 
-        total_results=total_results,
+        total_pages=total_pages,
 
-        has_next=has_next
+        total_items=total_items,
+
+        favorite_ids=favorite_ids
     )
 
 
 # ============================================================
-# TUTTI GLI ITEM - DETTAGLIO
+# ALL ITEM DETAIL
 # ============================================================
 
 @app.route(
     "/all-items/<path:item_id>"
 )
-def all_item_detail(item_id):
+def all_item_detail(
+    item_id
+):
 
     cosmetics = search_cosmetics(
-        search_query=item_id
+        ""
     )
 
-    selected_item = None
+    item = None
 
-    for item in cosmetics:
+    for cosmetic in cosmetics:
 
-        current_id = str(
-            item.get(
-                "id",
-                ""
-            )
+        cosmetic_id = get_item_id(
+            cosmetic
         )
 
-        if current_id == str(
-            item_id
+        if (
+            cosmetic_id
+            and str(cosmetic_id)
+            == str(item_id)
         ):
 
-            selected_item = item
+            item = cosmetic
 
             break
 
-    if selected_item is None:
+    if not item:
 
-        return render_template(
-            "all_item_detail.html",
-            item=None
-        ), 404
-
-    selected_item["_item_id"] = (
-        get_item_id(
-            selected_item
+        return redirect(
+            url_for("all_items")
         )
+
+    history = get_item_history_stats(
+        item_id
     )
 
-    selected_item["_item_name"] = (
-        get_item_name(
-            selected_item
-        )
-    )
-
-    selected_item["_image_url"] = (
-        get_item_image(
-            selected_item
-        )
-    )
-
-    if not selected_item.get(
-        "_category"
-    ):
-
-        selected_item["_category"] = (
-            get_cosmetic_category(
-                selected_item
-            )
-        )
-
-    selected_item["_shop_price"] = None
-
-    selected_item["_shop_bundle"] = False
-
-    shop_prices = (
+    current_prices = (
         get_current_shop_prices()
     )
 
-    cosmetic_id = str(
-        selected_item.get("id")
-        or ""
+    current_price = (
+        current_prices.get(
+            str(item_id)
+        )
     )
 
-    if cosmetic_id in shop_prices:
-
-        price_data = (
-            shop_prices[
-                cosmetic_id
-            ]
-        )
-
-        selected_item["_shop_price"] = (
-            price_data.get(
-                "price"
-            )
-        )
-
-        selected_item["_shop_bundle"] = (
-            price_data.get(
-                "bundle",
-                False
-            )
-        )
-
-    selected_item["_is_favorite"] = False
+    is_favorite = False
 
     if login_required():
 
-        favorite_ids = (
-            get_favorite_ids(
-                session["user_id"]
-            )
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
         )
 
-        selected_item["_is_favorite"] = (
-            selected_item["_item_id"]
+        is_favorite = (
+            str(item_id)
             in favorite_ids
         )
 
     return render_template(
         "all_item_detail.html",
 
-        item=selected_item
+        item=item,
+
+        item_id=item_id,
+
+        history=history,
+
+        current_price=current_price,
+
+        is_favorite=is_favorite
     )
 
 
@@ -1268,7 +1146,9 @@ def all_item_detail(item_id):
 @app.route(
     "/favorites/<path:item_id>"
 )
-def favorite_detail(item_id):
+def favorite_detail(
+    item_id
+):
 
     if not login_required():
 
@@ -1283,9 +1163,14 @@ def favorite_detail(item_id):
     cursor.execute(
         """
         SELECT *
+
         FROM favorites
-        WHERE user_id = ?
-        AND item_id = ?
+
+        WHERE
+            user_id = ?
+
+            AND item_id = ?
+
         LIMIT 1
         """,
         (
@@ -1294,96 +1179,93 @@ def favorite_detail(item_id):
         )
     )
 
-    row = cursor.fetchone()
+    favorite = cursor.fetchone()
 
     connection.close()
 
-    if not row:
+    if not favorite:
 
-        return render_template(
-            "skin_detail.html",
-            item=None,
-            history_stats=None
-        ), 404
-
-    try:
-
-        item = json.loads(
-            row["data_json"]
-            or "{}"
+        return redirect(
+            url_for("favorites")
         )
 
-    except Exception:
-
-        item = {}
-
-    item["_item_id"] = (
-        row["item_id"]
-    )
-
-    item["_item_name"] = (
-        row["item_name"]
-        or
-        get_item_name(item)
-    )
-
-    item["_image_url"] = (
-        row["image_url"]
-        or
-        get_item_image(item)
-    )
-
-    item["_is_favorite"] = True
-
-    if not item.get("name"):
-
-        item["name"] = (
-            item["_item_name"]
-        )
-
-    if not item.get("image"):
-
-        item["image"] = (
-            item["_image_url"]
-        )
+    # --------------------------------------------------------
+    # Prova ad aggiornare lo storico
+    # --------------------------------------------------------
 
     try:
 
         shop = get_shop()
 
-        shop_items = prepare_shop(
-            shop
-        )
+        if shop:
 
-        shop_date = get_shop_date(
-            shop
-        )
+            shop_items = prepare_shop(
+                shop
+            )
 
-        save_shop_history(
-            shop_date,
-            shop_items
-        )
+            shop_date = get_shop_date(
+                shop
+            )
+
+            save_shop_history(
+                shop_date,
+                shop_items
+            )
 
     except Exception as error:
 
         print(
-            "Errore aggiornamento "
-            "storico preferito:",
+            "⚠️ Errore aggiornamento storico:",
             error
         )
 
-    history_stats = (
-        get_item_history_stats(
-            item["_item_id"]
-        )
+    # --------------------------------------------------------
+    # Recupera dati JSON
+    # --------------------------------------------------------
+
+    item_data = {}
+
+    try:
+
+        if favorite["data_json"]:
+
+            item_data = json.loads(
+                favorite["data_json"]
+            )
+
+    except Exception:
+
+        item_data = {}
+
+    if not item_data:
+
+        item_data = {
+            "id":
+                favorite["item_id"],
+
+            "name":
+                favorite["item_name"],
+
+            "image":
+                favorite["image_url"]
+        }
+
+    history = get_item_history_stats(
+        item_id
     )
 
     return render_template(
         "skin_detail.html",
 
-        item=item,
+        item=item_data,
 
-        history_stats=history_stats
+        item_id=item_id,
+
+        history=history,
+
+        is_favorite=True,
+
+        from_shop=False
     )
 
 
@@ -1410,7 +1292,7 @@ def add_favorite():
 
     item_name = request.form.get(
         "item_name",
-        "Skin"
+        ""
     ).strip()
 
     image_url = request.form.get(
@@ -1420,15 +1302,19 @@ def add_favorite():
 
     data_json = request.form.get(
         "data_json",
-        "{}"
+        ""
+    )
+
+    redirect_to = request.form.get(
+        "redirect_to",
+        ""
     )
 
     if not item_id:
 
         return redirect(
-            request.referrer
-            or
-            url_for("skins")
+            redirect_to
+            or url_for("skins")
         )
 
     connection = get_connection()
@@ -1437,8 +1323,7 @@ def add_favorite():
 
     cursor.execute(
         """
-        INSERT OR IGNORE INTO
-        favorites
+        INSERT INTO favorites
         (
             user_id,
             item_id,
@@ -1448,6 +1333,22 @@ def add_favorite():
         )
 
         VALUES (?, ?, ?, ?, ?)
+
+        ON CONFLICT(
+            user_id,
+            item_id
+        )
+
+        DO UPDATE SET
+
+            item_name =
+                excluded.item_name,
+
+            image_url =
+                excluded.image_url,
+
+            data_json =
+                excluded.data_json
         """,
         (
             session["user_id"],
@@ -1463,9 +1364,8 @@ def add_favorite():
     connection.close()
 
     return redirect(
-        request.referrer
-        or
-        url_for("skins")
+        redirect_to
+        or url_for("favorites")
     )
 
 
@@ -1490,6 +1390,11 @@ def remove_favorite():
         ""
     ).strip()
 
+    redirect_to = request.form.get(
+        "redirect_to",
+        ""
+    )
+
     connection = get_connection()
 
     cursor = connection.cursor()
@@ -1497,8 +1402,11 @@ def remove_favorite():
     cursor.execute(
         """
         DELETE FROM favorites
-        WHERE user_id = ?
-        AND item_id = ?
+
+        WHERE
+            user_id = ?
+
+            AND item_id = ?
         """,
         (
             session["user_id"],
@@ -1511,14 +1419,13 @@ def remove_favorite():
     connection.close()
 
     return redirect(
-        request.referrer
-        or
-        url_for("skins")
+        redirect_to
+        or url_for("favorites")
     )
 
 
 # ============================================================
-# FAVORITES PAGE
+# FAVORITES
 # ============================================================
 
 @app.route("/favorites")
@@ -1537,8 +1444,11 @@ def favorites():
     cursor.execute(
         """
         SELECT *
+
         FROM favorites
+
         WHERE user_id = ?
+
         ORDER BY created_at DESC
         """,
         (
@@ -1546,164 +1456,16 @@ def favorites():
         )
     )
 
-    rows = cursor.fetchall()
+    favorite_items = (
+        cursor.fetchall()
+    )
 
     connection.close()
-
-    favorite_items = []
-
-    for row in rows:
-
-        try:
-
-            item = json.loads(
-                row["data_json"]
-                or "{}"
-            )
-
-        except Exception:
-
-            item = {}
-
-        item["_item_id"] = (
-            row["item_id"]
-        )
-
-        item["_item_name"] = (
-            row["item_name"]
-        )
-
-        item["_image_url"] = (
-            row["image_url"]
-        )
-
-        item["_is_favorite"] = True
-
-        if not item.get("name"):
-
-            item["name"] = (
-                row["item_name"]
-            )
-
-        if not item.get("image"):
-
-            item["image"] = (
-                row["image_url"]
-            )
-
-        favorite_items.append(
-            item
-        )
 
     return render_template(
         "favorites.html",
 
-        favorites=favorite_items
-    )
-
-
-# ============================================================
-# SHOP HISTORY
-# ============================================================
-
-@app.route("/shop-history")
-def shop_history():
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT
-            shop_date,
-            COUNT(*) AS item_count
-
-        FROM shop_history
-
-        GROUP BY shop_date
-
-        ORDER BY shop_date DESC
-        """
-    )
-
-    dates = cursor.fetchall()
-
-    connection.close()
-
-    return render_template(
-        "shop_history.html",
-
-        dates=dates
-    )
-
-
-# ============================================================
-# SHOP HISTORY DATE
-# ============================================================
-
-@app.route(
-    "/shop-history/<path:shop_date>"
-)
-def shop_history_date(shop_date):
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    cursor.execute(
-        """
-        SELECT *
-        FROM shop_history
-        WHERE shop_date = ?
-        ORDER BY item_name COLLATE NOCASE
-        """,
-        (
-            shop_date,
-        )
-    )
-
-    rows = cursor.fetchall()
-
-    connection.close()
-
-    history_items = []
-
-    for row in rows:
-
-        try:
-
-            item = json.loads(
-                row["data_json"]
-                or "{}"
-            )
-
-        except Exception:
-
-            item = {}
-
-        item["_item_id"] = (
-            row["item_id"]
-        )
-
-        item["_item_name"] = (
-            row["item_name"]
-        )
-
-        item["_image_url"] = (
-            row["image_url"]
-        )
-
-        history_items.append(
-            item
-        )
-
-    return render_template(
-        "shop_history_date.html",
-
-        shop_date=shop_date,
-
-        history_items=history_items
+        favorite_items=favorite_items
     )
 
 
@@ -1721,7 +1483,7 @@ def favorite_toggle():
 
         return {
             "success": False,
-            "message": "Login richiesto."
+            "error": "Non autenticato"
         }, 401
 
     data = request.get_json(
@@ -1738,7 +1500,7 @@ def favorite_toggle():
     item_name = str(
         data.get(
             "item_name",
-            "Skin"
+            ""
         )
     ).strip()
 
@@ -1758,8 +1520,19 @@ def favorite_toggle():
 
         return {
             "success": False,
-            "message": "ID skin mancante."
+            "error": "item_id mancante"
         }, 400
+
+    try:
+
+        data_json = json.dumps(
+            item_data,
+            ensure_ascii=False
+        )
+
+    except Exception:
+
+        data_json = "{}"
 
     connection = get_connection()
 
@@ -1768,9 +1541,15 @@ def favorite_toggle():
     cursor.execute(
         """
         SELECT id
+
         FROM favorites
-        WHERE user_id = ?
-        AND item_id = ?
+
+        WHERE
+            user_id = ?
+
+            AND item_id = ?
+
+        LIMIT 1
         """,
         (
             session["user_id"],
@@ -1785,8 +1564,11 @@ def favorite_toggle():
         cursor.execute(
             """
             DELETE FROM favorites
-            WHERE user_id = ?
-            AND item_id = ?
+
+            WHERE
+                user_id = ?
+
+                AND item_id = ?
             """,
             (
                 session["user_id"],
@@ -1810,16 +1592,29 @@ def favorite_toggle():
             )
 
             VALUES (?, ?, ?, ?, ?)
+
+            ON CONFLICT(
+                user_id,
+                item_id
+            )
+
+            DO UPDATE SET
+
+                item_name =
+                    excluded.item_name,
+
+                image_url =
+                    excluded.image_url,
+
+                data_json =
+                    excluded.data_json
             """,
             (
                 session["user_id"],
                 item_id,
                 item_name,
                 image_url,
-                json.dumps(
-                    item_data,
-                    ensure_ascii=False
-                )
+                data_json
             )
         )
 
@@ -1836,7 +1631,98 @@ def favorite_toggle():
 
 
 # ============================================================
-# SKIN TRACKER
+# SHOP HISTORY
+# ============================================================
+
+@app.route("/shop-history")
+def shop_history():
+
+    if not login_required():
+
+        return redirect(
+            url_for("login")
+        )
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            shop_date,
+            COUNT(*) AS item_count
+
+        FROM shop_history
+
+        GROUP BY shop_date
+
+        ORDER BY shop_date DESC
+        """
+    )
+
+    history = cursor.fetchall()
+
+    connection.close()
+
+    return render_template(
+        "shop_history.html",
+
+        history=history
+    )
+
+
+# ============================================================
+# SHOP HISTORY DATE
+# ============================================================
+
+@app.route(
+    "/shop-history/<path:shop_date>"
+)
+def shop_history_date(
+    shop_date
+):
+
+    if not login_required():
+
+        return redirect(
+            url_for("login")
+        )
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+
+        FROM shop_history
+
+        WHERE shop_date = ?
+
+        ORDER BY item_name COLLATE NOCASE
+        """,
+        (
+            shop_date,
+        )
+    )
+
+    items = cursor.fetchall()
+
+    connection.close()
+
+    return render_template(
+        "shop_history_date.html",
+
+        items=items,
+
+        shop_date=shop_date
+    )
+
+
+# ============================================================
+# TRACKER
 # ============================================================
 
 @app.route("/tracker")
@@ -1851,10 +1737,6 @@ def tracker():
     connection = get_connection()
 
     cursor = connection.cursor()
-
-    # ========================================================
-    # TRACKED ITEMS
-    # ========================================================
 
     cursor.execute(
         """
@@ -1880,13 +1762,10 @@ def tracker():
         cursor.fetchall()
     )
 
-    # ========================================================
-    # SETTINGS
-    # ========================================================
-
     cursor.execute(
         """
         SELECT enabled
+
         FROM notification_settings
 
         WHERE user_id = ?
@@ -1922,7 +1801,7 @@ def tracker():
 
 
 # ============================================================
-# TRACKER NOTIFICATION TOGGLE
+# TRACKER NOTIFICATION SETTINGS
 # ============================================================
 
 @app.route(
@@ -1988,17 +1867,103 @@ def tracker_notifications():
 
 
 # ============================================================
-# START SERVER
+# AUTOMATIC TRACKER CHECK
+# ============================================================
+
+@app.route(
+    "/api/tracker/check",
+    methods=["GET"]
+)
+def api_tracker_check():
+
+    # --------------------------------------------------------
+    # Secret configurato su Render
+    # --------------------------------------------------------
+
+    cron_secret = os.getenv(
+        "CRON_SECRET"
+    )
+
+    request_secret = request.args.get(
+        "secret"
+    )
+
+    # --------------------------------------------------------
+    # Controllo configurazione
+    # --------------------------------------------------------
+
+    if not cron_secret:
+
+        return {
+            "success": False,
+            "error":
+                "CRON_SECRET non configurata"
+        }, 500
+
+    # --------------------------------------------------------
+    # Controllo autenticazione
+    # --------------------------------------------------------
+
+    if request_secret != cron_secret:
+
+        return {
+            "success": False,
+            "error": "Unauthorized"
+        }, 401
+
+    # --------------------------------------------------------
+    # Esegui Tracker
+    # --------------------------------------------------------
+
+    try:
+
+        result = run_tracker_check()
+
+        return result, 200
+
+    except Exception as error:
+
+        print(
+            "❌ Errore Tracker:",
+            error
+        )
+
+        return {
+            "success": False,
+            "error": str(error)
+        }, 500
+
+
+# ============================================================
+# ERROR HANDLERS
+# ============================================================
+
+@app.errorhandler(404)
+def page_not_found(error):
+
+    return (
+        render_template(
+            "index.html"
+        ),
+        404
+    )
+
+
+# ============================================================
+# START APP
 # ============================================================
 
 if __name__ == "__main__":
 
+    port = int(
+        os.getenv(
+            "PORT",
+            5000
+        )
+    )
+
     app.run(
         host="0.0.0.0",
-        port=int(
-            os.getenv(
-                "PORT",
-                5000
-            )
-        )
+        port=port,
+        debug=False
     )
