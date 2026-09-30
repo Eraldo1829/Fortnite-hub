@@ -1,46 +1,97 @@
 name: Fortnite Hub Skin Tracker
 
 on:
-
   schedule:
-
     - cron: "*/15 * * * *"
 
   workflow_dispatch:
 
 jobs:
-
   check-shop:
 
     runs-on: ubuntu-latest
 
     steps:
 
+      # ======================================================
+      # CHECKOUT
+      # ======================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      # ======================================================
+      # PYTHON
+      # ======================================================
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+
+      # ======================================================
+      # INSTALLAZIONE
+      # ======================================================
+
       - name: Install dependencies
         run: |
-          pip install requests flask werkzeug
+          python -m pip install --upgrade pip
+          pip install requests flask werkzeug resend
 
-      - name: Run Skin Tracker
+
+      # ======================================================
+      # ENVIRONMENT
+      # ======================================================
+
+      - name: Check configuration
         env:
           FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
-
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-
-          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
-
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-
-          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
-
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
+          echo "========================================"
+          echo "🔧 CONTROLLO CONFIGURAZIONE"
+          echo "========================================"
+
+          if [ -z "$FORTNITE_API_KEY" ]; then
+            echo "❌ FORTNITE_API_KEY non configurata"
+            exit 1
+          fi
+
+          echo "✅ FORTNITE_API_KEY presente"
+
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "❌ RESEND_API_KEY non configurata"
+            exit 1
+          fi
+
+          echo "✅ RESEND_API_KEY presente"
+
+          echo "========================================"
+
+
+      # ======================================================
+      # TRACKER
+      # ======================================================
+
+      - name: Run Fortnite Hub Skin Tracker
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+
+          echo "========================================"
+          echo "🔥 FORTNITE HUB SKIN TRACKER"
+          echo "========================================"
+
+          echo ""
+          echo "🕐 Avvio tracker..."
+          echo ""
+
           python tracker.py
+
+          echo ""
+          echo "========================================"
+          echo "🎉 TRACKER COMPLETATO"
+          echo "========================================"
