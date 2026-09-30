@@ -14,7 +14,7 @@
         {% if item %}
             {{ item.name }} | Fortnite Hub
         {% else %}
-            Skin non trovata | Fortnite Hub
+            Oggetto non trovato | Fortnite Hub
         {% endif %}
     </title>
 
@@ -57,7 +57,9 @@
         }
 
 
-        /* NAVBAR */
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .navbar {
 
@@ -151,7 +153,9 @@
         }
 
 
-        /* CONTAINER */
+        /* =========================
+           CONTAINER
+        ========================= */
 
         .container {
 
@@ -164,33 +168,9 @@
         }
 
 
-        /* ERROR */
-
-        .error {
-
-            text-align: center;
-
-            padding: 100px 20px;
-        }
-
-
-        .error h1 {
-
-            font-size: 42px;
-
-            margin-bottom: 15px;
-        }
-
-
-        .error p {
-
-            color: #8b93a7;
-
-            margin-bottom: 25px;
-        }
-
-
-        /* DETAIL */
+        /* =========================
+           MAIN DETAIL
+        ========================= */
 
         .detail {
 
@@ -206,7 +186,9 @@
         }
 
 
-        /* IMAGE */
+        /* =========================
+           IMAGE
+        ========================= */
 
         .image-panel {
 
@@ -268,7 +250,7 @@
         }
 
 
-        .skin-image {
+        .main-image {
 
             position: relative;
 
@@ -288,14 +270,16 @@
 
 
         .image-panel:hover
-        .skin-image {
+        .main-image {
 
             transform:
                 scale(1.04);
         }
 
 
-        /* INFO */
+        /* =========================
+           INFO
+        ========================= */
 
         .info {
 
@@ -325,6 +309,17 @@
                     90deg,
                     rgba(0,217,255,0.8),
                     rgba(168,85,247,0.8)
+                );
+        }
+
+
+        .bundle-badge {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00bcd4,
+                    #7c3aed
                 );
         }
 
@@ -365,7 +360,9 @@
         }
 
 
-        /* PRICE */
+        /* =========================
+           PRICE
+        ========================= */
 
         .price-box {
 
@@ -406,7 +403,9 @@
         }
 
 
-        /* BUTTONS */
+        /* =========================
+           BUTTONS
+        ========================= */
 
         .actions {
 
@@ -476,7 +475,171 @@
         }
 
 
-        /* FUTURE */
+        /* =========================
+           BUNDLE SECTION
+        ========================= */
+
+        .bundle-section {
+
+            margin-top: 70px;
+        }
+
+
+        .bundle-title {
+
+            margin-bottom: 25px;
+        }
+
+
+        .bundle-title h2 {
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .bundle-title p {
+
+            color: #8b93a7;
+
+            font-size: 14px;
+        }
+
+
+        .bundle-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(200px, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+
+        .bundle-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 290px;
+
+            border-radius: 18px;
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.08),
+                    rgba(255,255,255,0.025)
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            transition:
+                transform 0.3s,
+                border-color 0.3s,
+                box-shadow 0.3s;
+        }
+
+
+        .bundle-card:hover {
+
+            transform:
+                translateY(-6px);
+
+            border-color:
+                rgba(168,85,247,0.5);
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,0.35);
+        }
+
+
+        .bundle-image {
+
+            height: 210px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 15px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,217,255,0.08),
+                    transparent 65%
+                );
+        }
+
+
+        .bundle-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+
+            transition:
+                transform 0.3s;
+        }
+
+
+        .bundle-card:hover
+        .bundle-image img {
+
+            transform:
+                scale(1.08);
+        }
+
+
+        .bundle-info {
+
+            padding:
+                12px 15px;
+        }
+
+
+        .bundle-item-name {
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            margin-bottom: 5px;
+        }
+
+
+        .bundle-item-type {
+
+            color: #8b93a7;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           FUTURE BOX
+        ========================= */
 
         .future-box {
 
@@ -513,7 +676,38 @@
         }
 
 
-        /* MOBILE */
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error {
+
+            text-align: center;
+
+            padding:
+                100px 20px;
+        }
+
+
+        .error h1 {
+
+            font-size: 42px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .error p {
+
+            color: #8b93a7;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 850px) {
 
@@ -547,7 +741,8 @@
 
             .detail {
 
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
 
                 gap: 30px;
             }
@@ -559,7 +754,7 @@
             }
 
 
-            .skin-image {
+            .main-image {
 
                 max-height: 420px;
             }
@@ -568,6 +763,27 @@
             .info h1 {
 
                 font-size: 42px;
+            }
+
+
+            .bundle-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .bundle-grid {
+
+                grid-template-columns:
+                    1fr;
             }
 
         }
@@ -580,11 +796,16 @@
 <body>
 
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
     <nav class="navbar">
 
-        <a href="/" class="brand">
+        <a
+            href="/"
+            class="brand"
+        >
 
             <img
                 src="{{ url_for('static', filename='logo.png') }}"
@@ -614,6 +835,10 @@
         {% if item %}
 
 
+        <!-- =========================
+             MAIN ITEM
+        ========================= -->
+
         <div class="detail">
 
 
@@ -624,7 +849,7 @@
                 {% if item.image %}
 
                 <img
-                    class="skin-image"
+                    class="main-image"
                     src="{{ item.image }}"
                     alt="{{ item.name }}"
                 >
@@ -645,11 +870,19 @@
             <section class="info">
 
 
-                <div class="badge">
+                {% if item.bundle %}
 
-                    {{ item.type }}
-
+                <div class="badge bundle-badge">
+                    📦 Bundle
                 </div>
+
+                {% else %}
+
+                <div class="badge">
+                    {{ item.type }}
+                </div>
+
+                {% endif %}
 
 
                 <h1>
@@ -707,15 +940,18 @@
                 </div>
 
 
-                <!-- ACTIONS -->
+                <!-- BUTTONS -->
 
                 <div class="actions">
+
 
                     <button
                         class="button primary"
                         onclick="toggleFavorite(this)"
                     >
+
                         ♡ Aggiungi ai preferiti
+
                     </button>
 
 
@@ -723,8 +959,11 @@
                         href="/skins"
                         class="button secondary"
                     >
+
                         ← Torna allo Shop
+
                     </a>
+
 
                 </div>
 
@@ -737,15 +976,14 @@
                         🚀 In arrivo su Fortnite Hub
                     </h3>
 
+
                     <p>
 
-                        In questa scheda potremo aggiungere
-                        lo storico delle apparizioni,
-                        l'ultima volta nello Shop,
-                        il numero di apparizioni,
-                        informazioni sul set e,
-                        successivamente, un viewer 3D
-                        interattivo.
+                        Storico delle apparizioni,
+                        ultima presenza nello Shop,
+                        numero di apparizioni,
+                        informazioni sul set e
+                        viewer 3D interattivo.
 
                     </p>
 
@@ -754,11 +992,119 @@
 
             </section>
 
+
         </div>
+
+
+        <!-- =========================
+             BUNDLE CONTENT
+        ========================= -->
+
+        {% if item.bundle and item.bundle_items %}
+
+
+        <section class="bundle-section">
+
+
+            <div class="bundle-title">
+
+                <h2>
+                    📦 Contenuto del Bundle
+                </h2>
+
+
+                <p>
+
+                    Questo bundle contiene
+                    {{ item.bundle_items|length }}
+                    oggetti.
+
+                </p>
+
+            </div>
+
+
+            <div class="bundle-grid">
+
+
+                {% for bundle_item in item.bundle_items %}
+
+
+                <article class="bundle-card">
+
+
+                    <div class="bundle-image">
+
+
+                        {% if bundle_item.images and bundle_item.images.icon %}
+
+                        <img
+                            src="{{ bundle_item.images.icon }}"
+                            alt="{{ bundle_item.name }}"
+                            loading="lazy"
+                        >
+
+                        {% else %}
+
+                        <span>
+                            Immagine non disponibile
+                        </span>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                    <div class="bundle-info">
+
+
+                        <div class="bundle-item-name">
+
+                            {{ bundle_item.name }}
+
+                        </div>
+
+
+                        <div class="bundle-item-type">
+
+                            {% if bundle_item.type %}
+
+                                {{ bundle_item.type.displayValue }}
+
+                            {% else %}
+
+                                Cosmetico
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </section>
+
+
+        {% endif %}
 
 
         {% else %}
 
+
+        <!-- =========================
+             ERROR
+        ========================= -->
 
         <div class="error">
 
@@ -766,16 +1112,20 @@
                 😕 Oggetto non trovato
             </h1>
 
+
             <p>
                 L'oggetto richiesto non è disponibile
                 nello Shop attuale.
             </p>
 
+
             <a
                 href="/skins"
                 class="button primary"
             >
+
                 ← Torna allo Shop
+
             </a>
 
         </div>
@@ -792,26 +1142,23 @@
         function toggleFavorite(button) {
 
             if (
-                button.dataset.favorite === "true"
+                button.dataset.favorite
+                === "true"
             ) {
 
-                button.dataset.favorite = "false";
+                button.dataset.favorite =
+                    "false";
 
                 button.innerHTML =
                     "♡ Aggiungi ai preferiti";
 
-                button.style.background =
-                    "linear-gradient(90deg, #00bcd4, #7c3aed)";
-
             } else {
 
-                button.dataset.favorite = "true";
+                button.dataset.favorite =
+                    "true";
 
                 button.innerHTML =
                     "♥ Nei preferiti";
-
-                button.style.background =
-                    "linear-gradient(90deg, #a855f7, #ec4899)";
 
             }
 
