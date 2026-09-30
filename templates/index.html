@@ -2,12 +2,14 @@
 <html lang="it">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Fortnite Hub</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -16,165 +18,383 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #0f1117;
+            background:
+                radial-gradient(circle at 50% -20%, #243b70 0%, #101522 40%, #070a11 80%);
             color: white;
+            min-height: 100vh;
         }
 
+        /* NAVBAR */
+
         header {
-            background: #181b24;
-            padding: 20px 40px;
+            height: 80px;
+            padding: 12px 50px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2b2f3a;
+
+            background: rgba(7, 10, 17, 0.85);
+
+            border-bottom: 1px solid rgba(88, 214, 255, 0.15);
+
+            backdrop-filter: blur(12px);
+
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .logo {
-            font-size: 26px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 58px;
+            width: auto;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
         }
 
         nav a {
-            color: #ddd;
+            color: #d9e2ff;
             text-decoration: none;
-            margin-left: 25px;
+            font-weight: 600;
+            transition: 0.2s;
         }
 
         nav a:hover {
-            color: white;
+            color: #5ee7ff;
         }
+
+
+        /* HERO */
 
         .hero {
             text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #151925, #242a3a);
+
+            padding: 90px 20px 80px;
+
+            max-width: 1000px;
+            margin: auto;
         }
 
         .hero h1 {
-            font-size: 48px;
+            font-size: 52px;
+
             margin-bottom: 15px;
+
+            background: linear-gradient(
+                90deg,
+                #43e7ff,
+                #6b7cff,
+                #d946ef
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 18px;
-            color: #b8bdc9;
-            margin-bottom: 30px;
+            color: #aeb8d0;
+            font-size: 19px;
+            margin-bottom: 35px;
         }
 
+
+        /* SEARCH */
+
         .search-box {
-            max-width: 600px;
+
+            max-width: 650px;
+
             margin: auto;
+
             display: flex;
+
+            padding: 5px;
+
+            background: rgba(20, 27, 43, 0.9);
+
+            border: 1px solid rgba(94, 231, 255, 0.3);
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 0 30px rgba(58, 215, 255, 0.08);
         }
 
         .search-box input {
+
             flex: 1;
-            padding: 15px;
+
+            padding: 16px;
+
+            background: transparent;
+
             border: none;
-            border-radius: 8px 0 0 8px;
+
+            outline: none;
+
+            color: white;
+
             font-size: 16px;
         }
 
-        .search-box button {
-            padding: 15px 25px;
-            border: none;
-            background: #5865f2;
-            color: white;
-            font-weight: bold;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
+        .search-box input::placeholder {
+            color: #71809d;
         }
 
+        .search-box button {
+
+            padding: 14px 28px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            background: linear-gradient(
+                135deg,
+                #28dfff,
+                #714cff,
+                #d82cff
+            );
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .search-box button:hover {
+            transform: scale(1.03);
+
+            box-shadow:
+                0 0 20px rgba(96, 92, 255, 0.5);
+        }
+
+
+        /* SECTION */
+
         .section {
-            max-width: 1100px;
-            margin: 50px auto;
+
+            max-width: 1150px;
+
+            margin: 20px auto 70px;
+
             padding: 0 20px;
         }
 
         .section h2 {
-            margin-bottom: 25px;
-            font-size: 28px;
+
+            text-align: center;
+
+            margin-bottom: 30px;
+
+            font-size: 30px;
         }
 
+
+        /* CARDS */
+
         .cards {
+
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+
             gap: 20px;
         }
 
         .card {
-            background: #181b24;
-            border: 1px solid #2b2f3a;
-            border-radius: 12px;
-            padding: 25px;
-            transition: 0.2s;
+
+            position: relative;
+
+            padding: 28px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(25, 33, 53, 0.95),
+                    rgba(12, 16, 27, 0.95)
+                );
+
+            border: 1px solid rgba(111, 132, 180, 0.2);
+
+            border-radius: 16px;
+
+            transition: 0.25s;
+
+            overflow: hidden;
+        }
+
+        .card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #27e5ff,
+                    #714cff,
+                    #df36ff
+                );
+
+            opacity: 0;
+
+            transition: 0.25s;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            border-color: #5865f2;
+
+            transform: translateY(-6px);
+
+            border-color: rgba(94, 231, 255, 0.45);
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card h3 {
-            margin-bottom: 10px;
+
+            margin-bottom: 12px;
+
+            font-size: 20px;
         }
 
         .card p {
-            color: #aeb4c2;
-            line-height: 1.5;
+
+            color: #9ca9c2;
+
+            line-height: 1.6;
         }
 
+
+        /* FOOTER */
+
         footer {
+
             text-align: center;
+
             padding: 30px;
-            margin-top: 60px;
-            background: #181b24;
-            color: #888;
+
+            border-top:
+                1px solid rgba(88, 214, 255, 0.1);
+
+            color: #65718a;
+
+            background: rgba(5, 7, 12, 0.8);
         }
+
+
+        /* MOBILE */
 
         @media (max-width: 700px) {
 
             header {
-                padding: 20px;
+
+                height: auto;
+
+                padding: 15px 20px;
+
                 flex-direction: column;
+
+                gap: 12px;
+            }
+
+            .logo img {
+                height: 52px;
+            }
+
+            nav {
+
                 gap: 15px;
+
+                flex-wrap: wrap;
+
+                justify-content: center;
             }
 
             nav a {
-                margin: 0 8px;
+                font-size: 14px;
+            }
+
+            .hero {
+
+                padding-top: 60px;
             }
 
             .hero h1 {
-                font-size: 36px;
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 16px;
             }
 
             .search-box {
+
                 flex-direction: column;
-                gap: 10px;
+
+                gap: 5px;
             }
 
-            .search-box input,
             .search-box button {
-                border-radius: 8px;
+                width: 100%;
             }
+
         }
+
     </style>
+
 </head>
 
+
 <body>
+
 
     <header>
 
         <div class="logo">
-            🎮 Fortnite Hub
+
+            <img src="{{ url_for('static', filename='logo.png') }}"
+                 alt="Fortnite Hub">
+
         </div>
 
+
         <nav>
+
             <a href="/">Home</a>
+
             <a href="#">Shop</a>
+
             <a href="#">Players</a>
+
             <a href="#">Leaks</a>
+
             <a href="#">News</a>
+
         </nav>
 
     </header>
@@ -182,11 +402,13 @@
 
     <section class="hero">
 
-        <h1>Fortnite Hub</h1>
+        <h1>Il tuo Fortnite Hub</h1>
 
         <p>
-            Il tuo centro per tutto ciò che riguarda Fortnite.
+            Tutto ciò che ti serve per scoprire, monitorare
+            e seguire il mondo di Fortnite.
         </p>
+
 
         <div class="search-box">
 
@@ -208,60 +430,81 @@
 
         <h2>Esplora Fortnite Hub</h2>
 
+
         <div class="cards">
 
+
             <div class="card">
+
                 <h3>🛍️ Skin Tracker</h3>
 
                 <p>
-                    Controlla lo Shop e trova le skin che stai cercando.
+                    Controlla lo Shop e scopri quando
+                    tornano le tue skin preferite.
                 </p>
+
             </div>
 
 
             <div class="card">
+
                 <h3>👤 Player Tracker</h3>
 
                 <p>
-                    Cerca un giocatore e visualizza le sue statistiche.
+                    Cerca giocatori e visualizza
+                    le loro statistiche.
                 </p>
+
             </div>
 
 
             <div class="card">
+
                 <h3>🎁 Chest Tracker</h3>
 
                 <p>
-                    Esplora la mappa e trova informazioni sui chest.
+                    Esplora la mappa e trova
+                    informazioni sui chest.
                 </p>
+
             </div>
 
 
             <div class="card">
+
                 <h3>🔎 Leak Tracker</h3>
 
                 <p>
-                    Scopri le ultime informazioni sui contenuti in arrivo.
+                    Scopri nuovi contenuti,
+                    skin e informazioni in arrivo.
                 </p>
+
             </div>
 
 
             <div class="card">
+
                 <h3>📰 Fortnite News</h3>
 
                 <p>
-                    Rimani aggiornato sulle ultime novità.
+                    Rimani aggiornato sulle
+                    ultime novità.
                 </p>
+
             </div>
 
 
             <div class="card">
+
                 <h3>🔔 Notifiche</h3>
 
                 <p>
-                    Salva i tuoi contenuti preferiti e ricevi notifiche.
+                    Salva i tuoi contenuti preferiti
+                    e ricevi notifiche.
                 </p>
+
             </div>
+
 
         </div>
 
@@ -273,6 +516,11 @@
         Fortnite Hub — Community project
 
     </footer>
+
+
+</body>
+
+</html>
 
 </body>
 
