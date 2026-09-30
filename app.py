@@ -30,6 +30,7 @@ from services.fortnite_api import (
     prepare_shop,
     group_shop_items,
     get_all_cosmetics,
+    search_cosmetics,
     get_cosmetic_category,
     get_current_shop_prices
 )
@@ -124,7 +125,10 @@ def login_required():
 # ITEM ID
 # ============================================================
 
-def get_item_id(item, fallback_index=None):
+def get_item_id(
+    item,
+    fallback_index=None
+):
 
     possible_keys = [
         "id",
@@ -140,6 +144,7 @@ def get_item_id(item, fallback_index=None):
         value = item.get(key)
 
         if value:
+
             return str(value)
 
     if fallback_index is not None:
@@ -166,6 +171,7 @@ def get_item_name(item):
         value = item.get(key)
 
         if value:
+
             return str(value)
 
     return "Skin senza nome"
@@ -191,6 +197,7 @@ def get_item_image(item):
         value = item.get(key)
 
         if value:
+
             return str(value)
 
     return None
@@ -203,29 +210,41 @@ def get_item_image(item):
 def get_shop_date(shop):
 
     if not shop:
+
         return None
 
-    data = shop.get("data")
+    data = shop.get(
+        "data"
+    )
 
     if not data:
+
         return None
 
-    return data.get("date")
+    return data.get(
+        "date"
+    )
 
 
 # ============================================================
 # SAVE SHOP HISTORY
 # ============================================================
 
-def save_shop_history(shop_date, shop_items):
+def save_shop_history(
+    shop_date,
+    shop_items
+):
 
     if not shop_date or not shop_items:
+
         return
 
     connection = get_connection()
     cursor = connection.cursor()
 
-    for index, item in enumerate(shop_items):
+    for index, item in enumerate(
+        shop_items
+    ):
 
         item_id = get_item_id(
             item,
@@ -233,6 +252,7 @@ def save_shop_history(shop_date, shop_items):
         )
 
         if not item_id:
+
             continue
 
         item_name = get_item_name(
@@ -288,7 +308,9 @@ def get_favorite_ids(user_id):
         FROM favorites
         WHERE user_id = ?
         """,
-        (user_id,)
+        (
+            user_id,
+        )
     )
 
     rows = cursor.fetchall()
@@ -326,7 +348,9 @@ def get_item_history_stats(item_id):
         WHERE item_id = ?
         ORDER BY shop_date ASC
         """,
-        (str(item_id),)
+        (
+            str(item_id),
+        )
     )
 
     rows = cursor.fetchall()
@@ -346,9 +370,12 @@ def get_item_history_stats(item_id):
 
     for row in rows:
 
-        shop_date = row["shop_date"]
+        shop_date = row[
+            "shop_date"
+        ]
 
         if not shop_date:
+
             continue
 
         try:
@@ -367,6 +394,7 @@ def get_item_history_stats(item_id):
             continue
 
         except Exception:
+
             pass
 
         try:
@@ -392,9 +420,13 @@ def get_item_history_stats(item_id):
             "appearances": 0
         }
 
-    first_date = min(dates)
+    first_date = min(
+        dates
+    )
 
-    last_date = max(dates)
+    last_date = max(
+        dates
+    )
 
     today = date.today()
 
@@ -403,6 +435,7 @@ def get_item_history_stats(item_id):
     ).days
 
     if days_since < 0:
+
         days_since = 0
 
     return {
@@ -464,7 +497,11 @@ def register():
             ""
         )
 
-        if not username or not email or not password:
+        if (
+            not username
+            or not email
+            or not password
+        ):
 
             return render_template(
                 "register.html",
@@ -475,14 +512,20 @@ def register():
 
             return render_template(
                 "register.html",
-                error="Lo username deve avere almeno 3 caratteri."
+                error=(
+                    "Lo username deve avere "
+                    "almeno 3 caratteri."
+                )
             )
 
         if len(password) < 6:
 
             return render_template(
                 "register.html",
-                error="La password deve avere almeno 6 caratteri."
+                error=(
+                    "La password deve avere "
+                    "almeno 6 caratteri."
+                )
             )
 
         connection = get_connection()
@@ -501,7 +544,9 @@ def register():
             )
         )
 
-        existing_user = cursor.fetchone()
+        existing_user = (
+            cursor.fetchone()
+        )
 
         if existing_user:
 
@@ -509,11 +554,16 @@ def register():
 
             return render_template(
                 "register.html",
-                error="Username o email già utilizzati."
+                error=(
+                    "Username o email "
+                    "già utilizzati."
+                )
             )
 
-        password_hash = generate_password_hash(
-            password
+        password_hash = (
+            generate_password_hash(
+                password
+            )
         )
 
         cursor.execute(
@@ -590,7 +640,9 @@ def login():
             FROM users
             WHERE email = ?
             """,
-            (email,)
+            (
+                email,
+            )
         )
 
         user = cursor.fetchone()
@@ -604,9 +656,13 @@ def login():
                 password
             ):
 
-                session["user_id"] = user["id"]
+                session["user_id"] = (
+                    user["id"]
+                )
 
-                session["username"] = user["username"]
+                session["username"] = (
+                    user["username"]
+                )
 
                 return redirect(
                     url_for("home")
@@ -614,7 +670,10 @@ def login():
 
         return render_template(
             "login.html",
-            error="Email o password non corretti."
+            error=(
+                "Email o password "
+                "non corretti."
+            )
         )
 
     return render_template(
@@ -670,29 +729,41 @@ def skins():
 
     if login_required():
 
-        favorite_ids = get_favorite_ids(
-            session["user_id"]
+        favorite_ids = (
+            get_favorite_ids(
+                session["user_id"]
+            )
         )
 
     # ========================================================
     # PREPARAZIONE ITEM
     # ========================================================
 
-    for index, item in enumerate(shop_items):
+    for index, item in enumerate(
+        shop_items
+    ):
 
-        item["_shop_index"] = index
-
-        item["_item_id"] = get_item_id(
-            item,
+        item["_shop_index"] = (
             index
         )
 
-        item["_item_name"] = get_item_name(
-            item
+        item["_item_id"] = (
+            get_item_id(
+                item,
+                index
+            )
         )
 
-        item["_image_url"] = get_item_image(
-            item
+        item["_item_name"] = (
+            get_item_name(
+                item
+            )
+        )
+
+        item["_image_url"] = (
+            get_item_image(
+                item
+            )
         )
 
         item["_is_favorite"] = (
@@ -719,15 +790,19 @@ def skins():
             item
             for item in shop_items
             if search_lower
-            in item["_item_name"].lower()
+            in item[
+                "_item_name"
+            ].lower()
         ]
 
     # ========================================================
     # GRUPPI
     # ========================================================
 
-    shop_groups = group_shop_items(
-        shop_items
+    shop_groups = (
+        group_shop_items(
+            shop_items
+        )
     )
 
     return render_template(
@@ -769,7 +844,10 @@ def skin_detail(item_index):
 
     if (
         item_index < 0
-        or item_index >= len(shop_items)
+        or
+        item_index >= len(
+            shop_items
+        )
     ):
 
         return render_template(
@@ -781,25 +859,33 @@ def skin_detail(item_index):
         item_index
     ]
 
-    item["_item_id"] = get_item_id(
-        item,
-        item_index
+    item["_item_id"] = (
+        get_item_id(
+            item,
+            item_index
+        )
     )
 
-    item["_item_name"] = get_item_name(
-        item
+    item["_item_name"] = (
+        get_item_name(
+            item
+        )
     )
 
-    item["_image_url"] = get_item_image(
-        item
+    item["_image_url"] = (
+        get_item_image(
+            item
+        )
     )
 
     item["_is_favorite"] = False
 
     if login_required():
 
-        favorite_ids = get_favorite_ids(
-            session["user_id"]
+        favorite_ids = (
+            get_favorite_ids(
+                session["user_id"]
+            )
         )
 
         item["_is_favorite"] = (
@@ -816,8 +902,10 @@ def skin_detail(item_index):
         shop_items
     )
 
-    history_stats = get_item_history_stats(
-        item["_item_id"]
+    history_stats = (
+        get_item_history_stats(
+            item["_item_id"]
+        )
     )
 
     return render_template(
@@ -836,74 +924,113 @@ def skin_detail(item_index):
 @app.route("/all-items")
 def all_items():
 
-    cosmetics = get_all_cosmetics()
-
     search_query = request.args.get(
         "q",
         ""
     ).strip()
 
-    selected_category = request.args.get(
-        "category",
-        ""
-    ).strip()
-
-    # ========================================================
-    # PREZZI SHOP ATTUALE
-    # ========================================================
-
-    shop_prices = get_current_shop_prices()
-
-    # ========================================================
-    # RICERCA
-    # ========================================================
-
-    if search_query:
-
-        search_lower = (
-            search_query.lower()
-        )
-
-        cosmetics = [
-            item
-            for item in cosmetics
-            if search_lower
-            in str(
-                item.get("name", "")
-            ).lower()
-        ]
-
-    # ========================================================
-    # CATEGORIA
-    # ========================================================
-
-    if selected_category:
-
-        cosmetics = [
-            item
-            for item in cosmetics
-            if item.get("_category")
-            == selected_category
-        ]
+    selected_category = (
+        request.args.get(
+            "category",
+            ""
+        ).strip()
+    )
 
     # ========================================================
     # CATEGORIE
     # ========================================================
 
     categories = [
+
         "👕 Outfit",
+
         "🎒 Back Bling",
+
         "⛏️ Picconi",
+
         "🪂 Deltaplani",
+
         "💃 Emote",
+
         "🎨 Wrap",
+
         "🖼️ Schermate di caricamento",
+
         "✨ Scie",
+
         "🎵 Musica",
+
         "🎨 Spray",
+
         "🏳️ Banner",
+
         "📦 Altri oggetti"
     ]
+
+    # ========================================================
+    # COSMETICI
+    #
+    # Viene utilizzata la ricerca API invece di scaricare
+    # l'intero catalogo e mostrarlo tutto contemporaneamente.
+    # ========================================================
+
+    cosmetics = search_cosmetics(
+        search_query=search_query,
+        category=selected_category
+    )
+
+    # ========================================================
+    # PAGINAZIONE
+    # ========================================================
+
+    total_results = len(
+        cosmetics
+    )
+
+    page = request.args.get(
+        "page",
+        "1"
+    )
+
+    try:
+
+        page = int(
+            page
+        )
+
+    except ValueError:
+
+        page = 1
+
+    if page < 1:
+
+        page = 1
+
+    per_page = 60
+
+    start = (
+        page - 1
+    ) * per_page
+
+    end = (
+        start + per_page
+    )
+
+    visible_cosmetics = cosmetics[
+        start:end
+    ]
+
+    has_next = (
+        end < total_results
+    )
+
+    # ========================================================
+    # PREZZI SHOP
+    # ========================================================
+
+    shop_prices = (
+        get_current_shop_prices()
+    )
 
     # ========================================================
     # PREFERITI
@@ -913,26 +1040,34 @@ def all_items():
 
     if login_required():
 
-        favorite_ids = get_favorite_ids(
-            session["user_id"]
+        favorite_ids = (
+            get_favorite_ids(
+                session["user_id"]
+            )
         )
 
     # ========================================================
     # PREPARAZIONE
     # ========================================================
 
-    for item in cosmetics:
+    for item in visible_cosmetics:
 
-        item["_item_id"] = get_item_id(
-            item
+        item["_item_id"] = (
+            get_item_id(
+                item
+            )
         )
 
-        item["_item_name"] = get_item_name(
-            item
+        item["_item_name"] = (
+            get_item_name(
+                item
+            )
         )
 
-        item["_image_url"] = get_item_image(
-            item
+        item["_image_url"] = (
+            get_item_image(
+                item
+            )
         )
 
         item["_is_favorite"] = (
@@ -940,10 +1075,14 @@ def all_items():
             in favorite_ids
         )
 
-        if not item.get("_category"):
+        if not item.get(
+            "_category"
+        ):
 
             item["_category"] = (
-                get_cosmetic_category(item)
+                get_cosmetic_category(
+                    item
+                )
             )
 
         # ====================================================
@@ -955,27 +1094,35 @@ def all_items():
         item["_shop_bundle"] = False
 
         cosmetic_id = str(
-            item.get("id") or ""
+            item.get("id")
+            or ""
         )
 
         if cosmetic_id in shop_prices:
 
-            price_data = shop_prices[
-                cosmetic_id
-            ]
+            price_data = (
+                shop_prices[
+                    cosmetic_id
+                ]
+            )
 
             item["_shop_price"] = (
-                price_data.get("price")
+                price_data.get(
+                    "price"
+                )
             )
 
             item["_shop_bundle"] = (
-                price_data.get("bundle", False)
+                price_data.get(
+                    "bundle",
+                    False
+                )
             )
 
     return render_template(
         "all_items.html",
 
-        cosmetics=cosmetics,
+        cosmetics=visible_cosmetics,
 
         categories=categories,
 
@@ -983,7 +1130,13 @@ def all_items():
 
         search_query=search_query,
 
-        favorite_ids=favorite_ids
+        favorite_ids=favorite_ids,
+
+        page=page,
+
+        total_results=total_results,
+
+        has_next=has_next
     )
 
 
@@ -996,7 +1149,13 @@ def all_items():
 )
 def all_item_detail(item_id):
 
-    cosmetics = get_all_cosmetics()
+    # ========================================================
+    # CERCA DIRETTAMENTE L'ITEM
+    # ========================================================
+
+    cosmetics = search_cosmetics(
+        search_query=item_id
+    )
 
     selected_item = None
 
@@ -1006,11 +1165,17 @@ def all_item_detail(item_id):
             item.get("id", "")
         )
 
-        if current_id == str(item_id):
+        if current_id == str(
+            item_id
+        ):
 
             selected_item = item
 
             break
+
+    # ========================================================
+    # FALLBACK
+    # ========================================================
 
     if selected_item is None:
 
@@ -1019,19 +1184,31 @@ def all_item_detail(item_id):
             item=None
         ), 404
 
-    selected_item["_item_id"] = get_item_id(
-        selected_item
+    # ========================================================
+    # DATI ITEM
+    # ========================================================
+
+    selected_item["_item_id"] = (
+        get_item_id(
+            selected_item
+        )
     )
 
-    selected_item["_item_name"] = get_item_name(
-        selected_item
+    selected_item["_item_name"] = (
+        get_item_name(
+            selected_item
+        )
     )
 
-    selected_item["_image_url"] = get_item_image(
-        selected_item
+    selected_item["_image_url"] = (
+        get_item_image(
+            selected_item
+        )
     )
 
-    if not selected_item.get("_category"):
+    if not selected_item.get(
+        "_category"
+    ):
 
         selected_item["_category"] = (
             get_cosmetic_category(
@@ -1039,12 +1216,56 @@ def all_item_detail(item_id):
             )
         )
 
+    # ========================================================
+    # PREZZO SHOP
+    # ========================================================
+
+    selected_item["_shop_price"] = None
+
+    selected_item["_shop_bundle"] = False
+
+    shop_prices = (
+        get_current_shop_prices()
+    )
+
+    cosmetic_id = str(
+        selected_item.get("id")
+        or ""
+    )
+
+    if cosmetic_id in shop_prices:
+
+        price_data = (
+            shop_prices[
+                cosmetic_id
+            ]
+        )
+
+        selected_item["_shop_price"] = (
+            price_data.get(
+                "price"
+            )
+        )
+
+        selected_item["_shop_bundle"] = (
+            price_data.get(
+                "bundle",
+                False
+            )
+        )
+
+    # ========================================================
+    # PREFERITO
+    # ========================================================
+
     selected_item["_is_favorite"] = False
 
     if login_required():
 
-        favorite_ids = get_favorite_ids(
-            session["user_id"]
+        favorite_ids = (
+            get_favorite_ids(
+                session["user_id"]
+            )
         )
 
         selected_item["_is_favorite"] = (
@@ -1114,27 +1335,35 @@ def favorite_detail(item_id):
 
         item = {}
 
-    item["_item_id"] = row["item_id"]
+    item["_item_id"] = (
+        row["item_id"]
+    )
 
     item["_item_name"] = (
         row["item_name"]
-        or get_item_name(item)
+        or
+        get_item_name(item)
     )
 
     item["_image_url"] = (
         row["image_url"]
-        or get_item_image(item)
+        or
+        get_item_image(item)
     )
 
     item["_is_favorite"] = True
 
     if not item.get("name"):
 
-        item["name"] = item["_item_name"]
+        item["name"] = (
+            item["_item_name"]
+        )
 
     if not item.get("image"):
 
-        item["image"] = item["_image_url"]
+        item["image"] = (
+            item["_image_url"]
+        )
 
     try:
 
@@ -1156,12 +1385,15 @@ def favorite_detail(item_id):
     except Exception as error:
 
         print(
-            "Errore aggiornamento storico preferito:",
+            "Errore aggiornamento "
+            "storico preferito:",
             error
         )
 
-    history_stats = get_item_history_stats(
-        item["_item_id"]
+    history_stats = (
+        get_item_history_stats(
+            item["_item_id"]
+        )
     )
 
     return render_template(
@@ -1213,7 +1445,8 @@ def add_favorite():
 
         return redirect(
             request.referrer
-            or url_for("skins")
+            or
+            url_for("skins")
         )
 
     connection = get_connection()
@@ -1245,7 +1478,8 @@ def add_favorite():
 
     return redirect(
         request.referrer
-        or url_for("skins")
+        or
+        url_for("skins")
     )
 
 
@@ -1290,7 +1524,8 @@ def remove_favorite():
 
     return redirect(
         request.referrer
-        or url_for("skins")
+        or
+        url_for("skins")
     )
 
 
@@ -1341,21 +1576,31 @@ def favorites():
 
             item = {}
 
-        item["_item_id"] = row["item_id"]
+        item["_item_id"] = (
+            row["item_id"]
+        )
 
-        item["_item_name"] = row["item_name"]
+        item["_item_name"] = (
+            row["item_name"]
+        )
 
-        item["_image_url"] = row["image_url"]
+        item["_image_url"] = (
+            row["image_url"]
+        )
 
         item["_is_favorite"] = True
 
         if not item.get("name"):
 
-            item["name"] = row["item_name"]
+            item["name"] = (
+                row["item_name"]
+            )
 
         if not item.get("image"):
 
-            item["image"] = row["image_url"]
+            item["image"] = (
+                row["image_url"]
+            )
 
         favorite_items.append(
             item
@@ -1363,6 +1608,7 @@ def favorites():
 
     return render_template(
         "favorites.html",
+
         favorites=favorite_items
     )
 
@@ -1394,6 +1640,7 @@ def shop_history():
 
     return render_template(
         "shop_history.html",
+
         dates=dates
     )
 
@@ -1441,11 +1688,17 @@ def shop_history_date(shop_date):
 
             item = {}
 
-        item["_item_id"] = row["item_id"]
+        item["_item_id"] = (
+            row["item_id"]
+        )
 
-        item["_item_name"] = row["item_name"]
+        item["_item_name"] = (
+            row["item_name"]
+        )
 
-        item["_image_url"] = row["image_url"]
+        item["_image_url"] = (
+            row["image_url"]
+        )
 
         history_items.append(
             item
@@ -1453,7 +1706,9 @@ def shop_history_date(shop_date):
 
     return render_template(
         "shop_history_date.html",
+
         shop_date=shop_date,
+
         history_items=history_items
     )
 
