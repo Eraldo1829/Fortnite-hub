@@ -2,7 +2,6 @@ import os
 import json
 import sqlite3
 from datetime import datetime, timezone
-from functools import wraps
 
 from flask import (
     Flask,
@@ -15,7 +14,10 @@ from flask import (
     abort,
 )
 
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash,
+)
 
 from services.fortnite_api import (
     get_shop,
@@ -32,9 +34,15 @@ from services.fortnite_api import (
 
 app = Flask(__name__)
 
-app.secret_key = os.getenv("SECRET_KEY", "fortnite-hub-dev-secret-key")
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "fortnite-hub-dev-secret-key",
+)
 
-DATABASE = os.getenv("DATABASE_PATH", "fortnite_hub.db")
+DATABASE = os.getenv(
+    "DATABASE_PATH",
+    "fortnite_hub.db",
+)
 
 
 # ============================================================
@@ -127,7 +135,7 @@ def init_db():
 
 
 # ============================================================
-# HELPERS
+# GENERAL HELPERS
 # ============================================================
 
 def now_iso():
@@ -151,6 +159,7 @@ def get_item_id(item, fallback=None):
 
     for key in possible_keys:
         value = item.get(key)
+
         if value is not None and str(value).strip():
             return str(value)
 
@@ -170,6 +179,7 @@ def get_item_name(item):
 
     for key in possible_keys:
         value = item.get(key)
+
         if value:
             return str(value)
 
@@ -189,14 +199,21 @@ def get_item_image(item):
 
     for key in possible_keys:
         value = item.get(key)
+
         if value:
             return str(value)
 
     images = item.get("images")
 
     if isinstance(images, dict):
-        for key in ["icon", "featured", "smallIcon", "large"]:
+        for key in [
+            "icon",
+            "featured",
+            "smallIcon",
+            "large",
+        ]:
             value = images.get(key)
+
             if value:
                 return str(value)
 
@@ -204,8 +221,14 @@ def get_item_image(item):
 
 
 def get_shop_date():
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return datetime.now(
+        timezone.utc
+    ).strftime("%Y-%m-%d")
 
+
+# ============================================================
+# FAVORITES HELPERS
+# ============================================================
 
 def get_favorite_ids(user_id):
     if not user_id:
@@ -232,7 +255,7 @@ def get_favorite_ids(user_id):
 
 
 # ============================================================
-# TEMPLATE ITEM DECORATION
+# ITEM TEMPLATE DECORATION
 # ============================================================
 
 def decorate_item_for_template(
@@ -242,8 +265,7 @@ def decorate_item_for_template(
     shop_index=None,
 ):
     """
-    Aggiunge ai dati dell'item le variabili utilizzate
-    dai template:
+    Aggiunge i campi utilizzati dai template:
 
         _item_id
         _item_name
@@ -251,13 +273,8 @@ def decorate_item_for_template(
         _is_favorite
         _shop_index
 
-    Non elimina né modifica i dati originali come:
-        bundle
-        bundle_items
-        price
-        type
-        series
-        set
+    Mantiene tutti i dati originali dell'item,
+    inclusi bundle e bundle_items.
     """
 
     if not isinstance(item, dict):
@@ -267,7 +284,10 @@ def decorate_item_for_template(
         favorite_ids = set()
 
     if item_id is None:
-        item_id = get_item_id(item, shop_index)
+        item_id = get_item_id(
+            item,
+            shop_index,
+        )
 
     item_name = get_item_name(item)
     image_url = get_item_image(item)
@@ -279,7 +299,6 @@ def decorate_item_for_template(
     )
 
     item["_item_name"] = item_name
-
     item["_image_url"] = image_url
 
     if shop_index is not None:
@@ -291,21 +310,17 @@ def decorate_item_for_template(
         else False
     )
 
-    # Compatibilità con eventuali template che usano
-    # is_favorite senza underscore.
-    item["is_favorite"] = item["_is_favorite"]
+    item["is_favorite"] = item[
+        "_is_favorite"
+    ]
 
     return item
 
 
-def prepare_shop_template_items(shop_items, favorite_ids):
-    """
-    Prepara gli item dello Shop per i template.
-
-    Importante:
-    l'indice viene mantenuto quello originale dello Shop.
-    """
-
+def prepare_shop_template_items(
+    shop_items,
+    favorite_ids,
+):
     prepared = []
 
     for index, item in enumerate(shop_items):
@@ -313,7 +328,10 @@ def prepare_shop_template_items(shop_items, favorite_ids):
         if not isinstance(item, dict):
             continue
 
-        item_id = get_item_id(item, index)
+        item_id = get_item_id(
+            item,
+            index,
+        )
 
         decorate_item_for_template(
             item,
@@ -345,7 +363,10 @@ def save_shop_history(shop_items):
         if not isinstance(item, dict):
             continue
 
-        item_id = get_item_id(item, index)
+        item_id = get_item_id(
+            item,
+            index,
+        )
 
         if item_id is None:
             continue
@@ -356,11 +377,22 @@ def save_shop_history(shop_items):
         price = item.get("price")
 
         try:
-            price = int(price) if price is not None else None
-        except (ValueError, TypeError):
+            price = (
+                int(price)
+                if price is not None
+                else None
+            )
+        except (
+            ValueError,
+            TypeError,
+        ):
             price = None
 
-        bundle = 1 if item.get("bundle") else 0
+        bundle = (
+            1
+            if item.get("bundle")
+            else 0
+        )
 
         try:
             data_json = json.dumps(
@@ -456,7 +488,9 @@ def get_item_history_stats(item_id):
             "%Y-%m-%d",
         ).date()
 
-        today = datetime.now(timezone.utc).date()
+        today = datetime.now(
+            timezone.utc
+        ).date()
 
         days_since = (
             today - last_dt
@@ -478,14 +512,16 @@ def get_item_history_stats(item_id):
 # ============================================================
 
 @app.route("/")
-def index():
+def home():
 
     shop = get_shop()
 
     shop_items = []
 
     if shop:
-        shop_items = prepare_shop(shop)
+        shop_items = prepare_shop(
+            shop
+        )
 
     return render_template(
         "index.html",
@@ -498,13 +534,19 @@ def index():
 # REGISTER
 # ============================================================
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route(
+    "/register",
+    methods=["GET", "POST"],
+)
 def register():
 
     if request.method == "POST":
 
         username = (
-            request.form.get("username", "")
+            request.form.get(
+                "username",
+                "",
+            )
             .strip()
         )
 
@@ -514,13 +556,19 @@ def register():
         )
 
         if not username or not password:
+
             return render_template(
                 "register.html",
-                error="Username e password sono obbligatori.",
+                error=(
+                    "Username e password "
+                    "sono obbligatori."
+                ),
             )
 
-        password_hash = generate_password_hash(
-            password
+        password_hash = (
+            generate_password_hash(
+                password
+            )
         )
 
         conn = get_db()
@@ -551,7 +599,9 @@ def register():
 
             return render_template(
                 "register.html",
-                error="Username già esistente.",
+                error=(
+                    "Username già esistente."
+                ),
             )
 
         conn.close()
@@ -569,13 +619,19 @@ def register():
 # LOGIN
 # ============================================================
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route(
+    "/login",
+    methods=["GET", "POST"],
+)
 def login():
 
     if request.method == "POST":
 
         username = (
-            request.form.get("username", "")
+            request.form.get(
+                "username",
+                "",
+            )
             .strip()
         )
 
@@ -606,15 +662,20 @@ def login():
         ):
 
             session["user_id"] = user["id"]
-            session["username"] = user["username"]
+            session["username"] = user[
+                "username"
+            ]
 
             return redirect(
-                url_for("index")
+                url_for("home")
             )
 
         return render_template(
             "login.html",
-            error="Username o password non corretti.",
+            error=(
+                "Username o password "
+                "non corretti."
+            ),
         )
 
     return render_template(
@@ -632,12 +693,12 @@ def logout():
     session.clear()
 
     return redirect(
-        url_for("index")
+        url_for("home")
     )
 
 
 # ============================================================
-# SHOP / SKINS
+# ITEM SHOP
 # ============================================================
 
 @app.route("/skins")
@@ -657,24 +718,31 @@ def skins():
             shop_date=None,
         )
 
-    shop_items = prepare_shop(shop)
+    shop_items = prepare_shop(
+        shop
+    )
 
-    # Salviamo lo storico prima di aggiungere
-    # i campi interni dei template.
-    save_shop_history(shop_items)
+    # Salviamo lo shop originale.
+    save_shop_history(
+        shop_items
+    )
 
-    user_id = session.get("user_id")
+    user_id = session.get(
+        "user_id"
+    )
 
     favorite_ids = get_favorite_ids(
         user_id
     )
 
-    # IMPORTANTE:
-    # Decoriamo gli item PRIMA del filtro di ricerca.
-    # Così _shop_index rimane l'indice reale dello Shop.
-    shop_items = prepare_shop_template_items(
-        shop_items,
-        favorite_ids,
+    # Decoriamo PRIMA della ricerca.
+    # In questo modo _shop_index resta
+    # l'indice originale dello Shop.
+    shop_items = (
+        prepare_shop_template_items(
+            shop_items,
+            favorite_ids,
+        )
     )
 
     search_query = (
@@ -687,22 +755,33 @@ def skins():
 
     if search_query:
 
-        search_lower = search_query.lower()
+        search_lower = (
+            search_query.lower()
+        )
 
         shop_items = [
             item
             for item in shop_items
             if search_lower
-            in get_item_name(item).lower()
+            in get_item_name(
+                item
+            ).lower()
         ]
 
-    shop_groups = []
+    # ========================================================
+    # GROUP SHOP ITEMS
+    # ========================================================
 
     try:
-        from services.fortnite_api import group_shop_items
 
-        shop_groups = group_shop_items(
-            shop_items
+        from services.fortnite_api import (
+            group_shop_items
+        )
+
+        shop_groups = (
+            group_shop_items(
+                shop_items
+            )
         )
 
     except Exception:
@@ -730,29 +809,41 @@ def skins():
 # SKIN DETAIL
 # ============================================================
 
-@app.route("/skins/<int:item_index>")
+@app.route(
+    "/skins/<int:item_index>"
+)
 def skin_detail(item_index):
 
     shop = get_shop()
 
     if not shop:
+
         return redirect(
             url_for("skins")
         )
 
-    shop_items = prepare_shop(shop)
+    shop_items = prepare_shop(
+        shop
+    )
 
     if (
         item_index < 0
         or item_index >= len(shop_items)
     ):
+
         return redirect(
             url_for("skins")
         )
 
-    item = shop_items[item_index]
+    item = shop_items[
+        item_index
+    ]
 
-    if not isinstance(item, dict):
+    if not isinstance(
+        item,
+        dict,
+    ):
+
         return redirect(
             url_for("skins")
         )
@@ -762,26 +853,18 @@ def skin_detail(item_index):
         item_index,
     )
 
-    user_id = session.get("user_id")
+    user_id = session.get(
+        "user_id"
+    )
 
     favorite_ids = get_favorite_ids(
         user_id
     )
 
-    # ========================================================
-    # FIX PRINCIPALE
-    # ========================================================
-    #
-    # skin_detail.html utilizza:
-    #
-    # item._item_id
-    # item._item_name
-    # item._image_url
-    # item._is_favorite
-    #
-    # Prima questi campi mancavano e Jinja produceva
-    # Undefined -> errore tojson.
-    #
+    # FIX:
+    # skin_detail.html utilizza
+    # _item_id, _item_name, _image_url
+    # e _is_favorite.
     decorate_item_for_template(
         item,
         item_id=item_id,
@@ -790,33 +873,24 @@ def skin_detail(item_index):
     )
 
     is_favorite = bool(
-        item.get("_is_favorite")
+        item.get(
+            "_is_favorite"
+        )
     )
 
-    history = get_item_history_stats(
-        item_id
+    history = (
+        get_item_history_stats(
+            item_id
+        )
     )
 
     return render_template(
         "skin_detail.html",
-
-        # Item completo, compresi:
-        # bundle
-        # bundle_items
-        # price
-        # image
-        # type
-        # ecc.
         item=item,
-
         item_id=item_id,
-
-        # Compatibilità con entrambi i nomi.
         history=history,
         history_stats=history,
-
         is_favorite=is_favorite,
-
         from_shop=True,
     )
 
@@ -831,6 +905,7 @@ def all_items():
     cosmetics = get_all_cosmetics()
 
     if not cosmetics:
+
         return render_template(
             "all_items.html",
             cosmetics=[],
@@ -863,13 +938,19 @@ def all_items():
     )
 
     try:
+
         page = int(
             request.args.get(
                 "page",
                 1,
             )
         )
-    except (TypeError, ValueError):
+
+    except (
+        TypeError,
+        ValueError,
+    ):
+
         page = 1
 
     if page < 1:
@@ -883,11 +964,16 @@ def all_items():
 
     for item in cosmetics:
 
-        if not isinstance(item, dict):
+        if not isinstance(
+            item,
+            dict,
+        ):
             continue
 
-        category = get_cosmetic_category(
-            item
+        category = (
+            get_cosmetic_category(
+                item
+            )
         )
 
         if category:
@@ -906,24 +992,34 @@ def all_items():
 
     filtered = []
 
-    search_lower = search_query.lower()
+    search_lower = (
+        search_query.lower()
+    )
 
     for item in cosmetics:
 
-        if not isinstance(item, dict):
+        if not isinstance(
+            item,
+            dict,
+        ):
             continue
 
         item_name = get_item_name(
             item
         )
 
-        category = get_cosmetic_category(
-            item
+        category = (
+            get_cosmetic_category(
+                item
+            )
         )
 
         if search_lower:
 
-            if search_lower not in item_name.lower():
+            if (
+                search_lower
+                not in item_name.lower()
+            ):
                 continue
 
         if selected_category:
@@ -933,7 +1029,9 @@ def all_items():
 
         filtered.append(item)
 
-    total_results = len(filtered)
+    total_results = len(
+        filtered
+    )
 
     # ========================================================
     # PAGINATION
@@ -965,12 +1063,17 @@ def all_items():
     ]
 
     # ========================================================
-    # PRICES
+    # CURRENT SHOP PRICES
     # ========================================================
 
     try:
-        shop_prices = get_current_shop_prices()
+
+        shop_prices = (
+            get_current_shop_prices()
+        )
+
     except Exception:
+
         shop_prices = {}
 
     user_id = session.get(
@@ -987,7 +1090,10 @@ def all_items():
         page_items
     ):
 
-        if not isinstance(item, dict):
+        if not isinstance(
+            item,
+            dict,
+        ):
             continue
 
         item_id = get_item_id(
@@ -1002,8 +1108,10 @@ def all_items():
             shop_index=start + index,
         )
 
-        category = get_cosmetic_category(
-            item
+        category = (
+            get_cosmetic_category(
+                item
+            )
         )
 
         item["_category"] = category
@@ -1018,11 +1126,15 @@ def all_items():
         ):
 
             item["_shop_price"] = (
-                price_data.get("price")
+                price_data.get(
+                    "price"
+                )
             )
 
             item["_shop_bundle"] = bool(
-                price_data.get("bundle")
+                price_data.get(
+                    "bundle"
+                )
             )
 
         else:
@@ -1034,7 +1146,9 @@ def all_items():
             item
         )
 
-    has_next = page < total_pages
+    has_next = (
+        page < total_pages
+    )
 
     return render_template(
         "all_items.html",
@@ -1056,7 +1170,9 @@ def all_items():
 # ALL ITEM DETAIL
 # ============================================================
 
-@app.route("/all-items/<path:item_id>")
+@app.route(
+    "/all-items/<path:item_id>"
+)
 def all_item_detail(item_id):
 
     cosmetics = get_all_cosmetics()
@@ -1065,7 +1181,10 @@ def all_item_detail(item_id):
 
     for cosmetic in cosmetics:
 
-        if not isinstance(cosmetic, dict):
+        if not isinstance(
+            cosmetic,
+            dict,
+        ):
             continue
 
         current_id = get_item_id(
@@ -1077,6 +1196,7 @@ def all_item_detail(item_id):
             and str(current_id)
             == str(item_id)
         ):
+
             item = cosmetic
             break
 
@@ -1098,19 +1218,23 @@ def all_item_detail(item_id):
     )
 
     is_favorite = bool(
-        item.get("_is_favorite")
+        item.get(
+            "_is_favorite"
+        )
     )
 
-    # ========================================================
-    # CURRENT SHOP PRICE
-    # ========================================================
-
     try:
-        prices = get_current_shop_prices()
+
+        prices = (
+            get_current_shop_prices()
+        )
+
         current_price = prices.get(
             str(item_id)
         )
+
     except Exception:
+
         current_price = None
 
     if isinstance(
@@ -1119,11 +1243,15 @@ def all_item_detail(item_id):
     ):
 
         item["_shop_price"] = (
-            current_price.get("price")
+            current_price.get(
+                "price"
+            )
         )
 
         item["_shop_bundle"] = bool(
-            current_price.get("bundle")
+            current_price.get(
+                "bundle"
+            )
         )
 
     else:
@@ -1131,8 +1259,10 @@ def all_item_detail(item_id):
         item["_shop_price"] = None
         item["_shop_bundle"] = False
 
-    history = get_item_history_stats(
-        item_id
+    history = (
+        get_item_history_stats(
+            item_id
+        )
     )
 
     return render_template(
@@ -1150,7 +1280,9 @@ def all_item_detail(item_id):
 # FAVORITE DETAIL
 # ============================================================
 
-@app.route("/favorites/<path:item_id>")
+@app.route(
+    "/favorites/<path:item_id>"
+)
 def favorite_detail(item_id):
 
     if not login_required():
@@ -1162,7 +1294,9 @@ def favorite_detail(item_id):
             )
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     conn = get_db()
 
@@ -1182,6 +1316,7 @@ def favorite_detail(item_id):
     conn.close()
 
     if favorite is None:
+
         return redirect(
             url_for("favorites")
         )
@@ -1191,10 +1326,13 @@ def favorite_detail(item_id):
     if favorite["data_json"]:
 
         try:
+
             item_data = json.loads(
                 favorite["data_json"]
             )
+
         except Exception:
+
             item_data = None
 
     if not isinstance(
@@ -1204,23 +1342,30 @@ def favorite_detail(item_id):
 
         item_data = {
             "id": str(item_id),
-            "name": favorite["item_name"]
-            or "Unknown Item",
-            "image": favorite["image_url"]
-            or "",
+            "name": (
+                favorite["item_name"]
+                or "Unknown Item"
+            ),
+            "image": (
+                favorite["image_url"]
+                or ""
+            ),
         }
 
-    # Assicuriamoci che i dati principali esistano.
     if not item_data.get("id"):
-        item_data["id"] = str(item_id)
+        item_data["id"] = str(
+            item_id
+        )
 
     if not item_data.get("name"):
+
         item_data["name"] = (
             favorite["item_name"]
             or "Unknown Item"
         )
 
     if not item_data.get("image"):
+
         item_data["image"] = (
             favorite["image_url"]
             or ""
@@ -1229,11 +1374,15 @@ def favorite_detail(item_id):
     decorate_item_for_template(
         item_data,
         item_id=item_id,
-        favorite_ids={str(item_id)},
+        favorite_ids={
+            str(item_id)
+        },
     )
 
-    history = get_item_history_stats(
-        item_id
+    history = (
+        get_item_history_stats(
+            item_id
+        )
     )
 
     return render_template(
@@ -1263,13 +1412,16 @@ def add_favorite():
             url_for("login")
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     item_id = str(
         request.form.get(
             "item_id",
             "",
         )
+        or ""
     ).strip()
 
     item_name = (
@@ -1277,16 +1429,16 @@ def add_favorite():
             "item_name",
             "",
         )
-        .strip()
-    )
+        or ""
+    ).strip()
 
     image_url = (
         request.form.get(
             "image_url",
             "",
         )
-        .strip()
-    )
+        or ""
+    ).strip()
 
     if not item_id:
 
@@ -1344,13 +1496,16 @@ def remove_favorite():
             url_for("login")
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     item_id = str(
         request.form.get(
             "item_id",
             "",
         )
+        or ""
     ).strip()
 
     conn = get_db()
@@ -1377,7 +1532,7 @@ def remove_favorite():
 
 
 # ============================================================
-# FAVORITES
+# FAVORITES PAGE
 # ============================================================
 
 @app.route("/favorites")
@@ -1392,7 +1547,9 @@ def favorites():
             )
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     conn = get_db()
 
@@ -1417,10 +1574,13 @@ def favorites():
         if row["data_json"]:
 
             try:
+
                 item = json.loads(
                     row["data_json"]
                 )
+
             except Exception:
+
                 item = None
 
         if not isinstance(
@@ -1429,11 +1589,17 @@ def favorites():
         ):
 
             item = {
-                "id": str(row["item_id"]),
-                "name": row["item_name"]
-                or "Unknown Item",
-                "image": row["image_url"]
-                or "",
+                "id": str(
+                    row["item_id"]
+                ),
+                "name": (
+                    row["item_name"]
+                    or "Unknown Item"
+                ),
+                "image": (
+                    row["image_url"]
+                    or ""
+                ),
             }
 
         decorate_item_for_template(
@@ -1470,7 +1636,9 @@ def favorite_toggle():
         return jsonify(
             {
                 "success": False,
-                "error": "Login richiesto.",
+                "error": (
+                    "Login richiesto."
+                ),
             }
         ), 401
 
@@ -1517,7 +1685,9 @@ def favorite_toggle():
         return jsonify(
             {
                 "success": False,
-                "error": "item_id mancante.",
+                "error": (
+                    "item_id mancante."
+                ),
             }
         ), 400
 
@@ -1525,9 +1695,9 @@ def favorite_toggle():
         item_data,
         dict,
     ):
+
         item_data = {}
 
-    # Manteniamo sempre questi dati nel JSON.
     item_data.setdefault(
         "id",
         item_id,
@@ -1545,7 +1715,9 @@ def favorite_toggle():
             image_url,
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     conn = get_db()
 
@@ -1701,10 +1873,13 @@ def shop_history_detail(shop_date):
         if row["data_json"]:
 
             try:
+
                 item = json.loads(
                     row["data_json"]
                 )
+
             except Exception:
+
                 item = None
 
         if not isinstance(
@@ -1762,7 +1937,9 @@ def tracker_notifications():
             )
         )
 
-    user_id = session["user_id"]
+    user_id = session[
+        "user_id"
+    ]
 
     conn = get_db()
 
@@ -1799,7 +1976,9 @@ def tracker_check():
         return jsonify(
             {
                 "success": False,
-                "error": "Shop non disponibile.",
+                "error": (
+                    "Shop non disponibile."
+                ),
             }
         ), 503
 
@@ -1829,7 +2008,7 @@ def page_not_found(error):
 
 
 # ============================================================
-# STARTUP
+# DATABASE STARTUP
 # ============================================================
 
 init_db()
