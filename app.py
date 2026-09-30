@@ -30,7 +30,8 @@ from services.fortnite_api import (
     prepare_shop,
     group_shop_items,
     get_all_cosmetics,
-    get_cosmetic_category
+    get_cosmetic_category,
+    get_current_shop_prices
 )
 
 
@@ -848,6 +849,12 @@ def all_items():
     ).strip()
 
     # ========================================================
+    # PREZZI SHOP ATTUALE
+    # ========================================================
+
+    shop_prices = get_current_shop_prices()
+
+    # ========================================================
     # RICERCA
     # ========================================================
 
@@ -937,6 +944,32 @@ def all_items():
 
             item["_category"] = (
                 get_cosmetic_category(item)
+            )
+
+        # ====================================================
+        # PREZZO SHOP ATTUALE
+        # ====================================================
+
+        item["_shop_price"] = None
+
+        item["_shop_bundle"] = False
+
+        cosmetic_id = str(
+            item.get("id") or ""
+        )
+
+        if cosmetic_id in shop_prices:
+
+            price_data = shop_prices[
+                cosmetic_id
+            ]
+
+            item["_shop_price"] = (
+                price_data.get("price")
+            )
+
+            item["_shop_bundle"] = (
+                price_data.get("bundle", False)
             )
 
     return render_template(
