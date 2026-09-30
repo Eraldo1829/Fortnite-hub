@@ -1,13 +1,31 @@
+import os
 import sqlite3
 
 
-DATABASE_NAME = "fortnite.db"
+# =========================
+# DATABASE PATH
+# =========================
 
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+DATABASE_PATH = os.path.join(
+    BASE_DIR,
+    "fortnite.db"
+)
+
+
+# =========================
+# CONNECTION
+# =========================
 
 def get_connection():
 
     connection = sqlite3.connect(
-        DATABASE_NAME
+        DATABASE_PATH
     )
 
     connection.row_factory = sqlite3.Row
@@ -15,13 +33,16 @@ def get_connection():
     return connection
 
 
+# =========================
+# CREATE DATABASE
+# =========================
+
 def create_database():
 
-    connection = sqlite3.connect(
-        DATABASE_NAME
-    )
+    connection = get_connection()
 
     cursor = connection.cursor()
+
 
     # =========================
     # PLAYERS
@@ -29,8 +50,11 @@ def create_database():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS players (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+
             username TEXT UNIQUE NOT NULL
+
         )
     """)
 
@@ -41,11 +65,18 @@ def create_database():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
+
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+
             username TEXT UNIQUE NOT NULL,
+
             email TEXT UNIQUE NOT NULL,
+
             password_hash TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+            created_at TIMESTAMP
+            DEFAULT CURRENT_TIMESTAMP
+
         )
     """)
 
