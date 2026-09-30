@@ -19,6 +19,10 @@ from database.database import (
     get_connection
 )
 
+from services.email_service import (
+    send_welcome_email
+)
+
 from services.fortnite_api import (
     get_shop,
     prepare_shop,
@@ -136,7 +140,7 @@ def register():
 
 
         # =========================
-        # CONTROLLO UTENTE
+        # CONTROLLO UTENTE ESISTENTE
         # =========================
 
         cursor.execute(
@@ -175,7 +179,7 @@ def register():
 
 
         # =========================
-        # CREA UTENTE
+        # CREAZIONE UTENTE
         # =========================
 
         cursor.execute(
@@ -202,7 +206,17 @@ def register():
 
 
         # =========================
-        # LOGIN
+        # EMAIL DI BENVENUTO
+        # =========================
+
+        send_welcome_email(
+            email,
+            username
+        )
+
+
+        # =========================
+        # DOPO REGISTRAZIONE
         # =========================
 
         return redirect(
@@ -281,6 +295,10 @@ def login():
                     url_for("home")
                 )
 
+
+        # =========================
+        # LOGIN FALLITO
+        # =========================
 
         return render_template(
             "login.html",
@@ -392,7 +410,7 @@ def skin_detail(item_index):
 
 
 # =========================
-# START
+# START SERVER
 # =========================
 
 if __name__ == "__main__":
