@@ -7,10 +7,7 @@ def create_database():
 
     cursor = connection.cursor()
 
-    # =========================
     # PLAYERS
-    # =========================
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,10 +15,7 @@ def create_database():
         )
     """)
 
-    # =========================
     # USERS
-    # =========================
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
