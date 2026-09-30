@@ -2,6 +2,7 @@
 <html lang="it">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -9,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Item Shop | Fortnite Hub</title>
+    <title>
+        Item Shop | Fortnite Hub
+    </title>
 
 
     <style>
@@ -32,13 +35,13 @@
 
                 radial-gradient(
                     circle at top left,
-                    rgba(0, 220, 255, 0.12),
+                    rgba(0,220,255,0.12),
                     transparent 35%
                 ),
 
                 radial-gradient(
                     circle at top right,
-                    rgba(168, 85, 247, 0.12),
+                    rgba(168,85,247,0.12),
                     transparent 35%
                 ),
 
@@ -73,14 +76,14 @@
             padding: 0 40px;
 
             background:
-                rgba(5, 8, 22, 0.88);
+                rgba(5,8,22,0.88);
 
             backdrop-filter:
                 blur(14px);
 
             border-bottom:
                 1px solid
-                rgba(255, 255, 255, 0.08);
+                rgba(255,255,255,0.08);
         }
 
 
@@ -124,11 +127,11 @@
             border-radius: 10px;
 
             background:
-                rgba(255, 255, 255, 0.06);
+                rgba(255,255,255,0.06);
 
             border:
                 1px solid
-                rgba(255, 255, 255, 0.08);
+                rgba(255,255,255,0.08);
 
             transition:
                 0.25s;
@@ -138,10 +141,10 @@
         .back-button:hover {
 
             background:
-                rgba(0, 220, 255, 0.12);
+                rgba(0,220,255,0.12);
 
             border-color:
-                rgba(0, 220, 255, 0.4);
+                rgba(0,220,255,0.4);
 
             transform:
                 translateY(-2px);
@@ -159,7 +162,7 @@
             margin: auto;
 
             padding:
-                45px 30px 70px;
+                45px 30px 80px;
         }
 
 
@@ -174,7 +177,7 @@
         .hero h1 {
 
             font-size:
-                clamp(32px, 5vw, 54px);
+                clamp(32px,5vw,54px);
 
             font-weight: 900;
 
@@ -223,7 +226,7 @@
             max-width: 650px;
 
             margin:
-                30px auto 45px;
+                30px auto 50px;
         }
 
 
@@ -238,12 +241,12 @@
 
             border:
                 1px solid
-                rgba(255, 255, 255, 0.1);
+                rgba(255,255,255,0.1);
 
             outline: none;
 
             background:
-                rgba(255, 255, 255, 0.05);
+                rgba(255,255,255,0.05);
 
             color: white;
 
@@ -263,16 +266,97 @@
         .search-box:focus {
 
             border-color:
-                rgba(0, 217, 255, 0.6);
+                rgba(0,217,255,0.6);
 
             box-shadow:
                 0 0 25px
-                rgba(0, 217, 255, 0.12);
+                rgba(0,217,255,0.12);
         }
 
 
         /* =========================
-           SHOP GRID
+           GROUP
+        ========================= */
+
+        .shop-group {
+
+            margin-bottom: 55px;
+
+            animation:
+                fadeIn 0.5s ease;
+        }
+
+
+        @keyframes fadeIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(10px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        .group-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+
+            padding-bottom: 12px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .group-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .group-title h2 {
+
+            font-size: 24px;
+
+            font-weight: 900;
+        }
+
+
+        .group-count {
+
+            color: #7f889c;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================
+           GRID
         ========================= */
 
         .shop-grid {
@@ -282,10 +366,10 @@
             grid-template-columns:
                 repeat(
                     auto-fill,
-                    minmax(230px, 1fr)
+                    minmax(220px,1fr)
                 );
 
-            gap: 22px;
+            gap: 20px;
         }
 
 
@@ -303,17 +387,17 @@
 
                 linear-gradient(
                     145deg,
-                    rgba(255, 255, 255, 0.08),
-                    rgba(255, 255, 255, 0.025)
+                    rgba(255,255,255,0.08),
+                    rgba(255,255,255,0.025)
                 );
 
             border:
                 1px solid
-                rgba(255, 255, 255, 0.08);
+                rgba(255,255,255,0.08);
 
             border-radius: 18px;
 
-            min-height: 360px;
+            min-height: 350px;
 
             cursor: pointer;
 
@@ -334,15 +418,15 @@
                 scale(1.015);
 
             border-color:
-                rgba(0, 217, 255, 0.4);
+                rgba(0,217,255,0.4);
 
             box-shadow:
 
                 0 18px 45px
-                rgba(0, 0, 0, 0.4),
+                rgba(0,0,0,0.4),
 
                 0 0 25px
-                rgba(0, 217, 255, 0.08);
+                rgba(0,217,255,0.08);
         }
 
 
@@ -354,7 +438,7 @@
 
             width: 100%;
 
-            height: 260px;
+            height: 250px;
 
             display: flex;
 
@@ -366,7 +450,7 @@
 
                 radial-gradient(
                     circle at center,
-                    rgba(0, 217, 255, 0.08),
+                    rgba(0,217,255,0.08),
                     transparent 65%
                 );
 
@@ -419,11 +503,11 @@
             text-transform: uppercase;
 
             background:
-                rgba(0, 0, 0, 0.65);
+                rgba(0,0,0,0.65);
 
             border:
                 1px solid
-                rgba(255, 255, 255, 0.1);
+                rgba(255,255,255,0.1);
 
             backdrop-filter:
                 blur(8px);
@@ -438,8 +522,8 @@
 
                 linear-gradient(
                     90deg,
-                    rgba(0, 217, 255, 0.8),
-                    rgba(168, 85, 247, 0.8)
+                    rgba(0,217,255,0.8),
+                    rgba(168,85,247,0.8)
                 );
 
             border: none;
@@ -466,10 +550,10 @@
 
             border:
                 1px solid
-                rgba(255, 255, 255, 0.1);
+                rgba(255,255,255,0.1);
 
             background:
-                rgba(0, 0, 0, 0.6);
+                rgba(0,0,0,0.6);
 
             color: white;
 
@@ -490,7 +574,7 @@
                 scale(1.12);
 
             background:
-                rgba(168, 85, 247, 0.25);
+                rgba(168,85,247,0.25);
         }
 
 
@@ -500,13 +584,14 @@
 
         .card-info {
 
-            padding: 18px;
+            padding:
+                16px;
         }
 
 
         .card-name {
 
-            font-size: 17px;
+            font-size: 16px;
 
             font-weight: 800;
 
@@ -526,7 +611,7 @@
 
             font-size: 13px;
 
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
 
@@ -544,13 +629,7 @@
 
         .price {
 
-            display: flex;
-
-            align-items: center;
-
-            gap: 6px;
-
-            font-size: 15px;
+            font-size: 14px;
 
             font-weight: 800;
         }
@@ -593,7 +672,7 @@
            MOBILE
         ========================= */
 
-        @media (max-width: 700px) {
+        @media (max-width:700px) {
 
             .navbar {
 
@@ -616,15 +695,6 @@
             }
 
 
-            .back-button {
-
-                padding:
-                    8px 12px;
-
-                font-size: 13px;
-            }
-
-
             .container {
 
                 padding:
@@ -637,7 +707,7 @@
                 grid-template-columns:
                     repeat(
                         2,
-                        minmax(0, 1fr)
+                        minmax(0,1fr)
                     );
 
                 gap: 12px;
@@ -676,19 +746,15 @@
             }
 
 
-            .favorite {
+            .group-title h2 {
 
-                width: 34px;
-
-                height: 34px;
-
-                font-size: 18px;
+                font-size: 20px;
             }
 
         }
 
 
-        @media (max-width: 420px) {
+        @media (max-width:420px) {
 
             .shop-grid {
 
@@ -717,13 +783,17 @@
 
     <nav class="navbar">
 
+
         <a
             href="/"
             class="brand"
         >
 
             <img
-                src="{{ url_for('static', filename='logo.png') }}"
+                src="{{ url_for(
+                    'static',
+                    filename='logo.png'
+                ) }}"
                 alt="Fortnite Hub"
             >
 
@@ -738,8 +808,11 @@
             href="/"
             class="back-button"
         >
+
             ← Home
+
         </a>
+
 
     </nav>
 
@@ -754,6 +827,7 @@
         <!-- HERO -->
 
         <section class="hero">
+
 
             <h1>
                 🛍️ Item Shop
@@ -777,6 +851,7 @@
 
             {% endif %}
 
+
         </section>
 
 
@@ -786,6 +861,7 @@
 
         <div class="search-container">
 
+
             <input
                 id="searchInput"
                 class="search-box"
@@ -794,178 +870,225 @@
                 oninput="searchShop()"
             >
 
+
         </div>
 
 
         <!-- =========================
-             SHOP
+             GROUPS
         ========================= -->
 
-        {% if shop_items %}
+        {% if shop_groups %}
 
 
-        <div
-            class="shop-grid"
-            id="shopGrid"
-        >
+            {% for group in shop_groups %}
 
 
-            {% for item in shop_items %}
-
-
-            <article
-                class="shop-card"
-                data-name="{{ item.name|lower }}"
-                onclick="openItem({{ loop.index0 }})"
+            <section
+                class="shop-group"
+                data-group="{{ group.name|lower }}"
             >
 
 
-                <!-- BADGE -->
+                <!-- GROUP HEADER -->
 
-                {% if item.bundle %}
+                <div class="group-header">
 
-                <div class="badge bundle">
 
-                    📦 BUNDLE
+                    <div class="group-title">
+
+
+                        <h2>
+
+                            {{ group.name }}
+
+                        </h2>
+
+
+                    </div>
+
+
+                    <div class="group-count">
+
+                        {{ group.items|length }}
+                        oggetti
+
+                    </div>
+
 
                 </div>
 
-                {% else %}
 
-                <div class="badge">
+                <!-- GROUP ITEMS -->
 
-                    {{ item.type }}
-
-                </div>
-
-                {% endif %}
+                <div class="shop-grid">
 
 
-                <!-- FAVORITE -->
-
-                <button
-                    class="favorite"
-                    onclick="toggleFavorite(event, this)"
-                    aria-label="Aggiungi ai preferiti"
-                >
-
-                    ♡
-
-                </button>
+                    {% for item in group.items %}
 
 
-                <!-- IMAGE -->
-
-                <div class="card-image">
-
-
-                    {% if item.image %}
-
-                    <img
-                        src="{{ item.image }}"
-                        alt="{{ item.name }}"
-                        loading="lazy"
+                    <article
+                        class="shop-card"
+                        data-name="{{ item.name|lower }}"
+                        onclick="openItem({{ shop_items.index(item) }})"
                     >
 
-                    {% else %}
 
-                    <div
-                        style="
-                            color:#6b7280;
-                            text-align:center;
-                        "
-                    >
-
-                        Immagine
-                        non disponibile
-
-                    </div>
-
-                    {% endif %}
-
-
-                </div>
-
-
-                <!-- INFO -->
-
-                <div class="card-info">
-
-
-                    <div class="card-name">
-
-                        {{ item.name }}
-
-                    </div>
-
-
-                    <div class="card-type">
-
-                        {{ item.type }}
-
-                    </div>
-
-
-                    <div class="card-bottom">
-
-
-                        <!-- PRICE -->
-
-                        <div class="price">
-
-                            {% if item.price is not none %}
-
-                            <span>
-                                {{ item.price }}
-                                V-Bucks
-                            </span>
-
-                            {% else %}
-
-                            <span>
-                                —
-                            </span>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- BUNDLE -->
+                        <!-- BADGE -->
 
                         {% if item.bundle %}
 
-                        <div class="bundle-count">
 
-                            {{ item.bundle_items|length }}
-                            oggetti
+                        <div class="badge bundle">
+
+                            📦 BUNDLE
 
                         </div>
+
+
+                        {% else %}
+
+
+                        <div class="badge">
+
+                            {{ item.type }}
+
+                        </div>
+
 
                         {% endif %}
 
 
-                    </div>
+                        <!-- FAVORITE -->
+
+                        <button
+                            class="favorite"
+                            onclick="toggleFavorite(event, this)"
+                            aria-label="Aggiungi ai preferiti"
+                        >
+
+                            ♡
+
+                        </button>
+
+
+                        <!-- IMAGE -->
+
+                        <div class="card-image">
+
+
+                            {% if item.image %}
+
+
+                            <img
+                                src="{{ item.image }}"
+                                alt="{{ item.name }}"
+                                loading="lazy"
+                            >
+
+
+                            {% else %}
+
+
+                            <div
+                                style="
+                                    color:#6b7280;
+                                    text-align:center;
+                                "
+                            >
+
+                                Immagine
+                                non disponibile
+
+                            </div>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <!-- INFO -->
+
+                        <div class="card-info">
+
+
+                            <div class="card-name">
+
+                                {{ item.name }}
+
+                            </div>
+
+
+                            <div class="card-type">
+
+                                {{ item.type }}
+
+                            </div>
+
+
+                            <div class="card-bottom">
+
+
+                                <div class="price">
+
+
+                                    {% if item.price is not none %}
+
+                                    {{ item.price }}
+                                    V-Bucks
+
+                                    {% else %}
+
+                                    —
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                {% if item.bundle %}
+
+
+                                <div class="bundle-count">
+
+                                    📦
+                                    {{ item.bundle_items|length }}
+
+                                </div>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                    {% endfor %}
 
 
                 </div>
 
 
-            </article>
+            </section>
 
 
             {% endfor %}
 
 
-        </div>
-
-
         {% else %}
 
 
-        <!-- EMPTY -->
-
         <div class="empty">
+
 
             <h2>
                 😕 Shop non disponibile
@@ -973,10 +1096,14 @@
 
 
             <p>
+
                 Non è stato possibile recuperare
                 gli oggetti dello Shop.
+
                 Riprova tra qualche minuto.
+
             </p>
+
 
         </div>
 
@@ -996,11 +1123,12 @@
 
         /*
          * =========================
-         * RICERCA SHOP
+         * SEARCH
          * =========================
          */
 
         function searchShop() {
+
 
             const input =
                 document.getElementById(
@@ -1014,30 +1142,72 @@
                     .trim();
 
 
-            const cards =
+            const groups =
                 document.querySelectorAll(
-                    ".shop-card"
+                    ".shop-group"
                 );
 
 
-            cards.forEach(card => {
-
-                const name =
-                    card.dataset.name || "";
+            groups.forEach(group => {
 
 
-                if (
-                    name.includes(search)
-                ) {
+                const cards =
+                    group.querySelectorAll(
+                        ".shop-card"
+                    );
 
-                    card.style.display = "";
+
+                let visible =
+                    0;
+
+
+                cards.forEach(card => {
+
+
+                    const name =
+                        card.dataset.name
+                        || "";
+
+
+                    if (
+                        name.includes(search)
+                    ) {
+
+                        card.style.display =
+                            "";
+
+                        visible++;
+
+                    } else {
+
+                        card.style.display =
+                            "none";
+
+                    }
+
+                });
+
+
+                /*
+                 * Se nessuna card
+                 * del gruppo corrisponde
+                 * alla ricerca,
+                 * nascondiamo anche
+                 * il gruppo.
+                 */
+
+                if (visible === 0) {
+
+                    group.style.display =
+                        "none";
 
                 } else {
 
-                    card.style.display =
-                        "none";
+                    group.style.display =
+                        "";
 
                 }
+
 
             });
 
@@ -1046,7 +1216,7 @@
 
         /*
          * =========================
-         * PREFERITI
+         * FAVORITE
          * =========================
          */
 
@@ -1055,10 +1225,11 @@
             button
         ) {
 
+
             /*
-             * Evita che il click
-             * sulla stella/cuore
-             * apra la skin.
+             * Impedisce al click
+             * del cuore di aprire
+             * la pagina della skin.
              */
 
             event.stopPropagation();
@@ -1069,19 +1240,25 @@
                 === "♡"
             ) {
 
+
                 button.textContent =
                     "♥";
+
 
                 button.style.color =
                     "#a855f7";
 
+
             } else {
+
 
                 button.textContent =
                     "♡";
 
+
                 button.style.color =
                     "white";
+
 
             }
 
@@ -1090,25 +1267,16 @@
 
         /*
          * =========================
-         * APERTURA SKIN
+         * OPEN ITEM
          * =========================
          */
 
         function openItem(index) {
 
-            /*
-             * Porta l'utente alla
-             * pagina dettagliata.
-             *
-             * Esempio:
-             *
-             * /skins/0
-             * /skins/1
-             * /skins/2
-             */
 
             window.location.href =
                 "/skins/" + index;
+
 
         }
 
