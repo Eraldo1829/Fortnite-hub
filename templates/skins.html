@@ -35,10 +35,6 @@
             margin: 0 auto;
         }
 
-        /* ==================================================
-           TOPBAR
-        ================================================== */
-
         .topbar {
             padding: 18px 0;
             background: #11182b;
@@ -78,10 +74,6 @@
             background: #293961;
         }
 
-        /* ==================================================
-           HERO
-        ================================================== */
-
         .hero {
             padding: 35px 0 25px;
         }
@@ -96,10 +88,6 @@
             color: #aeb8d0;
         }
 
-        /* ==================================================
-           SHOP INFO
-        ================================================== */
-
         .shop-info {
             margin-top: 20px;
             padding: 16px 18px;
@@ -112,10 +100,6 @@
         .shop-info strong {
             color: white;
         }
-
-        /* ==================================================
-           SEARCH
-        ================================================== */
 
         .search-box {
             margin-top: 22px;
@@ -163,10 +147,6 @@
             color: #cbd4e8;
         }
 
-        /* ==================================================
-           GROUP
-        ================================================== */
-
         .shop-group {
             margin: 35px 0 45px;
         }
@@ -190,10 +170,6 @@
             font-size: 14px;
         }
 
-        /* ==================================================
-           GRID
-        ================================================== */
-
         .items-grid {
             display: grid;
             grid-template-columns: repeat(
@@ -202,10 +178,6 @@
             );
             gap: 18px;
         }
-
-        /* ==================================================
-           CARD
-        ================================================== */
 
         .item-card {
             position: relative;
@@ -252,24 +224,31 @@
             font-size: 40px;
         }
 
-        /* ==================================================
-           PRICE
-        ================================================== */
-
         .price {
             position: absolute;
             left: 10px;
             bottom: 10px;
+
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
             padding: 7px 10px;
+
             border-radius: 8px;
-            background: rgba(0,0,0,0.75);
+
+            background: rgba(0,0,0,0.78);
+
             font-weight: 700;
             font-size: 14px;
         }
 
-        /* ==================================================
-           FAVORITE
-        ================================================== */
+        .vbucks-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            display: block;
+        }
 
         .favorite-button {
             position: absolute;
@@ -308,10 +287,6 @@
             color: #ff4d78;
         }
 
-        /* ==================================================
-           CARD CONTENT
-        ================================================== */
-
         .item-content {
             padding: 14px;
         }
@@ -334,10 +309,6 @@
             color: #77839e;
         }
 
-        /* ==================================================
-           EMPTY
-        ================================================== */
-
         .empty {
             padding: 70px 20px;
             text-align: center;
@@ -348,10 +319,6 @@
             color: white;
             margin-bottom: 10px;
         }
-
-        /* ==================================================
-           RESPONSIVE
-        ================================================== */
 
         @media (max-width: 700px) {
 
@@ -390,14 +357,9 @@
 <body>
 
 
-    <!-- ====================================================
-         TOPBAR
-    ===================================================== -->
-
     <div class="topbar">
 
         <div class="container topbar-inner">
-
 
             <a
                 href="{{ url_for('home') }}"
@@ -406,9 +368,7 @@
                 🎮 Fortnite Hub
             </a>
 
-
             <div class="nav">
-
 
                 <a
                     href="{{ url_for('skins') }}"
@@ -417,14 +377,12 @@
                     🛒 Item Shop
                 </a>
 
-
                 <a
                     href="{{ url_for('all_items') }}"
                     class="nav-button"
                 >
                     📚 Tutti gli Item
                 </a>
-
 
                 <a
                     href="{{ url_for('shop_history') }}"
@@ -433,9 +391,7 @@
                     📅 Storico Shop
                 </a>
 
-
                 {% if session.get("user_id") %}
-
 
                     <a
                         href="{{ url_for('favorites') }}"
@@ -444,7 +400,6 @@
                         ⭐ Preferiti
                     </a>
 
-
                     <a
                         href="{{ url_for('logout') }}"
                         class="nav-button"
@@ -452,9 +407,7 @@
                         Logout
                     </a>
 
-
                 {% else %}
-
 
                     <a
                         href="{{ url_for('login') }}"
@@ -463,7 +416,6 @@
                         Login
                     </a>
 
-
                     <a
                         href="{{ url_for('register') }}"
                         class="nav-button"
@@ -471,9 +423,7 @@
                         Registrati
                     </a>
 
-
                 {% endif %}
-
 
             </div>
 
@@ -482,29 +432,17 @@
     </div>
 
 
-    <!-- ====================================================
-         MAIN
-    ===================================================== -->
-
     <main class="container">
 
-
-        <!-- =================================================
-             HERO
-        ================================================== -->
-
         <section class="hero">
-
 
             <h1>
                 🛒 Item Shop
             </h1>
 
-
             <p>
                 Scopri gli oggetti disponibili nello Shop di Fortnite.
             </p>
-
 
             {% if shop_date %}
 
@@ -520,17 +458,11 @@
 
             {% endif %}
 
-
-            <!-- =============================================
-                 SEARCH
-            ============================================== -->
-
             <form
                 method="GET"
                 action="{{ url_for('skins') }}"
                 class="search-box"
             >
-
 
                 <input
                     type="text"
@@ -540,11 +472,9 @@
                     autocomplete="off"
                 >
 
-
                 <button type="submit">
                     🔎 Cerca
                 </button>
-
 
                 {% if search_query %}
 
@@ -557,36 +487,22 @@
 
                 {% endif %}
 
-
             </form>
-
 
         </section>
 
 
-        <!-- =================================================
-             SHOP GROUPS
-        ================================================== -->
-
-
         {% if shop_groups %}
-
 
             {% for group in shop_groups %}
 
-
                 {% set group_name = group.name %}
-
                 {% set group_category = group.category %}
-
                 {% set group_items = group.shop_items %}
-
 
                 <section class="shop-group">
 
-
                     <div class="group-header">
-
 
                         <div>
 
@@ -600,7 +516,6 @@
 
                         </div>
 
-
                         <div class="group-category">
 
                             {{ group_items|length }}
@@ -613,22 +528,14 @@
 
                         </div>
 
-
                     </div>
 
 
                     <div class="items-grid">
 
-
                         {% for item in group_items %}
 
-
                             <div class="item-card">
-
-
-                                <!-- =================================
-                                     CARD LINK
-                                ================================== -->
 
                                 <a
                                     href="{{ url_for(
@@ -638,12 +545,9 @@
                                     class="item-link"
                                 >
 
-
                                     <div class="item-image-wrapper">
 
-
                                         {% if item.image %}
-
 
                                             <img
                                                 src="{{ item.image }}"
@@ -652,78 +556,62 @@
                                                 loading="lazy"
                                             >
 
-
                                         {% else %}
-
 
                                             <div class="item-placeholder">
                                                 🎮
                                             </div>
 
-
                                         {% endif %}
 
 
-                                        {% if item.price %}
+                                        {% if item.price is not none %}
 
                                             <div class="price">
 
-                                                🪙
+                                                <img
+                                                    src="https://fortnite-api.com/images/vbucks.png"
+                                                    alt="V-Bucks"
+                                                    class="vbucks-icon"
+                                                >
+
                                                 {{ item.price }}
 
                                             </div>
 
                                         {% endif %}
 
-
                                     </div>
 
 
                                     <div class="item-content">
 
-
                                         <div class="item-name">
-
                                             {{ item.name }}
-
                                         </div>
-
 
                                         {% if item.type %}
 
                                             <div class="item-type">
-
                                                 {{ item.type }}
-
                                             </div>
 
                                         {% endif %}
-
 
                                         {% if item.series %}
 
                                             <div class="item-series">
-
                                                 {{ item.series }}
-
                                             </div>
 
                                         {% endif %}
 
-
                                     </div>
-
 
                                 </a>
 
 
-                                <!-- =================================
-                                     FAVORITE
-                                ================================== -->
-
-
                                 {% if session.get("user_id") %}
-
 
                                     <button
                                         type="button"
@@ -737,122 +625,74 @@
                                         onclick="toggleFavorite(this, event)"
                                     >
 
-
                                         {% if item._is_favorite %}
-
                                             ♥️
-
                                         {% else %}
-
                                             ♡
-
                                         {% endif %}
-
 
                                     </button>
 
-
                                 {% endif %}
-
 
                             </div>
 
-
                         {% endfor %}
-
 
                     </div>
 
-
                 </section>
-
 
             {% endfor %}
 
-
         {% else %}
-
-
-            <!-- =================================================
-                 EMPTY
-            ================================================== -->
-
 
             <section class="empty">
 
-
                 {% if search_query %}
-
 
                     <h2>
                         Nessun risultato
                     </h2>
 
-
                     <p>
-
                         Non abbiamo trovato item per:
-
                         <strong>
                             {{ search_query }}
                         </strong>
-
                     </p>
-
 
                     <p>
-
                         Prova con un altro nome.
-
                     </p>
 
-
                 {% else %}
-
 
                     <h2>
                         Shop non disponibile
                     </h2>
 
-
                     <p>
                         Non è stato possibile caricare lo Shop.
                     </p>
 
-
                 {% endif %}
-
 
             </section>
 
-
         {% endif %}
-
 
     </main>
 
 
-    <!-- ====================================================
-         FAVORITE JAVASCRIPT
-    ===================================================== -->
-
-
     {% if session.get("user_id") %}
 
-
         <script>
-
 
             async function toggleFavorite(
                 button,
                 event
             ) {
-
-
-                /*
-                 * Evita che il click sul cuore
-                 * apra la pagina dell'item.
-                 */
 
                 if (event) {
 
@@ -862,21 +702,16 @@
 
                 }
 
-
                 const itemId =
                     button.dataset.itemId;
-
 
                 const itemName =
                     button.dataset.itemName;
 
-
                 const image =
                     button.dataset.image;
 
-
                 try {
-
 
                     const response =
                         await fetch(
@@ -926,13 +761,11 @@
 
                     if (!data.success) {
 
-
                         alert(
                             data.message
                             ||
                             "Errore durante il salvataggio."
                         );
-
 
                         return;
 
@@ -941,37 +774,29 @@
 
                     if (data.is_favorite) {
 
-
                         button.classList.add(
                             "active"
                         );
 
-
                         button.innerHTML =
                             "♥️";
 
-
                     } else {
-
 
                         button.classList.remove(
                             "active"
                         );
-
 
                         button.innerHTML =
                             "♡";
 
                     }
 
-
                 } catch (error) {
-
 
                     console.error(
                         error
                     );
-
 
                     alert(
                         "Errore durante il salvataggio del preferito."
@@ -979,12 +804,9 @@
 
                 }
 
-
             }
 
-
         </script>
-
 
     {% endif %}
 
