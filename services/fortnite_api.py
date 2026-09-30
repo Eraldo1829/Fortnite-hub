@@ -1,4 +1,3 @@
-```python
 import os
 import requests
 
@@ -35,11 +34,6 @@ def get_shop():
 
 
 def get_text_value(value):
-
-    """
-    Estrae in modo sicuro un valore testuale.
-    Il campo può essere una stringa oppure un dizionario.
-    """
 
     if isinstance(value, str):
         return value
@@ -96,98 +90,49 @@ def prepare_shop(shop):
         if not isinstance(first_item, dict):
             continue
 
-
-        # =========================
-        # TYPE
-        # =========================
-
         raw_type = first_item.get("type")
 
-        type_name = get_text_value(
-            raw_type
-        )
+        type_name = get_text_value(raw_type)
 
         if not type_name:
             type_name = "Cosmetico"
 
+        raw_series = first_item.get("series")
 
-        # =========================
-        # SERIES
-        # =========================
+        series_name = get_text_value(raw_series)
 
-        raw_series = first_item.get(
-            "series"
-        )
+        raw_set = first_item.get("set")
 
-        series_name = get_text_value(
-            raw_series
-        )
+        set_name = get_text_value(raw_set)
 
-
-        # =========================
-        # SET
-        # =========================
-
-        raw_set = first_item.get(
-            "set"
-        )
-
-        set_name = get_text_value(
-            raw_set
-        )
-
-
-        # =========================
-        # IMAGE
-        # =========================
-
-        images = first_item.get(
-            "images",
-            {}
-        )
+        images = first_item.get("images", {})
 
         if not isinstance(images, dict):
             images = {}
 
         image = images.get("icon")
 
-
-        # =========================
-        # ITEM
-        # =========================
-
         item = {
-
             "shop_index": len(items),
-
             "name": first_item.get(
                 "name",
                 "Oggetto senza nome"
             ),
-
             "description": first_item.get(
                 "description",
                 ""
             ),
-
             "type": type_name,
-
             "type_value": (
                 raw_type.get("value", "")
                 if isinstance(raw_type, dict)
                 else ""
             ),
-
             "image": image,
-
             "price": final_price,
-
             "bundle": len(br_items) > 1,
-
             "bundle_items": br_items,
-
             "series": series_name,
-
             "set": set_name
         }
 
@@ -206,101 +151,64 @@ def get_category_name(item):
         item.get("type") or ""
     ).lower()
 
-
-    # OUTFIT
-
     if (
         item_type == "outfit"
         or "outfit" in display_type
         or "skin" in display_type
     ):
-
         return "👕 Outfit"
-
-
-    # EMOTE
 
     if (
         item_type == "emote"
         or "emote" in display_type
     ):
-
         return "💃 Emote"
-
-
-    # PICKAXE
 
     if (
         item_type == "pickaxe"
         or "pickaxe" in display_type
         or "piccone" in display_type
     ):
-
         return "⛏️ Picconi"
-
-
-    # BACK BLING
 
     if (
         item_type == "backpack"
         or "back bling" in display_type
         or "zaino" in display_type
     ):
-
         return "🎒 Back Bling"
-
-
-    # GLIDER
 
     if (
         item_type == "glider"
         or "glider" in display_type
         or "deltaplano" in display_type
     ):
-
         return "🪂 Deltaplani"
-
-
-    # WRAP
 
     if (
         item_type == "wrap"
         or "wrap" in display_type
     ):
-
         return "🎨 Wrap"
-
-
-    # MUSIC
 
     if (
         item_type == "music"
         or "music" in display_type
         or "musica" in display_type
     ):
-
         return "🎵 Musica"
-
-
-    # LOADING SCREEN
 
     if (
         item_type == "loadingscreen"
         or "loading" in display_type
     ):
-
         return "🖼️ Schermate di caricamento"
-
-
-    # CONTRAIL
 
     if (
         item_type == "contrail"
         or "contrail" in display_type
     ):
-
         return "✨ Scie"
-
 
     return "📦 Altri oggetti"
 
@@ -315,55 +223,25 @@ def group_shop_items(items):
 
         item_set = item.get("set")
 
-        category = get_category_name(
-            item
-        )
-
-
-        # =========================
-        # DETERMINA GRUPPO
-        # =========================
+        category = get_category_name(item)
 
         if series:
-
             group_name = series
 
         elif item_set:
-
             group_name = item_set
 
         else:
-
             group_name = category
-
-
-        # =========================
-        # CREA GRUPPO
-        # =========================
 
         if group_name not in groups:
 
             groups[group_name] = {
-
                 "name": group_name,
-
                 "category": category,
-
                 "shop_items": []
-
             }
 
+        groups[group_name]["shop_items"].append(item)
 
-        # =========================
-        # AGGIUNGI OGGETTO
-        # =========================
-
-        groups[group_name][
-            "shop_items"
-        ].append(item)
-
-
-    return list(
-        groups.values()
-    )
-```
+    return list(groups.values())
