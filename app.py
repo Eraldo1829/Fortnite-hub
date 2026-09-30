@@ -28,7 +28,9 @@ from services.email_service import (
 from services.fortnite_api import (
     get_shop,
     prepare_shop,
-    group_shop_items
+    group_shop_items,
+    get_all_cosmetics,
+    get_cosmetic_category
 )
 
 
@@ -823,6 +825,204 @@ def skin_detail(item_index):
         item=item,
 
         history_stats=history_stats
+    )
+
+
+# ============================================================
+# TUTTI GLI ITEM
+# ============================================================
+
+@app.route("/all-items")
+def all_items():
+
+    cosmetics = get_all_cosmetics()
+
+    search_query = request.args.get(
+        "q",
+        ""
+    ).strip()
+
+    selected_category = request.args.get(
+        "category",
+        ""
+    ).strip()
+
+    # ========================================================
+    # RICERCA
+    # ========================================================
+
+    if search_query:
+
+        search_lower = (
+            search_query.lower()
+        )
+
+        cosmetics = [
+            item
+            for item in cosmetics
+            if search_lower
+            in str(
+                item.get("name", "")
+            ).lower()
+        ]
+
+    # ========================================================
+    # CATEGORIA
+    # ========================================================
+
+    if selected_category:
+
+        cosmetics = [
+            item
+            for item in cosmetics
+            if item.get("_category")
+            == selected_category
+        ]
+
+    # ========================================================
+    # CATEGORIE
+    # ========================================================
+
+    categories = [
+        "👕 Outfit",
+        "🎒 Back Bling",
+        "⛏️ Picconi",
+        "🪂 Deltaplani",
+        "💃 Emote",
+        "🎨 Wrap",
+        "🖼️ Schermate di caricamento",
+        "✨ Scie",
+        "🎵 Musica",
+        "🎨 Spray",
+        "🏳️ Banner",
+        "📦 Altri oggetti"
+    ]
+
+    # ========================================================
+    # PREFERITI
+    # ========================================================
+
+    favorite_ids = set()
+
+    if login_required():
+
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
+        )
+
+    # ========================================================
+    # PREPARAZIONE
+    # ========================================================
+
+    for item in cosmetics:
+
+        item["_item_id"] = get_item_id(
+            item
+        )
+
+        item["_item_name"] = get_item_name(
+            item
+        )
+
+        item["_image_url"] = get_item_image(
+            item
+        )
+
+        item["_is_favorite"] = (
+            item["_item_id"]
+            in favorite_ids
+        )
+
+        if not item.get("_category"):
+
+            item["_category"] = (
+                get_cosmetic_category(item)
+            )
+
+    return render_template(
+        "all_items.html",
+
+        cosmetics=cosmetics,
+
+        categories=categories,
+
+        selected_category=selected_category,
+
+        search_query=search_query,
+
+        favorite_ids=favorite_ids
+    )
+
+
+# ============================================================
+# TUTTI GLI ITEM - DETTAGLIO
+# ============================================================
+
+@app.route(
+    "/all-items/<path:item_id>"
+)
+def all_item_detail(item_id):
+
+    cosmetics = get_all_cosmetics()
+
+    selected_item = None
+
+    for item in cosmetics:
+
+        current_id = str(
+            item.get("id", "")
+        )
+
+        if current_id == str(item_id):
+
+            selected_item = item
+
+            break
+
+    if selected_item is None:
+
+        return render_template(
+            "all_item_detail.html",
+            item=None
+        ), 404
+
+    selected_item["_item_id"] = get_item_id(
+        selected_item
+    )
+
+    selected_item["_item_name"] = get_item_name(
+        selected_item
+    )
+
+    selected_item["_image_url"] = get_item_image(
+        selected_item
+    )
+
+    if not selected_item.get("_category"):
+
+        selected_item["_category"] = (
+            get_cosmetic_category(
+                selected_item
+            )
+        )
+
+    selected_item["_is_favorite"] = False
+
+    if login_required():
+
+        favorite_ids = get_favorite_ids(
+            session["user_id"]
+        )
+
+        selected_item["_is_favorite"] = (
+            selected_item["_item_id"]
+            in favorite_ids
+        )
+
+    return render_template(
+        "all_item_detail.html",
+
+        item=selected_item
     )
 
 
