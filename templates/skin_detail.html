@@ -11,11 +11,13 @@
     >
 
     <title>
+
         {% if item %}
             {{ item.name }} | Fortnite Hub
         {% else %}
             Oggetto non trovato | Fortnite Hub
         {% endif %}
+
     </title>
 
 
@@ -404,6 +406,114 @@
 
 
         /* =========================
+           SHOP HISTORY
+        ========================= */
+
+        .history-box {
+
+            margin-top: 20px;
+
+            margin-bottom: 22px;
+
+            padding: 20px;
+
+            border-radius: 16px;
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    rgba(0,217,255,0.08),
+                    rgba(168,85,247,0.08)
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,0.09);
+        }
+
+
+        .history-title {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            margin-bottom: 16px;
+        }
+
+
+        .history-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+        }
+
+
+        .history-stat {
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.045);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.06);
+        }
+
+
+        .history-stat-label {
+
+            display: block;
+
+            color: #8b93a7;
+
+            font-size: 11px;
+
+            margin-bottom: 6px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .history-stat-value {
+
+            display: block;
+
+            font-size: 16px;
+
+            font-weight: 800;
+        }
+
+
+        .days-value {
+
+            color: #00d9ff;
+
+            font-size: 20px;
+        }
+
+
+        .no-history {
+
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
            BUTTONS
         ========================= */
 
@@ -461,6 +571,21 @@
             box-shadow:
                 0 10px 30px
                 rgba(124,58,237,0.25);
+        }
+
+
+        .primary.favorite-active {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ef4444,
+                    #ec4899
+                );
+
+            box-shadow:
+                0 10px 30px
+                rgba(236,72,153,0.22);
         }
 
 
@@ -780,6 +905,13 @@
 
         @media (max-width: 480px) {
 
+            .history-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
             .bundle-grid {
 
                 grid-template-columns:
@@ -842,7 +974,9 @@
         <div class="detail">
 
 
-            <!-- IMAGE -->
+            <!-- =========================
+                 IMAGE
+            ========================= -->
 
             <section class="image-panel">
 
@@ -865,7 +999,9 @@
             </section>
 
 
-            <!-- INFORMATION -->
+            <!-- =========================
+                 INFORMATION
+            ========================= -->
 
             <section class="info">
 
@@ -910,7 +1046,9 @@
                 {% endif %}
 
 
-                <!-- PRICE -->
+                <!-- =========================
+                     PRICE
+                ========================= -->
 
                 <div class="price-box">
 
@@ -940,19 +1078,168 @@
                 </div>
 
 
-                <!-- BUTTONS -->
+                <!-- =========================
+                     SHOP HISTORY
+                ========================= -->
+
+                <div class="history-box">
+
+
+                    <div class="history-title">
+
+                        📊 Presenza nello Shop
+
+                    </div>
+
+
+                    {% if history_stats and history_stats.appearances > 0 %}
+
+
+                        <div class="history-grid">
+
+
+                            <div class="history-stat">
+
+                                <span class="history-stat-label">
+                                    Ultima apparizione
+                                </span>
+
+                                <span class="history-stat-value">
+
+                                    {{ history_stats.last_date }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="history-stat">
+
+                                <span class="history-stat-label">
+                                    Fuori dallo Shop
+                                </span>
+
+                                <span class="history-stat-value days-value">
+
+                                    {% if history_stats.days_since == 0 %}
+
+                                        Oggi
+
+                                    {% elif history_stats.days_since == 1 %}
+
+                                        1 giorno
+
+                                    {% else %}
+
+                                        {{ history_stats.days_since }}
+                                        giorni
+
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="history-stat">
+
+                                <span class="history-stat-label">
+                                    Apparizioni registrate
+                                </span>
+
+                                <span class="history-stat-value">
+
+                                    {{ history_stats.appearances }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="history-stat">
+
+                                <span class="history-stat-label">
+                                    Prima apparizione registrata
+                                </span>
+
+                                <span class="history-stat-value">
+
+                                    {{ history_stats.first_date }}
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <p class="no-history">
+
+                            📭 Non abbiamo ancora abbastanza dati
+                            storici per questo oggetto.
+
+                            <br><br>
+
+                            Fortnite Hub inizierà a registrare
+                            le sue apparizioni automaticamente.
+
+                        </p>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- =========================
+                     BUTTONS
+                ========================= -->
 
                 <div class="actions">
 
 
-                    <button
-                        class="button primary"
-                        onclick="toggleFavorite(this)"
-                    >
+                    {% if session.get("user_id") %}
 
-                        ♡ Aggiungi ai preferiti
 
-                    </button>
+                        <button
+                            id="favoriteButton"
+                            class="button primary {% if item._is_favorite %}favorite-active{% endif %}"
+                            onclick="toggleFavorite(this)"
+                            data-favorite="{% if item._is_favorite %}true{% else %}false{% endif %}"
+                        >
+
+                            {% if item._is_favorite %}
+
+                                ♥ Nei preferiti
+
+                            {% else %}
+
+                                ♡ Aggiungi ai preferiti
+
+                            {% endif %}
+
+                        </button>
+
+
+                    {% else %}
+
+
+                        <a
+                            href="/login"
+                            class="button primary"
+                        >
+
+                            🔐 Accedi per aggiungere ai preferiti
+
+                        </a>
+
+
+                    {% endif %}
 
 
                     <a
@@ -968,22 +1255,26 @@
                 </div>
 
 
-                <!-- FUTURE -->
+                <!-- =========================
+                     FUTURE
+                ========================= -->
 
                 <div class="future-box">
 
                     <h3>
-                        🚀 In arrivo su Fortnite Hub
+                        🚀 Fortnite Hub
                     </h3>
 
 
                     <p>
 
-                        Storico delle apparizioni,
-                        ultima presenza nello Shop,
-                        numero di apparizioni,
-                        informazioni sul set e
-                        viewer 3D interattivo.
+                        Lo storico viene aggiornato
+                        automaticamente ogni volta che
+                        Fortnite Hub registra lo Shop.
+
+                        In futuro potremo aggiungere anche
+                        statistiche più avanzate sulle
+                        apparizioni di questo oggetto.
 
                     </p>
 
@@ -1139,26 +1430,121 @@
 
     <script>
 
-        function toggleFavorite(button) {
+        async function toggleFavorite(button) {
 
-            if (
-                button.dataset.favorite
-                === "true"
-            ) {
+            if (!button) {
+                return;
+            }
 
-                button.dataset.favorite =
-                    "false";
 
-                button.innerHTML =
-                    "♡ Aggiungi ai preferiti";
+            const isFavorite =
+                button.dataset.favorite === "true";
 
-            } else {
 
-                button.dataset.favorite =
-                    "true";
+            const itemId =
+                {{ item._item_id | tojson }};
 
-                button.innerHTML =
-                    "♥ Nei preferiti";
+
+            const itemName =
+                {{ item._item_name | tojson }};
+
+
+            const imageUrl =
+                {{ item._image_url | tojson }};
+
+
+            const itemData =
+                {{ item | tojson | safe }};
+
+
+            button.disabled = true;
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/favorite/toggle",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            item_id:
+                                itemId,
+
+                            item_name:
+                                itemName,
+
+                            image_url:
+                                imageUrl,
+
+                            item:
+                                itemData
+                        })
+                    }
+                );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!response.ok || !result.success) {
+
+                    alert(
+                        result.message
+                        || "Si è verificato un errore."
+                    );
+
+                    return;
+                }
+
+
+                if (result.is_favorite) {
+
+                    button.dataset.favorite =
+                        "true";
+
+                    button.classList.add(
+                        "favorite-active"
+                    );
+
+                    button.innerHTML =
+                        "♥ Nei preferiti";
+
+                } else {
+
+                    button.dataset.favorite =
+                        "false";
+
+                    button.classList.remove(
+                        "favorite-active"
+                    );
+
+                    button.innerHTML =
+                        "♡ Aggiungi ai preferiti";
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Errore preferiti:",
+                    error
+                );
+
+                alert(
+                    "Errore di connessione."
+                );
+
+            } finally {
+
+                button.disabled = false;
 
             }
 
