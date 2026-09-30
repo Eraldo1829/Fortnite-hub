@@ -141,6 +141,8 @@ def prepare_shop(shop):
         item = {
             "shop_index": len(items),
 
+            "id": first_item.get("id"),
+
             "name": first_item.get(
                 "name",
                 "Oggetto senza nome"
@@ -572,12 +574,10 @@ def get_cosmetic_category(item):
 
         type_display = ""
 
-
     display_type = str(
         item.get("displayType")
         or ""
     ).lower()
-
 
     combined = (
         type_value
@@ -587,13 +587,11 @@ def get_cosmetic_category(item):
         + display_type
     )
 
-
     if (
         "outfit" in combined
         or "skin" in combined
     ):
         return "👕 Outfit"
-
 
     if (
         "backpack" in combined
@@ -601,33 +599,26 @@ def get_cosmetic_category(item):
     ):
         return "🎒 Back Bling"
 
-
     if (
         "pickaxe" in combined
         or "harvesting" in combined
     ):
         return "⛏️ Picconi"
 
-
     if "glider" in combined:
         return "🪂 Deltaplani"
-
 
     if "emote" in combined:
         return "💃 Emote"
 
-
     if "wrap" in combined:
         return "🎨 Wrap"
-
 
     if "loading" in combined:
         return "🖼️ Schermate di caricamento"
 
-
     if "contrail" in combined:
         return "✨ Scie"
-
 
     if (
         "music" in combined
@@ -635,13 +626,66 @@ def get_cosmetic_category(item):
     ):
         return "🎵 Musica"
 
-
     if "spray" in combined:
         return "🎨 Spray"
-
 
     if "banner" in combined:
         return "🏳️ Banner"
 
-
     return "📦 Altri oggetti"
+
+
+# ============================================================
+# PREZZI ITEM DELLO SHOP ATTUALE
+# ============================================================
+
+def get_current_shop_prices():
+
+    shop = get_shop()
+
+    if not shop:
+        return {}
+
+    data = shop.get("data")
+
+    if not isinstance(data, dict):
+        return {}
+
+    entries = data.get("entries", [])
+
+    if not isinstance(entries, list):
+        return {}
+
+    prices = {}
+
+    for entry in entries:
+
+        if not isinstance(entry, dict):
+            continue
+
+        final_price = entry.get("finalPrice")
+
+        if final_price is None:
+            continue
+
+        br_items = entry.get("brItems", [])
+
+        if not isinstance(br_items, list):
+            continue
+
+        for br_item in br_items:
+
+            if not isinstance(br_item, dict):
+                continue
+
+            item_id = br_item.get("id")
+
+            if not item_id:
+                continue
+
+            prices[str(item_id)] = {
+                "price": final_price,
+                "bundle": len(br_items) > 1
+            }
+
+    return prices
