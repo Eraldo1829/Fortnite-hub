@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Storico Shop - Fortnite Hub</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0f19;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            background: #111827;
+            border-bottom: 1px solid #263044;
+
+            padding: 18px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #7c3aed;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d1d5db;
+            text-decoration: none;
+
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #1f2937;
+            color: white;
+        }
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 45px 0;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        /* =========================
+           DATE GRID
+        ========================= */
+
+        .history-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(240px, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+        .history-card {
+            background: #111827;
+
+            border: 1px solid #263044;
+
+            border-radius: 14px;
+
+            padding: 24px;
+
+            text-decoration: none;
+            color: white;
+
+            transition:
+                transform 0.2s,
+                border-color 0.2s,
+                background 0.2s;
+        }
+
+        .history-card:hover {
+            transform: translateY(-4px);
+
+            border-color: #7c3aed;
+
+            background: #151d2d;
+        }
+
+        .history-icon {
+            font-size: 32px;
+
+            margin-bottom: 15px;
+        }
+
+        .history-date {
+            font-size: 20px;
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .history-count {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .history-arrow {
+            margin-top: 20px;
+
+            color: #8b5cf6;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+            background: #111827;
+
+            border: 1px solid #263044;
+
+            border-radius: 14px;
+
+            padding: 50px 25px;
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #9ca3af;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            nav {
+                padding: 15px 18px;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .nav-links a {
+                padding: 8px 10px;
+            }
+
+            .container {
+                width: 92%;
+
+                padding: 30px 0;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav>
+
+    <a
+        href="/"
+        class="logo"
+    >
+        Fortnite <span>Hub</span>
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="/skins">
+            🛒 Shop
+        </a>
+
+
+        <a href="/shop-history">
+            📅 Storico
+        </a>
+
+
+        {% if session.get("user_id") %}
+
+            <a href="/favorites">
+                ⭐ Preferiti
+            </a>
+
+            <a href="/logout">
+                🚪 Logout
+            </a>
+
+        {% else %}
+
+            <a href="/login">
+                🔐 Login
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     CONTENT
+========================= -->
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>
+            📅 Storico Item Shop
+        </h1>
+
+        <p>
+            Consulta gli shop Fortnite salvati nei giorni precedenti.
+        </p>
+
+    </div>
+
+
+    {% if dates %}
+
+        <div class="history-grid">
+
+            {% for date in dates %}
+
+                <a
+                    href="{{ url_for(
+                        'shop_history_date',
+                        shop_date=date['shop_date']
+                    ) }}"
+                    class="history-card"
+                >
+
+                    <div class="history-icon">
+                        🛍️
+                    </div>
+
+
+                    <div class="history-date">
+
+                        {{ date['shop_date'] }}
+
+                    </div>
+
+
+                    <div class="history-count">
+
+                        {{ date['item_count'] }}
+                        {% if date['item_count'] == 1 %}
+                            elemento
+                        {% else %}
+                            elementi
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="history-arrow">
+
+                        Visualizza shop →
+                    
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                📭
+            </div>
+
+            <h2>
+                Nessuno storico disponibile
+            </h2>
+
+            <p>
+                Lo storico verrà creato automaticamente
+                quando Fortnite Hub controllerà lo Shop.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>
