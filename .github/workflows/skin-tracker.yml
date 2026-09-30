@@ -1,0 +1,46 @@
+name: Fortnite Hub Skin Tracker
+
+on:
+
+  schedule:
+
+    - cron: "*/15 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+
+  check-shop:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install requests flask werkzeug
+
+      - name: Run Skin Tracker
+        env:
+          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
+
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+
+        run: |
+          python tracker.py
