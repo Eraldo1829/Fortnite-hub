@@ -1,3 +1,4 @@
+```python
 import os
 import json
 from datetime import datetime, date
@@ -326,12 +327,22 @@ def prepare_shop_template_items(
     for index, item in enumerate(shop_items):
 
         if not isinstance(item, dict):
-
             continue
+
+        # Mantiene l'indice originale dello Shop.
+        # Fondamentale anche quando viene usata la ricerca.
+
+        shop_index = item.get(
+            "shop_index",
+            item.get(
+                "_shop_index",
+                index
+            )
+        )
 
         item_id = get_item_id(
             item,
-            index
+            shop_index
         )
 
         item_name = get_item_name(
@@ -343,12 +354,16 @@ def prepare_shop_template_items(
         )
 
         # ----------------------------------------------------
-        # CAMPI COMPATIBILI CON skins.html
+        # CAMPI USATI DA skins.html
         # ----------------------------------------------------
 
-        item["_shop_index"] = index
+        item["_shop_index"] = shop_index
 
-        item["_item_id"] = item_id
+        item["_item_id"] = (
+            str(item_id)
+            if item_id
+            else None
+        )
 
         item["_item_name"] = item_name
 
@@ -360,9 +375,7 @@ def prepare_shop_template_items(
             else False
         )
 
-        # Compatibilità con eventuale codice
-        # che utilizza il campo senza underscore.
-
+        # Compatibilità
         item["is_favorite"] = (
             item["_is_favorite"]
         )
@@ -864,6 +877,8 @@ def skins():
 
             items=[],
 
+            groups=[],
+
             search_query="",
 
             favorite_ids=set(),
@@ -903,6 +918,15 @@ def skins():
             session["user_id"]
         )
 
+    # --------------------------------------------------------
+    # PREPARA PRIMA DELLA RICERCA
+    # --------------------------------------------------------
+
+    shop_items = prepare_shop_template_items(
+        shop_items,
+        favorite_ids
+    )
+
     search_query = request.args.get(
         "search",
         ""
@@ -935,15 +959,6 @@ def skins():
         shop_items = filtered_items
 
     # --------------------------------------------------------
-    # PREPARA DATI TEMPLATE
-    # --------------------------------------------------------
-
-    shop_items = prepare_shop_template_items(
-        shop_items,
-        favorite_ids
-    )
-
-    # --------------------------------------------------------
     # GRUPPI SHOP
     # --------------------------------------------------------
 
@@ -957,6 +972,8 @@ def skins():
         shop_groups=shop_groups,
 
         items=shop_items,
+
+        groups=shop_groups,
 
         search_query=search_query,
 
@@ -977,7 +994,20 @@ def skin_detail(
     item_index
 ):
 
-    shop = get_shop()
+    try:
+
+        shop = get_shop()
+
+    except Exception as error:
+
+        print(
+            "❌ Errore caricamento Shop:",
+            error
+        )
+
+        return redirect(
+            url_for("skins")
+        )
 
     if not shop:
 
@@ -985,9 +1015,22 @@ def skin_detail(
             url_for("skins")
         )
 
-    shop_items = prepare_shop(
-        shop
-    )
+    try:
+
+        shop_items = prepare_shop(
+            shop
+        )
+
+    except Exception as error:
+
+        print(
+            "❌ Errore preparazione Shop:",
+            error
+        )
+
+        return redirect(
+            url_for("skins")
+        )
 
     if (
         item_index < 0
@@ -1002,16 +1045,37 @@ def skin_detail(
         item_index
     ]
 
+    if not isinstance(
+        item,
+        dict
+    ):
+
+        return redirect(
+            url_for("skins")
+        )
+
+    # --------------------------------------------------------
+    # DATI BASE
+    # --------------------------------------------------------
+
     item_id = get_item_id(
         item,
         item_index
     )
 
-    history = get_item_history_stats(
-        item_id
+    item_name = get_item_name(
+        item
     )
 
-    is_favorite = False
+    image_url = get_item_image(
+        item
+    )
+
+    # --------------------------------------------------------
+    # PREFERITI
+    # --------------------------------------------------------
+
+    favorite_ids = set()
 
     if login_required():
 
@@ -1019,10 +1083,68 @@ def skin_detail(
             session["user_id"]
         )
 
-        is_favorite = (
-            str(item_id)
-            in favorite_ids
+    is_favorite = (
+        str(item_id) in favorite_ids
+        if item_id
+        else False
+    )
+
+    # --------------------------------------------------------
+    # CAMPI TEMPLATE
+    # --------------------------------------------------------
+
+    item["_shop_index"] = item_index
+
+    item["_item_id"] = (
+        str(item_id)
+        if item_id
+        else None
+    )
+
+    item["_item_name"] = item_name
+
+    item["_image_url"] = image_url
+
+    item["_is_favorite"] = is_favorite
+
+    item["is_favorite"] = is_favorite
+
+    # --------------------------------------------------------
+    # BUNDLE
+    # --------------------------------------------------------
+
+    bundle_items = item.get(
+        "bundle_items",
+        []
+    )
+
+    if not isinstance(
+        bundle_items,
+        list
+    ):
+
+        bundle_items = []
+
+    item["bundle_items"] = bundle_items
+
+    item["bundle"] = (
+        len(bundle_items) > 1
+        or bool(
+            item.get("bundle")
         )
+    )
+
+    # --------------------------------------------------------
+    # STORICO
+    # --------------------------------------------------------
+
+    history_stats = get_item_history_stats(
+        item_id
+    )
+
+    # --------------------------------------------------------
+    # RENDER
+    # --------------------------------------------------------
 
     return render_template(
         "skin_detail.html",
@@ -1031,7 +1153,9 @@ def skin_detail(
 
         item_id=item_id,
 
-        history=history,
+        history=history_stats,
+
+        history_stats=history_stats,
 
         is_favorite=is_favorite,
 
@@ -1304,11 +1428,11 @@ def all_items():
                 str(item_id)
             )
 
-        # ----------------------------------------------------
-        # CAMPI USATI DA all_items.html
-        # ----------------------------------------------------
-
-        item["_item_id"] = item_id
+        item["_item_id"] = (
+            str(item_id)
+            if item_id
+            else None
+        )
 
         item["_item_name"] = item_name
 
@@ -1335,6 +1459,10 @@ def all_items():
             else False
         )
 
+        item["is_favorite"] = (
+            item["_is_favorite"]
+        )
+
         prepared_cosmetics.append(
             item
         )
@@ -1348,7 +1476,11 @@ def all_items():
 
         cosmetics=prepared_cosmetics,
 
+        items=prepared_cosmetics,
+
         selected_category=selected_category,
+
+        category=selected_category,
 
         categories=categories,
 
@@ -1416,6 +1548,39 @@ def all_item_detail(
             url_for("all_items")
         )
 
+    # --------------------------------------------------------
+    # PREPARA CAMPI TEMPLATE
+    # --------------------------------------------------------
+
+    item["_item_id"] = str(
+        get_item_id(
+            item,
+            item_id
+        )
+    )
+
+    item["_item_name"] = (
+        get_item_name(item)
+    )
+
+    item["_image_url"] = (
+        get_item_image(item)
+    )
+
+    try:
+
+        item["_category"] = (
+            get_cosmetic_category(
+                item
+            )
+        )
+
+    except Exception:
+
+        item["_category"] = (
+            "📦 Altri oggetti"
+        )
+
     history = get_item_history_stats(
         item_id
     )
@@ -1454,6 +1619,10 @@ def all_item_detail(
             in favorite_ids
         )
 
+    item["_is_favorite"] = is_favorite
+
+    item["is_favorite"] = is_favorite
+
     return render_template(
         "all_item_detail.html",
 
@@ -1462,6 +1631,8 @@ def all_item_detail(
         item_id=item_id,
 
         history=history,
+
+        history_stats=history,
 
         current_price=current_price,
 
@@ -1581,6 +1752,60 @@ def favorite_detail(
                 favorite["image_url"]
         }
 
+    # --------------------------------------------------------
+    # PREPARA CAMPI TEMPLATE
+    # --------------------------------------------------------
+
+    item_data["_item_id"] = str(
+        get_item_id(
+            item_data,
+            item_id
+        )
+    )
+
+    item_data["_item_name"] = (
+        get_item_name(
+            item_data
+        )
+    )
+
+    item_data["_image_url"] = (
+        get_item_image(
+            item_data
+        )
+    )
+
+    item_data["_is_favorite"] = True
+
+    item_data["is_favorite"] = True
+
+    # --------------------------------------------------------
+    # BUNDLE
+    # --------------------------------------------------------
+
+    bundle_items = item_data.get(
+        "bundle_items",
+        []
+    )
+
+    if not isinstance(
+        bundle_items,
+        list
+    ):
+
+        bundle_items = []
+
+    item_data["bundle_items"] = (
+        bundle_items
+    )
+
+    item_data["bundle"] = (
+        len(bundle_items) > 1
+        or bool(
+            item_data.get("bundle")
+        )
+    )
+
     history = get_item_history_stats(
         item_id
     )
@@ -1593,6 +1818,8 @@ def favorite_detail(
         item_id=item_id,
 
         history=history,
+
+        history_stats=history,
 
         is_favorite=True,
 
@@ -2282,3 +2509,4 @@ if __name__ == "__main__":
         port=port,
         debug=False
     )
+```
