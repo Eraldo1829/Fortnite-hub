@@ -1,45 +1,70 @@
 name: Fortnite Hub Skin Tracker
 
 on:
-
   schedule:
-
     - cron: "*/15 * * * *"
 
   workflow_dispatch:
 
-
 jobs:
-
-  tracker:
+  check-shop:
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Controlla Fortnite Hub
+      - name: Check Fortnite Hub
         run: |
 
-          echo "🔔 Avvio Fortnite Hub Tracker..."
+          echo "========================================"
+          echo "🔔 AVVIO FORTNITE HUB TRACKER"
+          echo "========================================"
 
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            "https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}")
+          URL="https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}"
 
-          BODY=$(echo "$RESPONSE" | head -n -1)
+          echo "🌐 Chiamata a Fortnite Hub..."
 
-          STATUS=$(echo "$RESPONSE" | tail -n 1)
+          RESPONSE=$(curl -sS \
+            --max-time 60 \
+            -w "\nHTTP_STATUS:%{http_code}" \
+            "$URL") || {
+
+              echo "❌ CURL FALLITO"
+              exit 1
+          }
+
+          echo ""
+          echo "========================================"
+          echo "📡 RISPOSTA SERVER"
+          echo "========================================"
+
+          echo "$RESPONSE"
+
+          echo ""
+          echo "========================================"
+          echo "🔎 CONTROLLO HTTP"
+          echo "========================================"
+
+          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | sed 's/HTTP_STATUS://')
 
           echo "HTTP Status: $STATUS"
 
-          echo "Risposta:"
-          echo "$BODY"
-
           if [ "$STATUS" != "200" ]; then
 
-            echo "❌ Tracker fallito."
+            echo "❌ IL SERVER HA RESTITUITO HTTP $STATUS"
 
             exit 1
 
           fi
 
-          echo "✅ Tracker completato."
+          echo ""
+          echo "========================================"
+          echo "✅ HTTP 200"
+          echo "========================================"
+
+          echo "$RESPONSE"
+
+          echo ""
+          echo "========================================"
+          echo "🎉 TRACKER COMPLETATO"
+          echo "========================================"
