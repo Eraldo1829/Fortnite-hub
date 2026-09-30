@@ -1,0 +1,45 @@
+name: Fortnite Hub Skin Tracker
+
+on:
+
+  schedule:
+
+    - cron: "*/15 * * * *"
+
+  workflow_dispatch:
+
+
+jobs:
+
+  tracker:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Controlla Fortnite Hub
+        run: |
+
+          echo "🔔 Avvio Fortnite Hub Tracker..."
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            "https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}")
+
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          STATUS=$(echo "$RESPONSE" | tail -n 1)
+
+          echo "HTTP Status: $STATUS"
+
+          echo "Risposta:"
+          echo "$BODY"
+
+          if [ "$STATUS" != "200" ]; then
+
+            echo "❌ Tracker fallito."
+
+            exit 1
+
+          fi
+
+          echo "✅ Tracker completato."
