@@ -1,4 +1,19 @@
-from flask import Flask, render_template
+import os
+import sqlite3
+
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session
+)
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
 from database.database import create_database
 
@@ -12,8 +27,37 @@ from services.fortnite_api import (
 app = Flask(__name__)
 
 
+# =========================
+# SECRET KEY
+# =========================
+
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "fortnite-hub-development-key"
+)
+
+
+# =========================
+# DATABASE
+# =========================
+
 create_database()
 
+
+def get_database():
+
+    connection = sqlite3.connect(
+        "fortnite.db"
+    )
+
+    connection.row_factory = sqlite3.Row
+
+    return connection
+
+
+# =========================
+# HOME
+# =========================
 
 @app.route("/")
 def home():
@@ -22,6 +66,237 @@ def home():
         "index.html"
     )
 
+
+# =========================
+# REGISTER
+# =========================
+
+@app.route(
+    "/register",
+    methods=["GET", "POST"]
+)
+def register():
+
+    if request.method == "POST":
+
+        username = request.form.get(
+            "username",
+            ""
+        ).strip()
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+
+        # =========================
+        # CONTROLLI
+        # =========================
+
+        if not username or not email or not password:
+
+            return render_template(
+                "register.html",
+                error="Compila tutti i campi."
+            )
+
+
+        if len(username) < 3:
+
+            return render_template(
+                "register.html",
+                error="Lo username deve avere almeno 3 caratteri."
+            )
+
+
+        if len(password) < 6:
+
+            return render_template(
+                "register.html",
+                error="La password deve avere almeno 6 caratteri."
+            )
+
+
+        # =========================
+        # DATABASE
+        # =========================
+
+        connection = get_database()
+
+        cursor = connection.cursor()
+
+
+        cursor.execute(
+            """
+            SELECT id
+            FROM users
+            WHERE username = ?
+               OR email = ?
+            """,
+            (
+                username,
+                email
+            )
+        )
+
+
+        existing_user = cursor.fetchone()
+
+
+        if existing_user:
+
+            connection.close()
+
+            return render_template(
+                "register.html",
+                error="Username o email già utilizzati."
+            )
+
+
+        # =========================
+        # PASSWORD HASH
+        # =========================
+
+        password_hash = generate_password_hash(
+            password
+        )
+
+
+        # =========================
+        # CREA UTENTE
+        # =========================
+
+        cursor.execute(
+            """
+            INSERT INTO users
+            (
+                username,
+                email,
+                password_hash
+            )
+            VALUES (?, ?, ?)
+            """,
+            (
+                username,
+                email,
+                password_hash
+            )
+        )
+
+
+        connection.commit()
+
+        connection.close()
+
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    return render_template(
+        "register.html"
+    )
+
+
+# =========================
+# LOGIN
+# =========================
+
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
+def login():
+
+    if request.method == "POST":
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+
+        connection = get_database()
+
+        cursor = connection.cursor()
+
+
+        cursor.execute(
+            """
+            SELECT *
+            FROM users
+            WHERE email = ?
+            """,
+            (email,)
+        )
+
+
+        user = cursor.fetchone()
+
+        connection.close()
+
+
+        # =========================
+        # VERIFICA PASSWORD
+        # =========================
+
+        if (
+            user
+            and check_password_hash(
+                user["password_hash"],
+                password
+            )
+        ):
+
+            session["user_id"] = user["id"]
+
+            session["username"] = user["username"]
+
+            return redirect(
+                url_for("home")
+            )
+
+
+        return render_template(
+            "login.html",
+            error="Email o password non corretti."
+        )
+
+
+    return render_template(
+        "login.html"
+    )
+
+
+# =========================
+# LOGOUT
+# =========================
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(
+        url_for("home")
+    )
+
+
+# =========================
+# SKINS
+# =========================
 
 @app.route("/skins")
 def skins():
@@ -40,20 +315,29 @@ def skins():
 
     if shop and shop.get("data"):
 
-        shop_date = shop["data"].get(
-            "date"
-        )
+        shop_date = shop[
+            "data"
+        ].get("date")
 
 
     return render_template(
         "skins.html",
+
         shop_items=shop_items,
+
         shop_groups=shop_groups,
+
         shop_date=shop_date
     )
 
 
-@app.route("/skins/<int:item_index>")
+# =========================
+# SKIN DETAIL
+# =========================
+
+@app.route(
+    "/skins/<int:item_index>"
+)
 def skin_detail(item_index):
 
     shop = get_shop()
@@ -92,6 +376,10 @@ def skin_detail(item_index):
         item=item
     )
 
+
+# =========================
+# START SERVER
+# =========================
 
 if __name__ == "__main__":
 
