@@ -1,6 +1,5 @@
 import os
 import json
-import sqlite3
 
 from flask import (
     Flask,
@@ -8,8 +7,7 @@ from flask import (
     request,
     redirect,
     url_for,
-    session,
-    flash
+    session
 )
 
 from werkzeug.security import (
@@ -120,11 +118,6 @@ def login_required():
 
 def get_item_id(item, fallback_index=None):
 
-    """
-    Cerca automaticamente l'ID della skin
-    in diverse possibili strutture dell'API.
-    """
-
     possible_keys = [
         "id",
         "itemId",
@@ -142,6 +135,7 @@ def get_item_id(item, fallback_index=None):
             return str(value)
 
     if fallback_index is not None:
+
         return f"item-{fallback_index}"
 
     return None
@@ -200,14 +194,6 @@ def get_shop_date(shop):
 
 
 def save_shop_history(shop_date, shop_items):
-
-    """
-    Salva automaticamente le skin dello shop
-    nello storico.
-
-    La combinazione shop_date + item_id è unica,
-    quindi non vengono creati duplicati.
-    """
 
     if not shop_date or not shop_items:
         return
@@ -326,12 +312,20 @@ def register():
             ""
         )
 
+        # =========================
+        # CONTROLLO CAMPI
+        # =========================
+
         if not username or not email or not password:
 
             return render_template(
                 "register.html",
                 error="Compila tutti i campi."
             )
+
+        # =========================
+        # CONTROLLO USERNAME
+        # =========================
 
         if len(username) < 3:
 
@@ -340,12 +334,20 @@ def register():
                 error="Lo username deve avere almeno 3 caratteri."
             )
 
+        # =========================
+        # CONTROLLO PASSWORD
+        # =========================
+
         if len(password) < 6:
 
             return render_template(
                 "register.html",
                 error="La password deve avere almeno 6 caratteri."
             )
+
+        # =========================
+        # DATABASE
+        # =========================
 
         connection = get_connection()
         cursor = connection.cursor()
@@ -374,9 +376,17 @@ def register():
                 error="Username o email già utilizzati."
             )
 
+        # =========================
+        # PASSWORD HASH
+        # =========================
+
         password_hash = generate_password_hash(
             password
         )
+
+        # =========================
+        # CREAZIONE UTENTE
+        # =========================
 
         cursor.execute(
             """
@@ -396,8 +406,11 @@ def register():
         )
 
         connection.commit()
-
         connection.close()
+
+        # =========================
+        # EMAIL
+        # =========================
 
         try:
 
@@ -512,10 +525,6 @@ def skins():
         shop
     )
 
-    shop_groups = group_shop_items(
-        shop_items
-    )
-
     shop_date = get_shop_date(
         shop
     )
@@ -542,7 +551,7 @@ def skins():
         )
 
     # =========================
-    # AGGIUNGI FLAG PREFERITO
+    # AGGIUNGI DATI AGLI ITEM
     # =========================
 
     for index, item in enumerate(shop_items):
@@ -563,6 +572,15 @@ def skins():
         item["_is_favorite"] = (
             item["_item_id"] in favorite_ids
         )
+
+    # =========================
+    # CREA GRUPPI DOPO
+    # DEI FLAG PREFERITI
+    # =========================
+
+    shop_groups = group_shop_items(
+        shop_items
+    )
 
     return render_template(
         "skins.html",
@@ -613,6 +631,10 @@ def skin_detail(item_index):
         item_index
     ]
 
+    # =========================
+    # DATI SKIN
+    # =========================
+
     item["_item_id"] = get_item_id(
         item,
         item_index
@@ -627,6 +649,10 @@ def skin_detail(item_index):
     )
 
     item["_is_favorite"] = False
+
+    # =========================
+    # CONTROLLO PREFERITO
+    # =========================
 
     if login_required():
 
@@ -813,8 +839,11 @@ def favorites():
             item = {}
 
         item["_item_id"] = row["item_id"]
+
         item["_item_name"] = row["item_name"]
+
         item["_image_url"] = row["image_url"]
+
         item["_is_favorite"] = True
 
         favorite_items.append(
@@ -823,7 +852,7 @@ def favorites():
 
     return render_template(
         "favorites.html",
-        favorite_items=favorite_items
+        favorites=favorite_items
     )
 
 
@@ -902,7 +931,9 @@ def shop_history_date(shop_date):
             item = {}
 
         item["_item_id"] = row["item_id"]
+
         item["_item_name"] = row["item_name"]
+
         item["_image_url"] = row["image_url"]
 
         history_items.append(
@@ -949,14 +980,14 @@ def favorite_toggle():
             "item_name",
             "Skin"
         )
-    )
+    ).strip()
 
     image_url = str(
         data.get(
             "image_url",
             ""
         )
-    )
+    ).strip()
 
     item_data = data.get(
         "item",
