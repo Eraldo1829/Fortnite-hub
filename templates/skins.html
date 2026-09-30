@@ -381,8 +381,7 @@
 
         .search-result strong {
 
-            color:
-                white;
+            color: white;
         }
 
 
@@ -403,7 +402,7 @@
 
 
         /* ==================================================
-           SHOP GROUP
+           GROUP
         ================================================== */
 
         .shop-group {
@@ -610,7 +609,7 @@
 
 
         /* ==================================================
-           FAVORITE BUTTON
+           FAVORITE
         ================================================== */
 
         .favorite-button {
@@ -671,7 +670,7 @@
 
 
         /* ==================================================
-           EMPTY SEARCH
+           EMPTY
         ================================================== */
 
         .empty-search {
@@ -957,9 +956,7 @@
             </div>
 
 
-            <!-- ==================================================
-                 SEARCH
-            ================================================== -->
+            <!-- SEARCH -->
 
             <div class="search-box">
 
@@ -967,7 +964,6 @@
                     method="GET"
                     action="{{ url_for('skins') }}"
                 >
-
 
                     <span class="search-icon">
                         🔎
@@ -988,11 +984,8 @@
                         type="submit"
                         class="search-button"
                     >
-
                         Cerca
-
                     </button>
-
 
                 </form>
 
@@ -1007,7 +1000,6 @@
         ================================================== -->
 
         {% if search_query %}
-
 
             <div class="search-result">
 
@@ -1027,7 +1019,6 @@
 
             </div>
 
-
         {% endif %}
 
 
@@ -1041,7 +1032,25 @@
             {% if shop_groups %}
 
 
-                {% for group_name, group_items in shop_groups %}
+                <!--
+
+                    IMPORTANTISSIMO:
+
+                    group_shop_items() restituisce gruppi
+                    con 3 valori.
+
+                    Esempio:
+
+                    (
+                        group_name,
+                        group_type,
+                        group_items
+                    )
+
+                -->
+
+
+                {% for group_name, group_type, group_items in shop_groups %}
 
 
                     {% if group_items %}
@@ -1072,9 +1081,7 @@
                                     >
 
 
-                                        <!-- ======================
-                                             FAVORITE
-                                        ======================= -->
+                                        <!-- FAVORITE -->
 
                                         {% if session.get("user_id") %}
 
@@ -1092,7 +1099,7 @@
                                                 {% if item._is_favorite %}
 
                                                     ♥
-                                                
+
                                                 {% else %}
 
                                                     ♡
@@ -1105,9 +1112,7 @@
                                         {% endif %}
 
 
-                                        <!-- ======================
-                                             CARD LINK
-                                        ======================= -->
+                                        <!-- CARD -->
 
                                         <a
                                             href="{{ url_for('skin_detail', item_index=item._shop_index) }}"
@@ -1186,6 +1191,10 @@
 
             {% else %}
 
+
+                <!-- ==================================================
+                     FALLBACK
+                ================================================== -->
 
                 <div class="skins-grid">
 
@@ -1300,15 +1309,26 @@
                 </h2>
 
 
-                <p>
+                {% if search_query %}
 
-                    Non ci sono skin nello Shop che
-                    corrispondono alla ricerca
-                    <strong>
-                        "{{ search_query }}"
-                    </strong>.
+                    <p>
 
-                </p>
+                        Non ci sono skin nello Shop che
+                        corrispondono alla ricerca
+
+                        <strong>
+                            "{{ search_query }}"
+                        </strong>.
+
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Al momento non ci sono item disponibili.
+                    </p>
+
+                {% endif %}
 
 
                 <a
