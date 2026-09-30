@@ -2,10 +2,6 @@ import os
 import sqlite3
 
 
-# =========================
-# DATABASE PATH
-# =========================
-
 BASE_DIR = os.path.dirname(
     os.path.dirname(
         os.path.abspath(__file__)
@@ -18,10 +14,6 @@ DATABASE_PATH = os.path.join(
 )
 
 
-# =========================
-# CONNECTION
-# =========================
-
 def get_connection():
 
     connection = sqlite3.connect(
@@ -33,10 +25,6 @@ def get_connection():
     return connection
 
 
-# =========================
-# CREATE DATABASE
-# =========================
-
 def create_database():
 
     connection = get_connection()
@@ -44,39 +32,21 @@ def create_database():
     cursor = connection.cursor()
 
 
-    # =========================
-    # PLAYERS
-    # =========================
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS players (
-
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-
             username TEXT UNIQUE NOT NULL
-
         )
     """)
 
 
-    # =========================
-    # USERS
-    # =========================
-
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-
             username TEXT UNIQUE NOT NULL,
-
             email TEXT UNIQUE NOT NULL,
-
             password_hash TEXT NOT NULL,
-
-            created_at TIMESTAMP
-            DEFAULT CURRENT_TIMESTAMP
-
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
