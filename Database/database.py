@@ -1,13 +1,32 @@
 import sqlite3
 
 
+DATABASE_NAME = "fortnite.db"
+
+
+def get_connection():
+
+    connection = sqlite3.connect(
+        DATABASE_NAME
+    )
+
+    connection.row_factory = sqlite3.Row
+
+    return connection
+
+
 def create_database():
 
-    connection = sqlite3.connect("fortnite.db")
+    connection = sqlite3.connect(
+        DATABASE_NAME
+    )
 
     cursor = connection.cursor()
 
+    # =========================
     # PLAYERS
+    # =========================
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS players (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,7 +34,11 @@ def create_database():
         )
     """)
 
+
+    # =========================
     # USERS
+    # =========================
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,6 +48,7 @@ def create_database():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
 
     connection.commit()
 
