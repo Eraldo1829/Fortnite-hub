@@ -711,6 +711,9 @@
 
             display:
                 block;
+
+            flex-shrink:
+                0;
         }
 
 
@@ -1312,7 +1315,7 @@
 
 
         <a
-            href="{{ url_for('all_items') }}"
+            href="{{ url_for('all_items) }}"
             class="
                 category
                 {% if not selected_category %}
@@ -1450,18 +1453,18 @@
 
 
                                     <img
-                                        src="{{
-                                            url_for(
-                                                'static',
-                                                filename='vbucks.svg'
-                                            )
-                                        }}"
+                                        src="{{ url_for(
+                                            'static',
+                                            filename='vbucks.svg'
+                                        ) }}"
                                         alt="V-Bucks"
                                         class="vbucks-icon"
                                     >
 
 
-                                    {{ item._shop_price }}
+                                    <span>
+                                        {{ item._shop_price }}
+                                    </span>
 
 
                                 </div>
