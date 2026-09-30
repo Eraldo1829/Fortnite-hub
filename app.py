@@ -10,6 +10,10 @@ create_database()
 def home():
     return render_template("index.html")
 
+@app.route("/skins")
+def skins():
+    return render_template("skins.html")
+
 
 if __name__ == "__main__":
     app.run()
