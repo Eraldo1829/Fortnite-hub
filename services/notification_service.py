@@ -1,40 +1,16 @@
 import os
-import smtplib
-
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+import resend
 
 
 # ============================================================
-# CONFIGURAZIONE
+# CONFIGURAZIONE RESEND
 # ============================================================
 
-SMTP_HOST = os.getenv(
-    "SMTP_HOST",
-    "smtp.gmail.com"
+RESEND_API_KEY = os.getenv(
+    "RESEND_API_KEY"
 )
 
-SMTP_PORT = int(
-    os.getenv(
-        "SMTP_PORT",
-        "587"
-    )
-)
-
-SMTP_USERNAME = os.getenv(
-    "SMTP_USERNAME",
-    ""
-)
-
-SMTP_PASSWORD = os.getenv(
-    "SMTP_PASSWORD",
-    ""
-)
-
-FROM_EMAIL = os.getenv(
-    "FROM_EMAIL",
-    SMTP_USERNAME
-)
+FROM_EMAIL = "Fortnite Hub <onboarding@resend.dev>"
 
 
 # ============================================================
@@ -56,18 +32,10 @@ def send_skin_notification(
 
         return False
 
-    if not SMTP_USERNAME:
+    if not RESEND_API_KEY:
 
         print(
-            "❌ SMTP_USERNAME non configurato."
-        )
-
-        return False
-
-    if not SMTP_PASSWORD:
-
-        print(
-            "❌ SMTP_PASSWORD non configurato."
+            "❌ RESEND_API_KEY non configurata."
         )
 
         return False
@@ -77,7 +45,7 @@ def send_skin_notification(
     )
 
     # ========================================================
-    # HTML
+    # IMMAGINE
     # ========================================================
 
     image_html = ""
@@ -100,6 +68,10 @@ def send_skin_notification(
             >
         </div>
         """
+
+    # ========================================================
+    # HTML EMAIL
+    # ========================================================
 
     html = f"""
     <!DOCTYPE html>
@@ -176,7 +148,7 @@ def send_skin_notification(
                 {image_html}
 
                 <a
-                    href="#"
+                    href="https://fortnite-hub-g6u2.onrender.com"
                     style="
                         display:inline-block;
                         padding:14px 24px;
@@ -200,57 +172,30 @@ def send_skin_notification(
     """
 
     # ========================================================
-    # EMAIL
-    # ========================================================
-
-    message = MIMEMultipart(
-        "alternative"
-    )
-
-    message["Subject"] = subject
-
-    message["From"] = FROM_EMAIL
-
-    message["To"] = recipient
-
-    message.attach(
-        MIMEText(
-            html,
-            "html",
-            "utf-8"
-        )
-    )
-
-    # ========================================================
-    # SMTP
+    # RESEND
     # ========================================================
 
     try:
 
-        server = smtplib.SMTP(
-            SMTP_HOST,
-            SMTP_PORT,
-            timeout=30
+        resend.api_key = RESEND_API_KEY
+
+        response = resend.Emails.send(
+            {
+                "from": FROM_EMAIL,
+                "to": [recipient],
+                "subject": subject,
+                "html": html
+            }
         )
-
-        server.starttls()
-
-        server.login(
-            SMTP_USERNAME,
-            SMTP_PASSWORD
-        )
-
-        server.sendmail(
-            FROM_EMAIL,
-            recipient,
-            message.as_string()
-        )
-
-        server.quit()
 
         print(
             f"✅ Notifica inviata a {recipient}: "
             f"{item_name}"
+        )
+
+        print(
+            "📨 Resend response:",
+            response
         )
 
         return True
