@@ -33,5 +33,32 @@ def skins():
     )
 
 
+@app.route("/skins/<int:item_index>")
+def skin_detail(item_index):
+
+    shop = get_shop()
+
+    shop_items = prepare_shop(shop)
+
+    if not shop_items:
+        return render_template(
+            "skin_detail.html",
+            item=None
+        ), 404
+
+    if item_index < 0 or item_index >= len(shop_items):
+        return render_template(
+            "skin_detail.html",
+            item=None
+        ), 404
+
+    item = shop_items[item_index]
+
+    return render_template(
+        "skin_detail.html",
+        item=item
+    )
+
+
 if __name__ == "__main__":
     app.run()
