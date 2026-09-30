@@ -1,9 +1,6 @@
 name: Fortnite Hub Skin Tracker
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"
-
   workflow_dispatch:
 
 jobs:
@@ -13,58 +10,30 @@ jobs:
 
     steps:
 
-      - name: Check Fortnite Hub
+      - name: Test Fortnite Hub
         run: |
 
-          echo "========================================"
-          echo "🔔 AVVIO FORTNITE HUB TRACKER"
-          echo "========================================"
-
-          URL="https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}"
-
-          echo "🌐 Chiamata a Fortnite Hub..."
+          echo "================================"
+          echo "TEST FORTNITE HUB"
+          echo "================================"
 
           RESPONSE=$(curl -sS \
-            --max-time 60 \
             -w "\nHTTP_STATUS:%{http_code}" \
-            "$URL") || {
-
-              echo "❌ CURL FALLITO"
-              exit 1
-          }
+            --max-time 60 \
+            "https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}")
 
           echo ""
-          echo "========================================"
-          echo "📡 RISPOSTA SERVER"
-          echo "========================================"
-
+          echo "RISPOSTA:"
           echo "$RESPONSE"
-
-          echo ""
-          echo "========================================"
-          echo "🔎 CONTROLLO HTTP"
-          echo "========================================"
 
           STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | sed 's/HTTP_STATUS://')
 
-          echo "HTTP Status: $STATUS"
+          echo ""
+          echo "HTTP STATUS: $STATUS"
 
           if [ "$STATUS" != "200" ]; then
-
-            echo "❌ IL SERVER HA RESTITUITO HTTP $STATUS"
-
+            echo "❌ ERRORE SERVER"
             exit 1
-
           fi
 
-          echo ""
-          echo "========================================"
-          echo "✅ HTTP 200"
-          echo "========================================"
-
-          echo "$RESPONSE"
-
-          echo ""
-          echo "========================================"
-          echo "🎉 TRACKER COMPLETATO"
-          echo "========================================"
+          echo "✅ SERVER RAGGIUNGIBILE"
