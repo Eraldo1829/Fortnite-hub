@@ -348,10 +348,6 @@ def get_item_history_stats(item_id):
         if not shop_date:
             continue
 
-        # ====================================================
-        # PROVA ISO COMPLETO
-        # ====================================================
-
         try:
 
             parsed_date = datetime.fromisoformat(
@@ -369,10 +365,6 @@ def get_item_history_stats(item_id):
 
         except Exception:
             pass
-
-        # ====================================================
-        # PROVA SOLO DATA
-        # ====================================================
 
         try:
 
@@ -469,20 +461,12 @@ def register():
             ""
         )
 
-        # ====================================================
-        # CONTROLLO CAMPI
-        # ====================================================
-
         if not username or not email or not password:
 
             return render_template(
                 "register.html",
                 error="Compila tutti i campi."
             )
-
-        # ====================================================
-        # CONTROLLO USERNAME
-        # ====================================================
 
         if len(username) < 3:
 
@@ -491,20 +475,12 @@ def register():
                 error="Lo username deve avere almeno 3 caratteri."
             )
 
-        # ====================================================
-        # CONTROLLO PASSWORD
-        # ====================================================
-
         if len(password) < 6:
 
             return render_template(
                 "register.html",
                 error="La password deve avere almeno 6 caratteri."
             )
-
-        # ====================================================
-        # DATABASE
-        # ====================================================
 
         connection = get_connection()
         cursor = connection.cursor()
@@ -533,17 +509,9 @@ def register():
                 error="Username o email già utilizzati."
             )
 
-        # ====================================================
-        # PASSWORD HASH
-        # ====================================================
-
         password_hash = generate_password_hash(
             password
         )
-
-        # ====================================================
-        # CREAZIONE UTENTE
-        # ====================================================
 
         cursor.execute(
             """
@@ -564,10 +532,6 @@ def register():
 
         connection.commit()
         connection.close()
-
-        # ====================================================
-        # EMAIL
-        # ====================================================
 
         try:
 
@@ -670,7 +634,7 @@ def logout():
 
 
 # ============================================================
-# SKINS
+# SKINS / SHOP
 # ============================================================
 
 @app.route("/skins")
@@ -708,10 +672,12 @@ def skins():
         )
 
     # ========================================================
-    # DATI EXTRA ITEM
+    # PREPARAZIONE ITEM
     # ========================================================
 
     for index, item in enumerate(shop_items):
+
+        item["_shop_index"] = index
 
         item["_item_id"] = get_item_id(
             item,
@@ -732,7 +698,29 @@ def skins():
         )
 
     # ========================================================
-    # GRUPPI SHOP
+    # RICERCA
+    # ========================================================
+
+    search_query = request.args.get(
+        "q",
+        ""
+    ).strip()
+
+    if search_query:
+
+        search_lower = (
+            search_query.lower()
+        )
+
+        shop_items = [
+            item
+            for item in shop_items
+            if search_lower
+            in item["_item_name"].lower()
+        ]
+
+    # ========================================================
+    # GRUPPI
     # ========================================================
 
     shop_groups = group_shop_items(
@@ -748,7 +736,9 @@ def skins():
 
         shop_date=shop_date,
 
-        favorite_ids=favorite_ids
+        favorite_ids=favorite_ids,
+
+        search_query=search_query
     )
 
 
@@ -788,10 +778,6 @@ def skin_detail(item_index):
         item_index
     ]
 
-    # ========================================================
-    # DATI ITEM
-    # ========================================================
-
     item["_item_id"] = get_item_id(
         item,
         item_index
@@ -804,10 +790,6 @@ def skin_detail(item_index):
     item["_image_url"] = get_item_image(
         item
     )
-
-    # ========================================================
-    # PREFERITO
-    # ========================================================
 
     item["_is_favorite"] = False
 
@@ -822,10 +804,6 @@ def skin_detail(item_index):
             in favorite_ids
         )
 
-    # ========================================================
-    # SALVA SHOP
-    # ========================================================
-
     shop_date = get_shop_date(
         shop
     )
@@ -834,10 +812,6 @@ def skin_detail(item_index):
         shop_date,
         shop_items
     )
-
-    # ========================================================
-    # STATISTICHE STORICO
-    # ========================================================
 
     history_stats = get_item_history_stats(
         item["_item_id"]
@@ -861,19 +835,11 @@ def skin_detail(item_index):
 )
 def favorite_detail(item_id):
 
-    # ========================================================
-    # LOGIN
-    # ========================================================
-
     if not login_required():
 
         return redirect(
             url_for("login")
         )
-
-    # ========================================================
-    # CERCA IL PREFERITO DELL'UTENTE
-    # ========================================================
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -896,10 +862,6 @@ def favorite_detail(item_id):
 
     connection.close()
 
-    # ========================================================
-    # PREFERITO NON TROVATO
-    # ========================================================
-
     if not row:
 
         return render_template(
@@ -907,10 +869,6 @@ def favorite_detail(item_id):
             item=None,
             history_stats=None
         ), 404
-
-    # ========================================================
-    # RECUPERA DATI ORIGINALI
-    # ========================================================
 
     try:
 
@@ -922,10 +880,6 @@ def favorite_detail(item_id):
     except Exception:
 
         item = {}
-
-    # ========================================================
-    # DATI SALVATI
-    # ========================================================
 
     item["_item_id"] = row["item_id"]
 
@@ -941,10 +895,6 @@ def favorite_detail(item_id):
 
     item["_is_favorite"] = True
 
-    # ========================================================
-    # GARANTISCE I CAMPI USATI DAL TEMPLATE
-    # ========================================================
-
     if not item.get("name"):
 
         item["name"] = item["_item_name"]
@@ -952,10 +902,6 @@ def favorite_detail(item_id):
     if not item.get("image"):
 
         item["image"] = item["_image_url"]
-
-    # ========================================================
-    # AGGIORNA LO STORICO CON LO SHOP ATTUALE
-    # ========================================================
 
     try:
 
@@ -981,17 +927,9 @@ def favorite_detail(item_id):
             error
         )
 
-    # ========================================================
-    # STATISTICHE
-    # ========================================================
-
     history_stats = get_item_history_stats(
         item["_item_id"]
     )
-
-    # ========================================================
-    # PAGINA DETTAGLI
-    # ========================================================
 
     return render_template(
         "skin_detail.html",
