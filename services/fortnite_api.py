@@ -47,20 +47,39 @@ def prepare_shop(shop):
         if not br_items:
             continue
 
-        # Prendiamo le informazioni dell'offerta
+        # Prendiamo il primo oggetto dell'offerta
         first_item = br_items[0]
 
         item = {
-            "name": first_item.get("name", "Oggetto senza nome"),
-            "description": first_item.get("description", ""),
-            "type": first_item.get("type", {}).get(
+            "name": first_item.get(
+                "name",
+                "Oggetto senza nome"
+            ),
+
+            "description": first_item.get(
+                "description",
+                ""
+            ),
+
+            "type": first_item.get(
+                "type",
+                {}
+            ).get(
                 "displayValue",
                 "Cosmetico"
             ),
-            "image": first_item.get("images", {}).get("icon"),
+
+            "image": first_item.get(
+                "images",
+                {}
+            ).get("icon"),
+
             "price": final_price,
-            "items": br_items,
-            "bundle": len(br_items) > 1
+
+            "bundle": len(br_items) > 1,
+
+            # Lista degli oggetti contenuti nel bundle
+            "bundle_items": br_items
         }
 
         items.append(item)
