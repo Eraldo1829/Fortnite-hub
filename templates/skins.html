@@ -38,14 +38,8 @@
             min-height: 100vh;
         }
 
-
-        /* =========================
-           NAVBAR
-        ========================= */
-
         nav {
             width: 100%;
-
             padding: 15px 30px;
 
             display: flex;
@@ -59,7 +53,6 @@
 
             position: sticky;
             top: 0;
-
             z-index: 1000;
 
             backdrop-filter: blur(15px);
@@ -80,8 +73,39 @@
         .nav-logo img {
             width: 42px;
             height: 42px;
-
             object-fit: contain;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-button {
+            text-decoration: none;
+            color: white;
+
+            padding: 10px 16px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            font-weight: 700;
+
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            background:
+                rgba(0, 200, 255, 0.15);
+
+            transform: translateY(-2px);
         }
 
         .home-button {
@@ -110,11 +134,6 @@
             box-shadow:
                 0 0 20px rgba(0, 200, 255, 0.35);
         }
-
-
-        /* =========================
-           HERO
-        ========================= */
 
         .hero {
             max-width: 1400px;
@@ -149,28 +168,18 @@
 
         .hero p {
             color: #9ba8c7;
-
             font-size: 16px;
-
             margin-bottom: 10px;
         }
 
         .shop-date {
             color: #6f7d9e;
-
             font-size: 14px;
-
             margin-bottom: 30px;
         }
 
-
-        /* =========================
-           SEARCH
-        ========================= */
-
         .search-container {
             max-width: 650px;
-
             margin: 0 auto 45px;
         }
 
@@ -207,11 +216,6 @@
                 0 0 25px rgba(0, 200, 255, 0.15);
         }
 
-
-        /* =========================
-           GROUP
-        ========================= */
-
         .shop-group {
             max-width: 1400px;
 
@@ -236,24 +240,15 @@
 
         .group-title h2 {
             font-size: 25px;
-
             font-weight: 800;
-
             color: white;
         }
 
         .group-count {
             color: #7f8ba8;
-
             font-size: 14px;
-
             font-weight: 600;
         }
-
-
-        /* =========================
-           GRID
-        ========================= */
 
         .shop-grid {
             display: grid;
@@ -267,23 +262,11 @@
             gap: 20px;
         }
 
-
-        /* =========================
-           CARD LINK
-        ========================= */
-
         .shop-card-link {
             text-decoration: none;
-
             color: inherit;
-
             display: block;
         }
-
-
-        /* =========================
-           CARD
-        ========================= */
 
         .shop-card {
             position: relative;
@@ -342,11 +325,6 @@
 
         }
 
-
-        /* =========================
-           IMAGE
-        ========================= */
-
         .image-container {
             width: 100%;
 
@@ -380,11 +358,6 @@
         .image-container img {
             transform: scale(1.08);
         }
-
-
-        /* =========================
-           CONTENT
-        ========================= */
 
         .card-content {
             padding: 15px;
@@ -430,14 +403,8 @@
 
         .vbucks {
             font-size: 13px;
-
             color: #8995af;
         }
-
-
-        /* =========================
-           BADGES
-        ========================= */
 
         .bundle-badge {
             position: absolute;
@@ -467,25 +434,26 @@
             top: 12px;
             right: 12px;
 
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
 
             border: none;
 
             border-radius: 50%;
 
             background:
-                rgba(5, 10, 20, 0.75);
+                rgba(5, 10, 20, 0.82);
 
             color: white;
 
-            font-size: 18px;
+            font-size: 20px;
 
             cursor: pointer;
 
             z-index: 20;
 
-            transition: 0.2s;
+            transition:
+                0.2s ease;
         }
 
         .favorite-button:hover {
@@ -495,10 +463,43 @@
             transform: scale(1.08);
         }
 
+        .favorite-button.is-favorite {
+            color: #ff4d8d;
 
-        /* =========================
-           NO RESULTS
-        ========================= */
+            background:
+                rgba(255, 77, 141, 0.15);
+
+            box-shadow:
+                0 0 15px rgba(255, 77, 141, 0.25);
+        }
+
+        .login-message {
+            max-width: 650px;
+
+            margin: -15px auto 35px;
+
+            padding: 12px 18px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(0, 200, 255, 0.06);
+
+            border:
+                1px solid rgba(0, 200, 255, 0.12);
+
+            color: #8995af;
+
+            font-size: 13px;
+
+            text-align: center;
+        }
+
+        .login-message a {
+            color: #00d9ff;
+            text-decoration: none;
+            font-weight: 700;
+        }
 
         .no-results {
             max-width: 700px;
@@ -514,14 +515,8 @@
 
         .no-results h2 {
             color: white;
-
             margin-bottom: 10px;
         }
-
-
-        /* =========================
-           FOOTER
-        ========================= */
 
         footer {
             text-align: center;
@@ -532,11 +527,6 @@
 
             font-size: 13px;
         }
-
-
-        /* =========================
-           MOBILE
-        ========================= */
 
         @media (max-width: 700px) {
 
@@ -553,10 +543,14 @@
                 height: 36px;
             }
 
-            .home-button {
-                padding: 8px 12px;
+            .nav-right {
+                gap: 6px;
+            }
 
-                font-size: 13px;
+            .nav-button,
+            .home-button {
+                padding: 8px 10px;
+                font-size: 12px;
             }
 
             .hero {
@@ -598,6 +592,12 @@
                 font-size: 13px;
             }
 
+            .favorite-button {
+                width: 34px;
+                height: 34px;
+                font-size: 18px;
+            }
+
         }
 
     </style>
@@ -626,9 +626,34 @@
         </a>
 
 
-        <a href="/" class="home-button">
-            Home
-        </a>
+        <div class="nav-right">
+
+            {% if session.get("user_id") %}
+
+                <a
+                    href="/favorites"
+                    class="nav-button"
+                >
+                    ⭐ Preferiti
+                </a>
+
+            {% else %}
+
+                <a
+                    href="/login"
+                    class="nav-button"
+                >
+                    Login
+                </a>
+
+            {% endif %}
+
+
+            <a href="/" class="home-button">
+                Home
+            </a>
+
+        </div>
 
     </nav>
 
@@ -653,6 +678,22 @@
 
                 Shop aggiornato:
                 {{ shop_date }}
+
+            </div>
+
+        {% endif %}
+
+
+        {% if not session.get("user_id") %}
+
+            <div class="login-message">
+
+                🔐 Accedi per salvare le skin
+                nei tuoi preferiti.
+
+                <a href="/login">
+                    Accedi
+                </a>
 
             </div>
 
@@ -718,10 +759,6 @@
                         {% for item in group.shop_items %}
 
 
-                            <!--
-                                LINK REALE ALLA PAGINA DETTAGLIO
-                            -->
-
                             <a
                                 href="/skins/{{ item.shop_index }}"
                                 class="shop-card-link"
@@ -740,17 +777,32 @@
                                     {% endif %}
 
 
-                                    <!-- FAVORITE -->
+                                    <!-- =========================
+                                         FAVORITE BUTTON
+                                    ========================= -->
 
-                                    <button
-                                        type="button"
-                                        class="favorite-button"
-                                        data-item-name="{{ item.name }}"
-                                        onclick="toggleFavorite(event, this)"
-                                        aria-label="Preferito"
-                                    >
-                                        ♡
-                                    </button>
+                                    {% if session.get("user_id") %}
+
+                                        <button
+                                            type="button"
+                                            class="favorite-button {% if item._is_favorite %}is-favorite{% endif %}"
+                                            data-item-id="{{ item._item_id }}"
+                                            data-item-name="{{ item._item_name }}"
+                                            data-image-url="{{ item._image_url or '' }}"
+                                            data-item='{{ item | tojson | safe }}'
+                                            onclick="toggleFavorite(event, this)"
+                                            aria-label="Aggiungi ai preferiti"
+                                        >
+
+                                            {% if item._is_favorite %}
+                                                ♥
+                                            {% else %}
+                                                ♡
+                                            {% endif %}
+
+                                        </button>
+
+                                    {% endif %}
 
 
                                     <!-- IMAGE -->
@@ -893,10 +945,6 @@
     </main>
 
 
-    <!-- =========================
-         FOOTER
-    ========================= -->
-
     <footer>
 
         Fortnite Hub
@@ -910,7 +958,6 @@
 
     <script>
 
-
         function searchShop() {
 
             const searchInput =
@@ -921,16 +968,13 @@
                     .toLowerCase()
                     .trim();
 
-
             const groups =
                 document.querySelectorAll(".shop-group");
 
             const noResults =
                 document.getElementById("noResults");
 
-
             let totalVisible = 0;
-
 
             groups.forEach(group => {
 
@@ -938,7 +982,6 @@
                     group.querySelectorAll(".shop-card");
 
                 let visibleCards = 0;
-
 
                 cards.forEach(card => {
 
@@ -951,7 +994,6 @@
                             ?.textContent
                             .toLowerCase()
                             .trim() || "";
-
 
                     if (
                         name.includes(search)
@@ -970,7 +1012,6 @@
 
                 });
 
-
                 if (visibleCards === 0) {
 
                     group.style.display = "none";
@@ -984,7 +1025,6 @@
                 }
 
             });
-
 
             if (
                 totalVisible === 0
@@ -1002,97 +1042,129 @@
         }
 
 
-        function toggleFavorite(
+        async function toggleFavorite(
             event,
             button
         ) {
 
             event.preventDefault();
-
             event.stopPropagation();
 
+            const itemId =
+                button.dataset.itemId;
 
             const itemName =
                 button.dataset.itemName;
 
+            const imageUrl =
+                button.dataset.imageUrl;
 
-            let favorites =
-                JSON.parse(
-                    localStorage.getItem(
-                        "fortniteFavorites"
-                    ) || "[]"
-                );
+            let item = {};
 
+            try {
 
-            if (favorites.includes(itemName)) {
-
-                favorites =
-                    favorites.filter(
-                        item => item !== itemName
+                item =
+                    JSON.parse(
+                        button.dataset.item
                     );
 
-            } else {
+            } catch (error) {
 
-                favorites.push(itemName);
+                item = {};
 
             }
 
 
-            localStorage.setItem(
-                "fortniteFavorites",
-                JSON.stringify(favorites)
-            );
+            button.disabled = true;
 
 
-            updateFavoriteButtons();
+            try {
 
-        }
+                const response =
+                    await fetch(
+                        "/api/favorite/toggle",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                item_id:
+                                    itemId,
+
+                                item_name:
+                                    itemName,
+
+                                image_url:
+                                    imageUrl,
+
+                                item:
+                                    item
+
+                            })
+                        }
+                    );
 
 
-        function updateFavoriteButtons() {
-
-            const favorites =
-                JSON.parse(
-                    localStorage.getItem(
-                        "fortniteFavorites"
-                    ) || "[]"
-                );
+                const result =
+                    await response.json();
 
 
-            document
-                .querySelectorAll(".favorite-button")
-                .forEach(button => {
-
-                    const itemName =
-                        button.dataset.itemName;
-
+                if (
+                    result.success
+                ) {
 
                     if (
-                        favorites.includes(itemName)
+                        result.is_favorite
                     ) {
 
-                        button.textContent = "♥";
+                        button.textContent =
+                            "♥";
+
+                        button.classList.add(
+                            "is-favorite"
+                        );
 
                     } else {
 
-                        button.textContent = "♡";
+                        button.textContent =
+                            "♡";
+
+                        button.classList.remove(
+                            "is-favorite"
+                        );
 
                     }
 
-                });
+                } else {
 
-        }
+                    alert(
+                        result.message
+                        || "Errore."
+                    );
 
+                }
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            function() {
+            } catch (error) {
 
-                updateFavoriteButtons();
+                console.error(
+                    error
+                );
+
+                alert(
+                    "Errore durante il salvataggio."
+                );
 
             }
-        );
 
+
+            button.disabled = false;
+
+        }
 
     </script>
 
