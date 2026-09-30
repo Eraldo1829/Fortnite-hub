@@ -61,7 +61,6 @@ create_database()
 def create_feature_tables():
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     # --------------------------------------------------------
@@ -175,7 +174,6 @@ def create_feature_tables():
     )
 
     connection.commit()
-
     connection.close()
 
 
@@ -187,7 +185,6 @@ create_feature_tables()
 # ============================================================
 
 def login_required():
-
     return "user_id" in session
 
 
@@ -195,13 +192,9 @@ def login_required():
 # ITEM ID
 # ------------------------------------------------------------
 
-def get_item_id(
-    item,
-    fallback_index=None
-):
+def get_item_id(item, fallback_index=None):
 
     if not isinstance(item, dict):
-
         return None
 
     possible_keys = [
@@ -218,11 +211,9 @@ def get_item_id(
         value = item.get(key)
 
         if value:
-
             return str(value)
 
     if fallback_index is not None:
-
         return f"item-{fallback_index}"
 
     return None
@@ -235,7 +226,6 @@ def get_item_id(
 def get_item_name(item):
 
     if not isinstance(item, dict):
-
         return "Skin senza nome"
 
     possible_keys = [
@@ -249,7 +239,6 @@ def get_item_name(item):
         value = item.get(key)
 
         if value:
-
             return str(value)
 
     return "Skin senza nome"
@@ -262,7 +251,6 @@ def get_item_name(item):
 def get_item_image(item):
 
     if not isinstance(item, dict):
-
         return None
 
     possible_keys = [
@@ -279,7 +267,6 @@ def get_item_image(item):
         value = item.get(key)
 
         if value:
-
             return str(value)
 
     return None
@@ -292,7 +279,6 @@ def get_item_image(item):
 def get_shop_date(shop):
 
     if not shop:
-
         return None
 
     data = shop.get("data")
@@ -302,16 +288,75 @@ def get_shop_date(shop):
         shop_date = data.get("date")
 
         if shop_date:
-
             return str(shop_date)
 
     shop_date = shop.get("date")
 
     if shop_date:
-
         return str(shop_date)
 
     return None
+
+
+# ------------------------------------------------------------
+# PREPARE SHOP TEMPLATE DATA
+# ------------------------------------------------------------
+
+def prepare_shop_template_items(
+    shop_items,
+    favorite_ids
+):
+
+    prepared = []
+
+    for index, item in enumerate(shop_items):
+
+        if not isinstance(item, dict):
+            continue
+
+        item_id = get_item_id(
+            item,
+            index
+        )
+
+        item_name = get_item_name(
+            item
+        )
+
+        image_url = get_item_image(
+            item
+        )
+
+        # Manteniamo i dati originali
+        item["_shop_index"] = index
+
+        item["_item_id"] = (
+            item_id
+        )
+
+        item["_item_name"] = (
+            item_name
+        )
+
+        item["_image_url"] = (
+            image_url
+        )
+
+        item["_is_favorite"] = (
+            str(item_id) in favorite_ids
+            if item_id
+            else False
+        )
+
+        # Compatibilità anche con eventuali
+        # parti del template che usano il nome semplice
+        item["is_favorite"] = (
+            item["_is_favorite"]
+        )
+
+        prepared.append(item)
+
+    return prepared
 
 
 # ------------------------------------------------------------
@@ -324,11 +369,9 @@ def save_shop_history(
 ):
 
     if not shop_date:
-
         return
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     for index, item in enumerate(shop_items):
@@ -339,16 +382,10 @@ def save_shop_history(
         )
 
         if not item_id:
-
             continue
 
-        item_name = get_item_name(
-            item
-        )
-
-        image_url = get_item_image(
-            item
-        )
+        item_name = get_item_name(item)
+        image_url = get_item_image(item)
 
         try:
 
@@ -400,7 +437,6 @@ def save_shop_history(
         )
 
     connection.commit()
-
     connection.close()
 
 
@@ -411,7 +447,6 @@ def save_shop_history(
 def get_favorite_ids(user_id):
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -441,12 +476,9 @@ def get_favorite_ids(user_id):
 # ITEM HISTORY STATS
 # ------------------------------------------------------------
 
-def get_item_history_stats(
-    item_id
-):
+def get_item_history_stats(item_id):
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -475,7 +507,6 @@ def get_item_history_stats(
         raw_date = row["shop_date"]
 
         if not raw_date:
-
             continue
 
         parsed_date = None
@@ -498,14 +529,10 @@ def get_item_history_stats(
                 break
 
             except Exception:
-
                 continue
 
         if parsed_date:
-
-            dates.append(
-                parsed_date
-            )
+            dates.append(parsed_date)
 
     if not dates:
 
@@ -522,7 +549,6 @@ def get_item_history_stats(
     )
 
     last_date = dates[0]
-
     first_date = dates[-1]
 
     today = date.today()
@@ -597,7 +623,6 @@ def register():
             )
 
         connection = get_connection()
-
         cursor = connection.cursor()
 
         cursor.execute(
@@ -626,10 +651,8 @@ def register():
                 error="Email già registrata."
             )
 
-        password_hash = (
-            generate_password_hash(
-                password
-            )
+        password_hash = generate_password_hash(
+            password
         )
 
         try:
@@ -670,10 +693,6 @@ def register():
 
         connection.close()
 
-        # ----------------------------------------------------
-        # EMAIL BENVENUTO
-        # ----------------------------------------------------
-
         send_welcome_email(
             email,
             username
@@ -711,7 +730,6 @@ def login():
         )
 
         connection = get_connection()
-
         cursor = connection.cursor()
 
         cursor.execute(
@@ -740,10 +758,8 @@ def login():
                 error="Email o password non corretti."
             )
 
-        password_hash = user["password"]
-
         if not check_password_hash(
-            password_hash,
+            user["password"],
             password
         ):
 
@@ -753,9 +769,7 @@ def login():
             )
 
         session["user_id"] = user["id"]
-
         session["username"] = user["username"]
-
         session["email"] = user["email"]
 
         return redirect(
@@ -805,10 +819,15 @@ def skins():
 
         return render_template(
             "skins.html",
+
+            shop_groups=[],
+
             items=[],
-            groups={},
+
             search_query="",
+
             favorite_ids=set(),
+
             shop_date=None
         )
 
@@ -849,13 +868,17 @@ def skins():
         ""
     ).strip()
 
-    if search_query:
+    # --------------------------------------------------------
+    # RICERCA SHOP
+    # --------------------------------------------------------
 
-        filtered_items = []
+    if search_query:
 
         search_lower = (
             search_query.lower()
         )
+
+        filtered_items = []
 
         for item in shop_items:
 
@@ -871,26 +894,29 @@ def skins():
 
         shop_items = filtered_items
 
-    for item in shop_items:
+    # --------------------------------------------------------
+    # PREPARAZIONE TEMPLATE
+    # --------------------------------------------------------
 
-        item_id = get_item_id(
-            item
-        )
+    shop_items = prepare_shop_template_items(
+        shop_items,
+        favorite_ids
+    )
 
-        item["is_favorite"] = (
-            item_id in favorite_ids
-        )
+    # --------------------------------------------------------
+    # GRUPPI
+    # --------------------------------------------------------
 
-    groups = group_shop_items(
+    shop_groups = group_shop_items(
         shop_items
     )
 
     return render_template(
         "skins.html",
 
-        items=shop_items,
+        shop_groups=shop_groups,
 
-        groups=groups,
+        items=shop_items,
 
         search_query=search_query,
 
@@ -954,7 +980,8 @@ def skin_detail_by_index(
         )
 
         is_favorite = (
-            item_id in favorite_ids
+            str(item_id)
+            in favorite_ids
         )
 
     return render_template(
@@ -984,7 +1011,7 @@ def all_items():
         ""
     ).strip()
 
-    category = request.args.get(
+    selected_category = request.args.get(
         "category",
         ""
     ).strip()
@@ -1003,7 +1030,6 @@ def all_items():
         page = 1
 
     if page < 1:
-
         page = 1
 
     # --------------------------------------------------------
@@ -1023,12 +1049,35 @@ def all_items():
 
         cosmetics = []
 
-    if not cosmetics:
+    # --------------------------------------------------------
+    # CATEGORIE DISPONIBILI
+    # --------------------------------------------------------
 
-        cosmetics = []
+    categories = set()
+
+    for cosmetic in cosmetics:
+
+        try:
+
+            item_category = get_cosmetic_category(
+                cosmetic
+            )
+
+        except Exception:
+
+            item_category = ""
+
+        if item_category:
+            categories.add(
+                item_category
+            )
+
+    categories = sorted(
+        categories
+    )
 
     # --------------------------------------------------------
-    # RICERCA LOCALE
+    # RICERCA
     # --------------------------------------------------------
 
     if search_query:
@@ -1070,13 +1119,9 @@ def all_items():
     # FILTRO CATEGORIA
     # --------------------------------------------------------
 
-    if category:
+    if selected_category:
 
         filtered_cosmetics = []
-
-        category_lower = (
-            category.lower()
-        )
 
         for item in cosmetics:
 
@@ -1092,16 +1137,14 @@ def all_items():
 
                 item_category = ""
 
-            if item_category:
+            if (
+                item_category
+                == selected_category
+            ):
 
-                if (
-                    str(item_category).lower()
-                    == category_lower
-                ):
-
-                    filtered_cosmetics.append(
-                        item
-                    )
+                filtered_cosmetics.append(
+                    item
+                )
 
         cosmetics = filtered_cosmetics
 
@@ -1111,24 +1154,20 @@ def all_items():
 
     per_page = 60
 
-    total_items = len(
+    total_results = len(
         cosmetics
     )
-
-    # Compatibilità con all_items.html
-    total_results = total_items
 
     total_pages = max(
         1,
         (
-            total_items
+            total_results
             + per_page
             - 1
         ) // per_page
     )
 
     if page > total_pages:
-
         page = total_pages
 
     start = (
@@ -1139,12 +1178,16 @@ def all_items():
         start + per_page
     )
 
-    items = cosmetics[
+    page_cosmetics = cosmetics[
         start:end
     ]
 
+    has_next = (
+        page < total_pages
+    )
+
     # --------------------------------------------------------
-    # PREZZI ATTUALI
+    # PREZZI SHOP
     # --------------------------------------------------------
 
     try:
@@ -1175,33 +1218,72 @@ def all_items():
         )
 
     # --------------------------------------------------------
-    # PREPARA ITEM
+    # PREPARAZIONE ITEM
     # --------------------------------------------------------
 
-    for item in items:
+    prepared_cosmetics = []
+
+    for item in page_cosmetics:
 
         item_id = get_item_id(
             item
         )
 
+        item_name = get_item_name(
+            item
+        )
+
+        image_url = get_item_image(
+            item
+        )
+
+        try:
+
+            item_category = get_cosmetic_category(
+                item
+            )
+
+        except Exception:
+
+            item_category = "📦 Altri oggetti"
+
+        price_data = None
+
         if item_id:
 
-            item["_shop_price"] = (
-                current_prices.get(
-                    str(item_id)
-                )
-            )
-
-            item["_is_favorite"] = (
+            price_data = current_prices.get(
                 str(item_id)
-                in favorite_ids
             )
 
-        else:
+        # Campi usati dal template
+        item["_item_id"] = item_id
+        item["_item_name"] = item_name
+        item["_image_url"] = image_url
+        item["_category"] = item_category
 
-            item["_shop_price"] = None
+        item["_shop_price"] = price_data
 
-            item["_is_favorite"] = False
+        item["_shop_bundle"] = (
+            bool(
+                price_data.get("bundle")
+            )
+            if isinstance(
+                price_data,
+                dict
+            )
+            else False
+        )
+
+        item["_is_favorite"] = (
+            str(item_id)
+            in favorite_ids
+            if item_id
+            else False
+        )
+
+        prepared_cosmetics.append(
+            item
+        )
 
     # --------------------------------------------------------
     # RENDER
@@ -1210,19 +1292,23 @@ def all_items():
     return render_template(
         "all_items.html",
 
-        items=items,
+        cosmetics=prepared_cosmetics,
+
+        selected_category=selected_category,
+
+        categories=categories,
 
         search_query=search_query,
-
-        category=category,
 
         page=page,
 
         total_pages=total_pages,
 
-        total_items=total_items,
-
         total_results=total_results,
+
+        total_items=total_results,
+
+        has_next=has_next,
 
         favorite_ids=favorite_ids
     )
@@ -1267,7 +1353,6 @@ def all_item_detail(
         ):
 
             item = cosmetic
-
             break
 
     if not item:
@@ -1295,10 +1380,8 @@ def all_item_detail(
 
         current_prices = {}
 
-    current_price = (
-        current_prices.get(
-            str(item_id)
-        )
+    current_price = current_prices.get(
+        str(item_id)
     )
 
     is_favorite = False
@@ -1347,7 +1430,6 @@ def favorite_detail(
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1410,7 +1492,7 @@ def favorite_detail(
         )
 
     # --------------------------------------------------------
-    # RECUPERA DATI JSON
+    # RECUPERA JSON
     # --------------------------------------------------------
 
     item_data = {}
@@ -1430,6 +1512,7 @@ def favorite_detail(
     if not item_data:
 
         item_data = {
+
             "id":
                 favorite["item_id"],
 
@@ -1508,7 +1591,6 @@ def add_favorite():
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1550,7 +1632,6 @@ def add_favorite():
     )
 
     connection.commit()
-
     connection.close()
 
     return redirect(
@@ -1586,7 +1667,6 @@ def remove_favorite():
     )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1605,7 +1685,6 @@ def remove_favorite():
     )
 
     connection.commit()
-
     connection.close()
 
     return redirect(
@@ -1628,7 +1707,6 @@ def favorites():
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1646,9 +1724,7 @@ def favorites():
         )
     )
 
-    favorite_items = (
-        cursor.fetchall()
-    )
+    favorite_items = cursor.fetchall()
 
     connection.close()
 
@@ -1725,7 +1801,6 @@ def favorite_toggle():
         data_json = "{}"
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1811,7 +1886,6 @@ def favorite_toggle():
         is_favorite = True
 
     connection.commit()
-
     connection.close()
 
     return {
@@ -1834,7 +1908,6 @@ def shop_history():
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1880,7 +1953,6 @@ def shop_history_date(
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1925,7 +1997,6 @@ def tracker():
         )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1948,9 +2019,7 @@ def tracker():
         )
     )
 
-    tracked_items = (
-        cursor.fetchall()
-    )
+    tracked_items = cursor.fetchall()
 
     cursor.execute(
         """
@@ -2017,7 +2086,6 @@ def tracker_notifications():
     )
 
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute(
@@ -2048,7 +2116,6 @@ def tracker_notifications():
     )
 
     connection.commit()
-
     connection.close()
 
     return redirect(
@@ -2109,7 +2176,7 @@ def api_tracker_check():
 
 
 # ============================================================
-# ERROR HANDLERS
+# ERROR HANDLER
 # ============================================================
 
 @app.errorhandler(404)
