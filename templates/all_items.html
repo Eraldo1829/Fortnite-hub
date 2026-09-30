@@ -43,6 +43,11 @@
         }
 
 
+        a {
+            color: inherit;
+        }
+
+
         /* =====================================================
            NAVBAR
         ===================================================== */
@@ -695,6 +700,8 @@
 
             backdrop-filter:
                 blur(5px);
+
+            z-index: 5;
         }
 
 
@@ -747,6 +754,8 @@
 
             font-weight:
                 700;
+
+            z-index: 5;
         }
 
 
@@ -1155,8 +1164,6 @@
     <div class="topbar-inner">
 
 
-        <!-- LOGO ATTUALE -->
-
         <a
             href="{{ url_for('home') }}"
             class="logo"
@@ -1315,7 +1322,7 @@
 
 
         <a
-            href="{{ url_for('all_items) }}"
+            href="{{ url_for('all_items') }}"
             class="
                 category
                 {% if not selected_category %}
@@ -1439,6 +1446,22 @@
                                     loading="lazy"
                                 >
 
+                            {% else %}
+
+                                <div
+                                    style="
+                                        width:100%;
+                                        height:100%;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        color:#666;
+                                        font-size:40px;
+                                    "
+                                >
+                                    🎮
+                                </div>
+
                             {% endif %}
 
 
@@ -1538,33 +1561,37 @@
                          FAVORITE
                     ========================== -->
 
-                    <button
-                        type="button"
-                        class="
-                            favorite-button
+                    {% if session.get("user_id") %}
+
+                        <button
+                            type="button"
+                            class="
+                                favorite-button
+                                {% if item._is_favorite %}
+                                    active
+                                {% endif %}
+                            "
+                            onclick="toggleFavorite(event, this)"
+                            data-item-id="{{ item._item_id }}"
+                            data-item-name="{{ item._item_name }}"
+                            data-image-url="{{ item._image_url or '' }}"
+                        >
+
+
                             {% if item._is_favorite %}
-                                active
+
+                                ♥️
+
+                            {% else %}
+
+                                ♡
+
                             {% endif %}
-                        "
-                        onclick="toggleFavorite(event, this)"
-                        data-item-id="{{ item._item_id }}"
-                        data-item-name="{{ item._item_name }}"
-                        data-image-url="{{ item._image_url or '' }}"
-                    >
 
 
-                        {% if item._is_favorite %}
+                        </button>
 
-                            ♥️
-
-                        {% else %}
-
-                            ♡
-
-                        {% endif %}
-
-
-                    </button>
+                    {% endif %}
 
 
                 </div>
@@ -1681,13 +1708,14 @@
      FAVORITE JAVASCRIPT
 ===================================================== -->
 
+{% if session.get("user_id") %}
+
 <script>
 
 async function toggleFavorite(
     event,
     button
 ) {
-
 
     event.preventDefault();
 
@@ -1714,7 +1742,6 @@ async function toggleFavorite(
 
 
     try {
-
 
         const response =
             await fetch(
@@ -1765,10 +1792,8 @@ async function toggleFavorite(
             response.status === 401
         ) {
 
-
             window.location.href =
                 "{{ url_for('login') }}";
-
 
             return;
 
@@ -1783,52 +1808,57 @@ async function toggleFavorite(
             data.success
         ) {
 
-
             if (
                 data.is_favorite
             ) {
-
 
                 button.classList.add(
                     "active"
                 );
 
-
                 button.textContent =
                     "♥️";
 
-
             } else {
-
 
                 button.classList.remove(
                     "active"
                 );
-
 
                 button.textContent =
                     "♡";
 
             }
 
+        } else {
+
+            alert(
+                data.message
+                ||
+                "Errore durante il salvataggio."
+            );
 
         }
 
 
     } catch (error) {
 
-
         console.error(
             "Errore preferito:",
             error
         );
 
+        alert(
+            "Errore durante il salvataggio del preferito."
+        );
 
     }
 
 }
 
 </script>
+
+{% endif %}
 
 
 </body>
