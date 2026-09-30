@@ -1,4 +1,6 @@
 import os
+import html
+
 import resend
 
 
@@ -6,15 +8,13 @@ import resend
 # CONFIGURAZIONE RESEND
 # ============================================================
 
-RESEND_API_KEY = os.getenv(
-    "RESEND_API_KEY"
-)
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
 FROM_EMAIL = "Fortnite Hub <onboarding@resend.dev>"
 
 
 # ============================================================
-# INVIO EMAIL
+# INVIO NOTIFICA SKIN
 # ============================================================
 
 def send_skin_notification(
@@ -24,156 +24,197 @@ def send_skin_notification(
     image_url=None
 ):
 
+    # --------------------------------------------------------
+    # CONTROLLI
+    # --------------------------------------------------------
+
     if not recipient:
-
-        print(
-            "❌ Nessun destinatario."
-        )
-
+        print("❌ Nessun destinatario.")
         return False
 
     if not RESEND_API_KEY:
-
-        print(
-            "❌ RESEND_API_KEY non configurata."
-        )
-
+        print("❌ RESEND_API_KEY non configurata.")
         return False
 
-    subject = (
-        f"🔥 {item_name} è tornata nello Shop!"
+    # --------------------------------------------------------
+    # SICUREZZA HTML
+    # --------------------------------------------------------
+
+    safe_username = html.escape(
+        str(username or "Utente")
     )
 
-    # ========================================================
+    safe_item_name = html.escape(
+        str(item_name or "Skin")
+    )
+
+    safe_image_url = ""
+
+    if image_url:
+        safe_image_url = html.escape(
+            str(image_url),
+            quote=True
+        )
+
+    # --------------------------------------------------------
+    # OGGETTO EMAIL
+    # --------------------------------------------------------
+
+    subject = (
+        f"🔥 {safe_item_name} è tornata nello Shop!"
+    )
+
+    # --------------------------------------------------------
     # IMMAGINE
-    # ========================================================
+    # --------------------------------------------------------
 
     image_html = ""
 
-    if image_url:
+    if safe_image_url:
 
         image_html = f"""
         <div style="
             text-align:center;
             margin:25px 0;
         ">
+
             <img
-                src="{image_url}"
-                alt="{item_name}"
+                src="{safe_image_url}"
+                alt="{safe_item_name}"
                 style="
+                    display:block;
+                    margin:0 auto;
                     max-width:320px;
                     width:100%;
+                    height:auto;
                     border-radius:18px;
                 "
             >
+
         </div>
         """
 
-    # ========================================================
-    # HTML EMAIL
-    # ========================================================
+    # --------------------------------------------------------
+    # EMAIL HTML
+    # --------------------------------------------------------
 
-    html = f"""
-    <!DOCTYPE html>
+    html_content = f"""
+<!DOCTYPE html>
 
-    <html lang="it">
+<html lang="it">
 
-    <head>
+<head>
 
-        <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-        <meta
-            name="viewport"
-            content="width=device-width,
-            initial-scale=1.0"
-        >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-        <title>
-            Fortnite Hub
-        </title>
+    <title>Fortnite Hub</title>
 
-    </head>
+</head>
 
-    <body style="
-        margin:0;
-        padding:0;
-        background:#111827;
-        font-family:Arial,sans-serif;
-        color:#ffffff;
+<body style="
+    margin:0;
+    padding:0;
+    background:#111827;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#ffffff;
+">
+
+    <div style="
+        width:100%;
+        padding:30px 15px;
+        box-sizing:border-box;
     ">
 
         <div style="
             max-width:600px;
             margin:0 auto;
-            padding:30px 20px;
+            background:#1f2937;
+            border-radius:20px;
+            padding:30px;
+            box-sizing:border-box;
+            text-align:center;
         ">
 
-            <div style="
-                background:#1f2937;
-                border-radius:20px;
-                padding:30px;
-                text-align:center;
+            <h1 style="
+                margin:0 0 20px 0;
+                font-size:30px;
             ">
+                🔥 Fortnite Hub
+            </h1>
 
-                <h1 style="
-                    margin-top:0;
-                    font-size:28px;
-                ">
-                    🔥 Fortnite Hub
-                </h1>
+            <p style="
+                margin:0 0 10px 0;
+                color:#cbd5e1;
+                font-size:16px;
+            ">
+                Ciao {safe_username}!
+            </p>
 
-                <p style="
-                    color:#cbd5e1;
+            <h2 style="
+                margin:25px 0 15px 0;
+                font-size:25px;
+                color:#ffffff;
+            ">
+                {safe_item_name}
+            </h2>
+
+            <p style="
+                margin:0;
+                color:#cbd5e1;
+                font-size:16px;
+                line-height:1.6;
+            ">
+                Una skin che hai aggiunto ai tuoi preferiti
+                è tornata nello Shop di Fortnite!
+            </p>
+
+            {image_html}
+
+            <a
+                href="https://fortnite-hub-g6u2.onrender.com"
+                style="
+                    display:inline-block;
+                    margin-top:10px;
+                    padding:14px 24px;
+                    border-radius:12px;
+                    background:#6366f1;
+                    color:#ffffff;
+                    text-decoration:none;
                     font-size:16px;
-                ">
-                    Ciao {username}!
-                </p>
+                    font-weight:bold;
+                "
+            >
+                Apri Fortnite Hub
+            </a>
 
-                <h2 style="
-                    font-size:24px;
-                    margin-top:25px;
-                ">
-                    {item_name}
-                </h2>
-
-                <p style="
-                    color:#cbd5e1;
-                    font-size:16px;
-                ">
-                    Una skin che hai nei tuoi
-                    preferiti è tornata
-                    nello Shop di Fortnite!
-                </p>
-
-                {image_html}
-
-                <a
-                    href="https://fortnite-hub-g6u2.onrender.com"
-                    style="
-                        display:inline-block;
-                        padding:14px 24px;
-                        border-radius:12px;
-                        background:#6366f1;
-                        color:white;
-                        text-decoration:none;
-                        font-weight:bold;
-                    "
-                >
-                    Apri Fortnite Hub
-                </a>
-
-            </div>
+            <p style="
+                margin:30px 0 0 0;
+                color:#94a3b8;
+                font-size:13px;
+                line-height:1.5;
+            ">
+                Questa email è stata inviata automaticamente
+                da Fortnite Hub perché hai attivato le notifiche
+                per i tuoi preferiti.
+            </p>
 
         </div>
 
-    </body>
+    </div>
 
-    </html>
-    """
+</body>
 
-    # ========================================================
-    # RESEND
-    # ========================================================
+</html>
+"""
+
+    # --------------------------------------------------------
+    # INVIO CON RESEND
+    # --------------------------------------------------------
 
     try:
 
@@ -184,7 +225,7 @@ def send_skin_notification(
                 "from": FROM_EMAIL,
                 "to": [recipient],
                 "subject": subject,
-                "html": html
+                "html": html_content
             }
         )
 
@@ -204,7 +245,7 @@ def send_skin_notification(
 
         print(
             "❌ Errore invio email:",
-            error
+            repr(error)
         )
 
         return False
