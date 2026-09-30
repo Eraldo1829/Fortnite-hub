@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="it">
 
@@ -6,13 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Item Shop | Fortnite Hub</title>
-
+    <title>Fortnite Hub - Item Shop</title>
 
     <style>
 
@@ -22,222 +18,174 @@
             padding: 0;
         }
 
-
         body {
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             background:
-
                 radial-gradient(
                     circle at top left,
-                    rgba(0, 220, 255, 0.12),
+                    rgba(0, 180, 255, 0.12),
                     transparent 35%
                 ),
-
                 radial-gradient(
                     circle at top right,
-                    rgba(168, 85, 247, 0.12),
+                    rgba(130, 60, 255, 0.12),
                     transparent 35%
                 ),
-
-                #050816;
-
+                #070b16;
             color: white;
-
             min-height: 100vh;
         }
 
 
-        /* NAVBAR */
+        /* =========================
+           NAVBAR
+        ========================= */
 
-        .navbar {
-
-            position: sticky;
-
-            top: 0;
-
-            z-index: 100;
-
-            height: 72px;
+        nav {
+            width: 100%;
+            padding: 15px 30px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
-            padding: 0 40px;
-
-            background:
-                rgba(5, 8, 22, 0.88);
-
-            backdrop-filter:
-                blur(14px);
+            background: rgba(5, 9, 20, 0.92);
 
             border-bottom:
-                1px solid
-                rgba(255, 255, 255, 0.08);
+                1px solid rgba(0, 200, 255, 0.15);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            backdrop-filter: blur(15px);
         }
 
-
-        .brand {
-
+        .nav-logo {
             display: flex;
-
             align-items: center;
-
             gap: 12px;
 
             text-decoration: none;
-
             color: white;
 
             font-size: 20px;
-
             font-weight: 800;
         }
 
-
-        .brand img {
-
+        .nav-logo img {
             width: 42px;
-
             height: 42px;
 
             object-fit: contain;
         }
 
-
-        .back-button {
-
+        .home-button {
             text-decoration: none;
-
             color: white;
 
-            padding:
-                10px 18px;
+            padding: 10px 18px;
 
             border-radius: 10px;
 
             background:
-                rgba(255, 255, 255, 0.06);
+                linear-gradient(
+                    135deg,
+                    #00c8ff,
+                    #7b2cff
+                );
 
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.08);
+            font-weight: 700;
 
             transition: 0.25s;
         }
 
+        .home-button:hover {
+            transform: translateY(-2px);
 
-        .back-button:hover {
-
-            background:
-                rgba(0, 220, 255, 0.12);
-
-            border-color:
-                rgba(0, 220, 255, 0.4);
-
-            transform:
-                translateY(-2px);
+            box-shadow:
+                0 0 20px rgba(0, 200, 255, 0.35);
         }
 
 
-        /* MAIN */
-
-        .container {
-
-            max-width: 1500px;
-
-            margin: auto;
-
-            padding:
-                45px 30px 80px;
-        }
-
+        /* =========================
+           HERO
+        ========================= */
 
         .hero {
+            max-width: 1400px;
+
+            margin: 0 auto;
+
+            padding: 55px 25px 25px;
 
             text-align: center;
-
-            margin-bottom: 35px;
         }
 
-
         .hero h1 {
-
-            font-size:
-                clamp(32px, 5vw, 54px);
+            font-size: clamp(35px, 6vw, 65px);
 
             font-weight: 900;
 
             background:
-
                 linear-gradient(
                     90deg,
-                    #ffffff,
                     #00d9ff,
-                    #a855f7
+                    #ffffff,
+                    #9b5cff
                 );
 
             -webkit-background-clip: text;
+            background-clip: text;
 
-            -webkit-text-fill-color: transparent;
+            color: transparent;
 
             margin-bottom: 12px;
         }
 
-
         .hero p {
+            color: #9ba8c7;
 
-            color: #9ca3af;
+            font-size: 16px;
 
-            font-size: 15px;
+            margin-bottom: 10px;
         }
-
 
         .shop-date {
+            color: #6f7d9e;
 
-            margin-top: 10px;
+            font-size: 14px;
 
-            color: #6b7280;
-
-            font-size: 13px;
+            margin-bottom: 30px;
         }
 
 
-        /* SEARCH */
+        /* =========================
+           SEARCH
+        ========================= */
 
         .search-container {
-
             max-width: 650px;
 
-            margin:
-                30px auto 50px;
+            margin: 0 auto 45px;
+
+            position: relative;
         }
 
-
-        .search-box {
-
+        .search-container input {
             width: 100%;
 
-            padding:
-                16px 20px;
+            padding: 16px 20px;
 
             border-radius: 14px;
 
             border:
-                1px solid
-                rgba(255, 255, 255, 0.1);
+                1px solid rgba(0, 200, 255, 0.25);
 
             outline: none;
 
             background:
-                rgba(255, 255, 255, 0.05);
+                rgba(13, 20, 38, 0.9);
 
             color: white;
 
@@ -246,317 +194,196 @@
             transition: 0.25s;
         }
 
-
-        .search-box::placeholder {
-
-            color: #6b7280;
+        .search-container input::placeholder {
+            color: #6d7893;
         }
 
-
-        .search-box:focus {
-
-            border-color:
-                rgba(0, 217, 255, 0.6);
+        .search-container input:focus {
+            border-color: #00c8ff;
 
             box-shadow:
-                0 0 25px
-                rgba(0, 217, 255, 0.12);
+                0 0 25px rgba(0, 200, 255, 0.15);
         }
 
 
-        /* GROUP */
+        /* =========================
+           GROUP
+        ========================= */
 
         .shop-group {
+            max-width: 1400px;
 
-            margin-bottom: 55px;
+            margin: 0 auto 55px;
 
-            animation:
-                fadeIn 0.5s ease;
+            padding: 0 25px;
         }
-
-
-        @keyframes fadeIn {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(10px);
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0);
-            }
-        }
-
 
         .group-header {
-
             display: flex;
 
             align-items: center;
 
             justify-content: space-between;
-
-            gap: 20px;
 
             margin-bottom: 20px;
 
             padding-bottom: 12px;
 
             border-bottom:
-                1px solid
-                rgba(255, 255, 255, 0.08);
+                1px solid rgba(255, 255, 255, 0.08);
         }
 
+        .group-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
         .group-title h2 {
+            font-size: 25px;
 
-            font-size: 24px;
+            font-weight: 800;
 
-            font-weight: 900;
+            color: white;
         }
-
 
         .group-count {
+            color: #7f8ba8;
 
-            color: #7f889c;
+            font-size: 14px;
 
-            font-size: 13px;
-
-            white-space: nowrap;
+            font-weight: 600;
         }
 
 
-        /* GRID */
+        /* =========================
+           SHOP GRID
+        ========================= */
 
         .shop-grid {
-
             display: grid;
 
             grid-template-columns:
                 repeat(
                     auto-fill,
-                    minmax(220px, 1fr)
+                    minmax(210px, 1fr)
                 );
 
             gap: 20px;
         }
 
 
-        /* CARD */
+        /* =========================
+           CARD
+        ========================= */
 
         .shop-card {
-
             position: relative;
 
-            overflow: hidden;
-
             background:
-
                 linear-gradient(
                     145deg,
-                    rgba(255, 255, 255, 0.08),
-                    rgba(255, 255, 255, 0.025)
+                    rgba(19, 28, 50, 0.95),
+                    rgba(9, 14, 27, 0.95)
                 );
 
             border:
-                1px solid
-                rgba(255, 255, 255, 0.08);
+                1px solid rgba(255, 255, 255, 0.08);
 
             border-radius: 18px;
 
-            min-height: 350px;
+            overflow: hidden;
 
             cursor: pointer;
 
             transition:
-
                 transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
 
-                border-color 0.3s ease,
-
-                box-shadow 0.3s ease;
+            animation: cardAppear 0.5s ease both;
         }
 
-
         .shop-card:hover {
-
             transform:
                 translateY(-8px)
                 scale(1.015);
 
             border-color:
-                rgba(0, 217, 255, 0.4);
+                rgba(0, 200, 255, 0.45);
 
             box-shadow:
-
-                0 18px 45px
-                rgba(0, 0, 0, 0.4),
+                0 15px 40px
+                rgba(0, 0, 0, 0.45),
 
                 0 0 25px
-                rgba(0, 217, 255, 0.08);
+                rgba(0, 200, 255, 0.12);
+        }
+
+        @keyframes cardAppear {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
         }
 
 
-        /* IMAGE */
+        /* =========================
+           IMAGE
+        ========================= */
 
-        .card-image {
-
+        .image-container {
             width: 100%;
 
-            height: 250px;
+            aspect-ratio: 1 / 1;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0, 200, 255, 0.12),
+                    transparent 65%
+                );
 
             display: flex;
 
             align-items: center;
-
             justify-content: center;
-
-            background:
-
-                radial-gradient(
-                    circle at center,
-                    rgba(0, 217, 255, 0.08),
-                    transparent 65%
-                );
 
             overflow: hidden;
         }
 
-
-        .card-image img {
-
+        .image-container img {
             width: 100%;
-
             height: 100%;
 
-            object-fit: contain;
+            object-fit: cover;
 
-            transition:
-                transform 0.35s ease;
+            transition: 0.35s;
         }
-
 
         .shop-card:hover
-        .card-image img {
-
-            transform:
-                scale(1.08);
+        .image-container img {
+            transform: scale(1.08);
         }
 
 
-        /* BADGE */
+        /* =========================
+           CARD CONTENT
+        ========================= */
 
-        .badge {
-
-            position: absolute;
-
-            top: 12px;
-
-            left: 12px;
-
-            padding:
-                6px 10px;
-
-            border-radius: 8px;
-
-            font-size: 11px;
-
-            font-weight: 800;
-
-            text-transform: uppercase;
-
-            background:
-                rgba(0, 0, 0, 0.65);
-
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.1);
-
-            backdrop-filter:
-                blur(8px);
-
-            z-index: 3;
+        .card-content {
+            padding: 15px;
         }
 
-
-        .badge.bundle {
-
-            background:
-
-                linear-gradient(
-                    90deg,
-                    rgba(0, 217, 255, 0.8),
-                    rgba(168, 85, 247, 0.8)
-                );
-
-            border: none;
-        }
-
-
-        /* FAVORITE */
-
-        .favorite {
-
-            position: absolute;
-
-            top: 10px;
-
-            right: 10px;
-
-            width: 38px;
-
-            height: 38px;
-
-            border-radius: 50%;
-
-            border:
-                1px solid
-                rgba(255, 255, 255, 0.1);
-
-            background:
-                rgba(0, 0, 0, 0.6);
-
-            color: white;
-
-            font-size: 20px;
-
-            cursor: pointer;
-
-            z-index: 5;
-
-            transition: 0.25s;
-        }
-
-
-        .favorite:hover {
-
-            transform:
-                scale(1.12);
-
-            background:
-                rgba(168, 85, 247, 0.25);
-        }
-
-
-        /* CARD INFO */
-
-        .card-info {
-
-            padding:
-                16px;
-        }
-
-
-        .card-name {
-
-            font-size: 16px;
+        .item-name {
+            font-size: 17px;
 
             font-weight: 800;
 
@@ -569,163 +396,208 @@
             margin-bottom: 7px;
         }
 
-
-        .card-type {
-
-            color: #8b93a7;
-
+        .item-type {
             font-size: 13px;
+
+            color: #8e9ab7;
 
             margin-bottom: 12px;
         }
 
-
-        .card-bottom {
-
+        .item-bottom {
             display: flex;
 
             align-items: center;
 
             justify-content: space-between;
-
-            gap: 10px;
         }
 
-
         .price {
+            color: #00d9ff;
 
-            font-size: 14px;
+            font-size: 16px;
 
             font-weight: 800;
         }
 
+        .vbucks {
+            font-size: 13px;
 
-        .bundle-count {
-
-            font-size: 12px;
-
-            color: #00d9ff;
-
-            font-weight: 700;
+            color: #8995af;
         }
 
 
-        /* EMPTY */
+        /* =========================
+           BADGES
+        ========================= */
 
-        .empty {
+        .bundle-badge {
+            position: absolute;
+
+            top: 12px;
+            left: 12px;
+
+            padding: 6px 9px;
+
+            border-radius: 8px;
+
+            background:
+                rgba(123, 44, 255, 0.9);
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            z-index: 5;
+
+            box-shadow:
+                0 4px 15px
+                rgba(0, 0, 0, 0.3);
+        }
+
+        .favorite-button {
+            position: absolute;
+
+            top: 12px;
+            right: 12px;
+
+            width: 36px;
+            height: 36px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background:
+                rgba(5, 10, 20, 0.75);
+
+            color: white;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            z-index: 10;
+
+            transition: 0.2s;
+        }
+
+        .favorite-button:hover {
+            background:
+                rgba(0, 200, 255, 0.8);
+
+            transform: scale(1.08);
+        }
+
+
+        /* =========================
+           NO RESULTS
+        ========================= */
+
+        .no-results {
+            max-width: 700px;
+
+            margin: 80px auto;
 
             text-align: center;
 
-            padding:
-                80px 20px;
+            color: #8c98b3;
 
-            color: #8b93a7;
+            display: none;
         }
 
-
-        .empty h2 {
-
+        .no-results h2 {
             color: white;
 
             margin-bottom: 10px;
         }
 
 
-        /* MOBILE */
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 40px 20px;
+
+            color: #596681;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
 
         @media (max-width: 700px) {
 
-            .navbar {
-
-                padding:
-                    0 18px;
+            nav {
+                padding: 12px 16px;
             }
 
-
-            .brand {
-
+            .nav-logo {
                 font-size: 17px;
             }
 
-
-            .brand img {
-
+            .nav-logo img {
                 width: 36px;
-
                 height: 36px;
             }
 
-
-            .container {
-
-                padding:
-                    30px 16px 50px;
+            .home-button {
+                padding: 8px 12px;
+                font-size: 13px;
             }
 
+            .hero {
+                padding-top: 35px;
+            }
 
             .shop-grid {
-
                 grid-template-columns:
-                    repeat(
-                        2,
-                        minmax(0, 1fr)
-                    );
+                    repeat(2, minmax(0, 1fr));
 
                 gap: 12px;
             }
 
-
-            .shop-card {
-
-                min-height: 300px;
-
-                border-radius: 14px;
+            .shop-group {
+                padding: 0 12px;
             }
 
-
-            .card-image {
-
-                height: 190px;
+            .group-title h2 {
+                font-size: 19px;
             }
 
-
-            .card-info {
-
-                padding: 12px;
+            .group-count {
+                font-size: 12px;
             }
 
+            .card-content {
+                padding: 11px;
+            }
 
-            .card-name {
-
+            .item-name {
                 font-size: 14px;
             }
 
-
-            .card-type {
-
+            .item-type {
                 font-size: 11px;
             }
 
-
-            .group-title h2 {
-
-                font-size: 20px;
+            .price {
+                font-size: 13px;
             }
 
-        }
+            .favorite-button {
+                width: 32px;
+                height: 32px;
 
-
-        @media (max-width: 420px) {
-
-            .shop-grid {
-
-                grid-template-columns: 1fr;
-            }
-
-
-            .card-image {
-
-                height: 250px;
+                font-size: 16px;
             }
 
         }
@@ -738,71 +610,54 @@
 <body>
 
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================= -->
 
-    <nav class="navbar">
+    <nav>
 
-        <a
-            href="/"
-            class="brand"
-        >
+        <a href="/" class="nav-logo">
 
             <img
                 src="{{ url_for('static', filename='logo.png') }}"
                 alt="Fortnite Hub"
             >
 
-            <span>
-                FORTNITE HUB
-            </span>
+            <span>Fortnite Hub</span>
 
         </a>
 
 
-        <a
-            href="/"
-            class="back-button"
-        >
-
-            ← Home
-
+        <a href="/" class="home-button">
+            Home
         </a>
 
     </nav>
 
 
-    <!-- MAIN -->
+    <!-- =========================
+         HERO
+    ========================= -->
 
-    <main class="container">
+    <section class="hero">
 
+        <h1>ITEM SHOP</h1>
 
-        <!-- HERO -->
+        <p>
+            Scopri tutti gli oggetti presenti
+            nello Shop di Fortnite.
+        </p>
 
-        <section class="hero">
-
-            <h1>
-                🛍️ Item Shop
-            </h1>
-
-
-            <p>
-                Scopri gli oggetti disponibili
-                nello Shop di Fortnite.
-            </p>
-
-
-            {% if shop_date %}
+        {% if shop_date %}
 
             <div class="shop-date">
 
-                Aggiornato:
+                Shop aggiornato:
                 {{ shop_date }}
 
             </div>
 
-            {% endif %}
-
-        </section>
+        {% endif %}
 
 
         <!-- SEARCH -->
@@ -810,201 +665,175 @@
         <div class="search-container">
 
             <input
-                id="searchInput"
-                class="search-box"
                 type="text"
+                id="shopSearch"
                 placeholder="🔎 Cerca una skin, emote, piccone..."
                 oninput="searchShop()"
             >
 
         </div>
 
+    </section>
 
-        <!-- SHOP GROUPS -->
+
+    <!-- =========================
+         SHOP
+    ========================= -->
+
+    <main id="shopContainer">
 
         {% if shop_groups %}
 
 
             {% for group in shop_groups %}
 
-
-            <section
-                class="shop-group"
-                data-group="{{ group.name|lower }}"
-            >
-
-
-                <div class="group-header">
+                <section
+                    class="shop-group"
+                    data-group="{{ group.name|lower }}"
+                >
 
 
-                    <div class="group-title">
+                    <!-- GROUP HEADER -->
 
-                        <h2>
-                            {{ group.name }}
-                        </h2>
+                    <div class="group-header">
+
+                        <div class="group-title">
+
+                            <h2>
+                                {{ group.name }}
+                            </h2>
+
+                        </div>
+
+
+                        <div class="group-count">
+
+                            {{ group.shop_items|length }}
+                            oggetti
+
+                        </div>
 
                     </div>
 
 
-                    <div class="group-count">
+                    <!-- ITEMS -->
 
-                        {{ group.shop_items|length }}
-                        oggetti
-
-                    </div>
+                    <div class="shop-grid">
 
 
-                </div>
+                        {% for item in group.shop_items %}
 
 
-                <!-- ITEMS -->
-
-                <div class="shop-grid">
-
-
-                    {% for item in group.shop_items %}
-
-
-                    <article
-                        class="shop-card"
-                        data-name="{{ item.name|lower }}"
-                        onclick="openItem({{ item.shop_index }})"
-                    >
-
-
-                        <!-- BADGE -->
-
-                        {% if item.bundle %}
-
-                        <div class="badge bundle">
-
-                            📦 BUNDLE
-
-                        </div>
-
-                        {% else %}
-
-                        <div class="badge">
-
-                            {{ item.type }}
-
-                        </div>
-
-                        {% endif %}
-
-
-                        <!-- FAVORITE -->
-
-                        <button
-                            class="favorite"
-                            onclick="toggleFavorite(event, this)"
-                            aria-label="Aggiungi ai preferiti"
-                        >
-
-                            ♡
-
-                        </button>
-
-
-                        <!-- IMAGE -->
-
-                        <div class="card-image">
-
-
-                            {% if item.image %}
-
-                            <img
-                                src="{{ item.image }}"
-                                alt="{{ item.name }}"
-                                loading="lazy"
+                            <article
+                                class="shop-card"
+                                data-name="{{ item.name|lower }}"
+                                onclick="openItem({{ item.shop_index }})"
                             >
 
-                            {% else %}
 
-                            <div
-                                style="
-                                    color:#6b7280;
-                                    text-align:center;
-                                "
-                            >
+                                {% if item.bundle %}
 
-                                Immagine
-                                non disponibile
+                                    <div class="bundle-badge">
+                                        BUNDLE
+                                    </div>
 
-                            </div>
-
-                            {% endif %}
+                                {% endif %}
 
 
-                        </div>
+                                <!-- FAVORITE -->
+
+                                <button
+                                    class="favorite-button"
+                                    onclick="toggleFavorite(event, '{{ item.name|replace("'", "\\'") }}')"
+                                    aria-label="Preferito"
+                                >
+                                    ♡
+                                </button>
 
 
-                        <!-- INFO -->
+                                <!-- IMAGE -->
 
-                        <div class="card-info">
+                                <div class="image-container">
 
+                                    {% if item.image %}
 
-                            <div class="card-name">
-
-                                {{ item.name }}
-
-                            </div>
-
-
-                            <div class="card-type">
-
-                                {{ item.type }}
-
-                            </div>
-
-
-                            <div class="card-bottom">
-
-
-                                <div class="price">
-
-                                    {% if item.price is not none %}
-
-                                    {{ item.price }}
-                                    V-Bucks
+                                        <img
+                                            src="{{ item.image }}"
+                                            alt="{{ item.name }}"
+                                            loading="lazy"
+                                        >
 
                                     {% else %}
 
-                                    —
+                                        <div
+                                            style="
+                                                color:#65718c;
+                                                font-size:14px;
+                                            "
+                                        >
+                                            Immagine non disponibile
+                                        </div>
 
                                     {% endif %}
 
                                 </div>
 
 
-                                {% if item.bundle %}
+                                <!-- CONTENT -->
 
-                                <div class="bundle-count">
+                                <div class="card-content">
 
-                                    📦
-                                    {{ item.bundle_items|length }}
+
+                                    <div
+                                        class="item-name"
+                                        title="{{ item.name }}"
+                                    >
+                                        {{ item.name }}
+                                    </div>
+
+
+                                    <div class="item-type">
+
+                                        {{ item.type }}
+
+                                    </div>
+
+
+                                    <div class="item-bottom">
+
+
+                                        <div class="price">
+
+                                            {% if item.price is not none %}
+
+                                                {{ item.price }}
+                                                <span class="vbucks">
+                                                    V-Bucks
+                                                </span>
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                    </div>
 
                                 </div>
 
-                                {% endif %}
+
+                            </article>
 
 
-                            </div>
+                        {% endfor %}
 
 
-                        </div>
+                    </div>
 
-
-                    </article>
-
-
-                    {% endfor %}
-
-
-                </div>
-
-
-            </section>
+                </section>
 
 
             {% endfor %}
@@ -1013,160 +842,205 @@
         {% else %}
 
 
-        <div class="empty">
+            <div
+                style="
+                    text-align:center;
+                    padding:80px 20px;
+                    color:#8995af;
+                "
+            >
 
+                <h2
+                    style="
+                        color:white;
+                        margin-bottom:10px;
+                    "
+                >
+                    Shop non disponibile
+                </h2>
 
-            <h2>
-                😕 Shop non disponibile
-            </h2>
+                <p>
+                    Non è stato possibile recuperare
+                    gli oggetti dello Shop.
+                </p>
 
-
-            <p>
-
-                Non è stato possibile recuperare
-                gli oggetti dello Shop.
-
-                Riprova tra qualche minuto.
-
-            </p>
-
-
-        </div>
+            </div>
 
 
         {% endif %}
 
 
+        <!-- NO SEARCH RESULTS -->
+
+        <div
+            class="no-results"
+            id="noResults"
+        >
+
+            <h2>
+                Nessun risultato
+            </h2>
+
+            <p>
+                Non abbiamo trovato oggetti
+                corrispondenti alla ricerca.
+            </p>
+
+        </div>
+
+
     </main>
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        Fortnite Hub
+
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
 
     <script>
 
 
         function searchShop() {
 
-            const input =
-                document.getElementById(
-                    "searchInput"
-                );
-
+            const searchInput =
+                document.getElementById("shopSearch");
 
             const search =
-                input.value
+                searchInput.value
                     .toLowerCase()
                     .trim();
 
 
             const groups =
-                document.querySelectorAll(
-                    ".shop-group"
-                );
+                document.querySelectorAll(".shop-group");
+
+            const noResults =
+                document.getElementById("noResults");
+
+
+            let totalVisible = 0;
 
 
             groups.forEach(group => {
 
-
                 const cards =
-                    group.querySelectorAll(
-                        ".shop-card"
-                    );
+                    group.querySelectorAll(".shop-card");
 
-
-                let visible = 0;
+                let visibleCards = 0;
 
 
                 cards.forEach(card => {
 
-
                     const name =
-                        card.dataset.name
-                        || "";
+                        card.dataset.name || "";
 
 
                     if (
                         name.includes(search)
+                        || search === ""
                     ) {
 
-                        card.style.display =
-                            "";
+                        card.style.display = "";
 
-                        visible++;
+                        visibleCards++;
 
                     } else {
 
-                        card.style.display =
-                            "none";
+                        card.style.display = "none";
 
                     }
 
                 });
 
 
-                if (visible === 0) {
+                if (visibleCards === 0) {
 
-                    group.style.display =
-                        "none";
+                    group.style.display = "none";
 
                 } else {
 
-                    group.style.display =
-                        "";
+                    group.style.display = "";
+
+                    totalVisible += visibleCards;
 
                 }
 
-
             });
 
-        }
 
+            if (totalVisible === 0 && search !== "") {
 
-        function toggleFavorite(
-            event,
-            button
-        ) {
-
-
-            event.stopPropagation();
-
-
-            if (
-                button.textContent.trim()
-                === "♡"
-            ) {
-
-                button.textContent =
-                    "♥";
-
-                button.style.color =
-                    "#a855f7";
+                noResults.style.display = "block";
 
             } else {
 
-                button.textContent =
-                    "♡";
-
-                button.style.color =
-                    "white";
+                noResults.style.display = "none";
 
             }
 
         }
 
 
-        function openItem(index) {
+        function toggleFavorite(
+            event,
+            itemName
+        ) {
 
-            window.location.href =
-                "/skins/" + index;
+            event.stopPropagation();
+
+
+            let favorites =
+                JSON.parse(
+                    localStorage.getItem(
+                        "fortniteFavorites"
+                    ) || "[]"
+                );
+
+
+            if (favorites.includes(itemName)) {
+
+                favorites =
+                    favorites.filter(
+                        item => item !== itemName
+                    );
+
+            } else {
+
+                favorites.push(itemName);
+
+            }
+
+
+            localStorage.setItem(
+                "fortniteFavorites",
+                JSON.stringify(favorites)
+            );
+
+
+            updateFavoriteButtons();
 
         }
 
 
-    </script>
+        function updateFavoriteButtons() {
+
+            const favorites =
+                JSON.parse(
+                    localStorage.getItem(
+                        "fortniteFavorites"
+                    ) || "[]"
+                );
 
 
-</body>
-
-</html>
-```
+            document
+                .querySelectorAll(".favorite-b
