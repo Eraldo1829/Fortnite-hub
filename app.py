@@ -25,10 +25,6 @@ from services.email_service import (
     send_welcome_email
 )
 
-from services.notification_service import (
-    send_skin_notification
-)
-
 from services.fortnite_api import (
     get_shop,
     prepare_shop,
@@ -71,45 +67,104 @@ create_database()
 def create_feature_tables():
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     # ========================================================
-    # PREFERITI
+    # FAVORITES
     # ========================================================
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS favorites (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+
             user_id INTEGER NOT NULL,
+
             item_id TEXT NOT NULL,
+
             item_name TEXT,
+
             image_url TEXT,
+
             data_json TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+            created_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP,
 
             UNIQUE(user_id, item_id)
         )
     """)
 
     # ========================================================
-    # STORICO SHOP
+    # SHOP HISTORY
     # ========================================================
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS shop_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+
             shop_date TEXT NOT NULL,
+
             item_id TEXT NOT NULL,
+
             item_name TEXT,
+
             image_url TEXT,
+
             data_json TEXT,
-            saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+            saved_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP,
 
             UNIQUE(shop_date, item_id)
         )
     """)
 
+    # ========================================================
+    # NOTIFICATION LOG
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS notification_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            user_id INTEGER NOT NULL,
+
+            item_id TEXT NOT NULL,
+
+            shop_date TEXT NOT NULL,
+
+            item_name TEXT,
+
+            sent_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP,
+
+            UNIQUE(
+                user_id,
+                item_id,
+                shop_date
+            )
+        )
+    """)
+
+    # ========================================================
+    # NOTIFICATION SETTINGS
+    # ========================================================
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS notification_settings (
+            user_id INTEGER PRIMARY KEY,
+
+            enabled INTEGER NOT NULL
+                DEFAULT 1,
+
+            updated_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     connection.commit()
+
     connection.close()
 
 
@@ -244,6 +299,7 @@ def save_shop_history(
         return
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     for index, item in enumerate(
@@ -274,7 +330,8 @@ def save_shop_history(
 
         cursor.execute(
             """
-            INSERT OR IGNORE INTO shop_history
+            INSERT OR IGNORE INTO
+            shop_history
             (
                 shop_date,
                 item_id,
@@ -282,6 +339,7 @@ def save_shop_history(
                 image_url,
                 data_json
             )
+
             VALUES (?, ?, ?, ?, ?)
             """,
             (
@@ -294,6 +352,7 @@ def save_shop_history(
         )
 
     connection.commit()
+
     connection.close()
 
 
@@ -304,6 +363,7 @@ def save_shop_history(
 def get_favorite_ids(user_id):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -343,6 +403,7 @@ def get_item_history_stats(item_id):
         }
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -533,6 +594,7 @@ def register():
             )
 
         connection = get_connection()
+
         cursor = connection.cursor()
 
         cursor.execute(
@@ -578,6 +640,7 @@ def register():
                 email,
                 password_hash
             )
+
             VALUES (?, ?, ?)
             """,
             (
@@ -588,6 +651,7 @@ def register():
         )
 
         connection.commit()
+
         connection.close()
 
         try:
@@ -636,6 +700,7 @@ def login():
         )
 
         connection = get_connection()
+
         cursor = connection.cursor()
 
         cursor.execute(
@@ -716,18 +781,10 @@ def skins():
         shop
     )
 
-    # ========================================================
-    # SALVA STORICO
-    # ========================================================
-
     save_shop_history(
         shop_date,
         shop_items
     )
-
-    # ========================================================
-    # PREFERITI
-    # ========================================================
 
     favorite_ids = set()
 
@@ -739,45 +796,29 @@ def skins():
             )
         )
 
-    # ========================================================
-    # PREPARAZIONE ITEM
-    # ========================================================
-
     for index, item in enumerate(
         shop_items
     ):
 
-        item["_shop_index"] = (
+        item["_shop_index"] = index
+
+        item["_item_id"] = get_item_id(
+            item,
             index
         )
 
-        item["_item_id"] = (
-            get_item_id(
-                item,
-                index
-            )
+        item["_item_name"] = get_item_name(
+            item
         )
 
-        item["_item_name"] = (
-            get_item_name(
-                item
-            )
-        )
-
-        item["_image_url"] = (
-            get_item_image(
-                item
-            )
+        item["_image_url"] = get_item_image(
+            item
         )
 
         item["_is_favorite"] = (
             item["_item_id"]
             in favorite_ids
         )
-
-    # ========================================================
-    # RICERCA
-    # ========================================================
 
     search_query = request.args.get(
         "q",
@@ -798,10 +839,6 @@ def skins():
                 "_item_name"
             ].lower()
         ]
-
-    # ========================================================
-    # GRUPPI
-    # ========================================================
 
     shop_groups = (
         group_shop_items(
@@ -863,23 +900,17 @@ def skin_detail(item_index):
         item_index
     ]
 
-    item["_item_id"] = (
-        get_item_id(
-            item,
-            item_index
-        )
+    item["_item_id"] = get_item_id(
+        item,
+        item_index
     )
 
-    item["_item_name"] = (
-        get_item_name(
-            item
-        )
+    item["_item_name"] = get_item_name(
+        item
     )
 
-    item["_image_url"] = (
-        get_item_image(
-            item
-        )
+    item["_image_url"] = get_item_image(
+        item
     )
 
     item["_is_favorite"] = False
@@ -940,10 +971,6 @@ def all_items():
         ).strip()
     )
 
-    # ========================================================
-    # CATEGORIE
-    # ========================================================
-
     categories = [
 
         "👕 Outfit",
@@ -971,21 +998,10 @@ def all_items():
         "📦 Altri oggetti"
     ]
 
-    # ========================================================
-    # COSMETICI
-    #
-    # Viene utilizzata la ricerca API invece di scaricare
-    # l'intero catalogo e mostrarlo tutto contemporaneamente.
-    # ========================================================
-
     cosmetics = search_cosmetics(
         search_query=search_query,
         category=selected_category
     )
-
-    # ========================================================
-    # PAGINAZIONE
-    # ========================================================
 
     total_results = len(
         cosmetics
@@ -1028,17 +1044,9 @@ def all_items():
         end < total_results
     )
 
-    # ========================================================
-    # PREZZI SHOP
-    # ========================================================
-
     shop_prices = (
         get_current_shop_prices()
     )
-
-    # ========================================================
-    # PREFERITI
-    # ========================================================
 
     favorite_ids = set()
 
@@ -1050,28 +1058,18 @@ def all_items():
             )
         )
 
-    # ========================================================
-    # PREPARAZIONE
-    # ========================================================
-
     for item in visible_cosmetics:
 
-        item["_item_id"] = (
-            get_item_id(
-                item
-            )
+        item["_item_id"] = get_item_id(
+            item
         )
 
-        item["_item_name"] = (
-            get_item_name(
-                item
-            )
+        item["_item_name"] = get_item_name(
+            item
         )
 
-        item["_image_url"] = (
-            get_item_image(
-                item
-            )
+        item["_image_url"] = get_item_image(
+            item
         )
 
         item["_is_favorite"] = (
@@ -1088,10 +1086,6 @@ def all_items():
                     item
                 )
             )
-
-        # ====================================================
-        # PREZZO SHOP ATTUALE
-        # ====================================================
 
         item["_shop_price"] = None
 
@@ -1153,10 +1147,6 @@ def all_items():
 )
 def all_item_detail(item_id):
 
-    # ========================================================
-    # CERCA DIRETTAMENTE L'ITEM
-    # ========================================================
-
     cosmetics = search_cosmetics(
         search_query=item_id
     )
@@ -1166,7 +1156,10 @@ def all_item_detail(item_id):
     for item in cosmetics:
 
         current_id = str(
-            item.get("id", "")
+            item.get(
+                "id",
+                ""
+            )
         )
 
         if current_id == str(
@@ -1177,20 +1170,12 @@ def all_item_detail(item_id):
 
             break
 
-    # ========================================================
-    # FALLBACK
-    # ========================================================
-
     if selected_item is None:
 
         return render_template(
             "all_item_detail.html",
             item=None
         ), 404
-
-    # ========================================================
-    # DATI ITEM
-    # ========================================================
 
     selected_item["_item_id"] = (
         get_item_id(
@@ -1219,10 +1204,6 @@ def all_item_detail(item_id):
                 selected_item
             )
         )
-
-    # ========================================================
-    # PREZZO SHOP
-    # ========================================================
 
     selected_item["_shop_price"] = None
 
@@ -1257,10 +1238,6 @@ def all_item_detail(item_id):
                 False
             )
         )
-
-    # ========================================================
-    # PREFERITO
-    # ========================================================
 
     selected_item["_is_favorite"] = False
 
@@ -1300,6 +1277,7 @@ def favorite_detail(item_id):
         )
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1454,11 +1432,13 @@ def add_favorite():
         )
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
         """
-        INSERT OR IGNORE INTO favorites
+        INSERT OR IGNORE INTO
+        favorites
         (
             user_id,
             item_id,
@@ -1466,6 +1446,7 @@ def add_favorite():
             image_url,
             data_json
         )
+
         VALUES (?, ?, ?, ?, ?)
         """,
         (
@@ -1478,6 +1459,7 @@ def add_favorite():
     )
 
     connection.commit()
+
     connection.close()
 
     return redirect(
@@ -1509,6 +1491,7 @@ def remove_favorite():
     ).strip()
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1524,6 +1507,7 @@ def remove_favorite():
     )
 
     connection.commit()
+
     connection.close()
 
     return redirect(
@@ -1547,6 +1531,7 @@ def favorites():
         )
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1625,6 +1610,7 @@ def favorites():
 def shop_history():
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1632,8 +1618,11 @@ def shop_history():
         SELECT
             shop_date,
             COUNT(*) AS item_count
+
         FROM shop_history
+
         GROUP BY shop_date
+
         ORDER BY shop_date DESC
         """
     )
@@ -1659,6 +1648,7 @@ def shop_history():
 def shop_history_date(shop_date):
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1772,6 +1762,7 @@ def favorite_toggle():
         }, 400
 
     connection = get_connection()
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -1817,6 +1808,7 @@ def favorite_toggle():
                 image_url,
                 data_json
             )
+
             VALUES (?, ?, ?, ?, ?)
             """,
             (
@@ -1834,12 +1826,165 @@ def favorite_toggle():
         is_favorite = True
 
     connection.commit()
+
     connection.close()
 
     return {
         "success": True,
         "is_favorite": is_favorite
     }
+
+
+# ============================================================
+# SKIN TRACKER
+# ============================================================
+
+@app.route("/tracker")
+def tracker():
+
+    if not login_required():
+
+        return redirect(
+            url_for("login")
+        )
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    # ========================================================
+    # TRACKED ITEMS
+    # ========================================================
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            item_id,
+            item_name,
+            image_url,
+            created_at
+
+        FROM favorites
+
+        WHERE user_id = ?
+
+        ORDER BY created_at DESC
+        """,
+        (
+            session["user_id"],
+        )
+    )
+
+    tracked_items = (
+        cursor.fetchall()
+    )
+
+    # ========================================================
+    # SETTINGS
+    # ========================================================
+
+    cursor.execute(
+        """
+        SELECT enabled
+        FROM notification_settings
+
+        WHERE user_id = ?
+
+        LIMIT 1
+        """,
+        (
+            session["user_id"],
+        )
+    )
+
+    settings = cursor.fetchone()
+
+    connection.close()
+
+    notifications_enabled = True
+
+    if settings:
+
+        notifications_enabled = bool(
+            settings["enabled"]
+        )
+
+    return render_template(
+        "tracker.html",
+
+        tracked_items=tracked_items,
+
+        notifications_enabled=(
+            notifications_enabled
+        )
+    )
+
+
+# ============================================================
+# TRACKER NOTIFICATION TOGGLE
+# ============================================================
+
+@app.route(
+    "/tracker/notifications",
+    methods=["POST"]
+)
+def tracker_notifications():
+
+    if not login_required():
+
+        return redirect(
+            url_for("login")
+        )
+
+    enabled = request.form.get(
+        "enabled"
+    )
+
+    enabled_value = (
+        1
+        if enabled == "1"
+        else 0
+    )
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO notification_settings
+        (
+            user_id,
+            enabled,
+            updated_at
+        )
+
+        VALUES (?, ?, CURRENT_TIMESTAMP)
+
+        ON CONFLICT(user_id)
+
+        DO UPDATE SET
+
+            enabled =
+                excluded.enabled,
+
+            updated_at =
+                CURRENT_TIMESTAMP
+        """,
+        (
+            session["user_id"],
+            enabled_value
+        )
+    )
+
+    connection.commit()
+
+    connection.close()
+
+    return redirect(
+        url_for("tracker")
+    )
 
 
 # ============================================================
