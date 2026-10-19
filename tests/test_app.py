@@ -64,7 +64,7 @@ class HubTests(unittest.TestCase):
     def test_live_data_templates(self):
         responses = {
             '/v2/news/br':{'data':{'motds':[{'title':'News','body':'Body','image':'https://example.com/image.png'}]}},
-            '/v1/map':{'data':{'images':{'pois':'https://example.com/map.png'},'pois':{'list':[{'name':'POI'}]}}},
+            '/v1/map':{'data':{'images':{'pois':'https://example.com/map.png'},'pois':[{'name':'POI'}]}},
             '/v2/cosmetics/new':{'data':{'items':{'br':[ITEM]}}},
             '/v2/stats/br/v2':{'data':{'account':{'name':'Player'},'stats':{'all':{'overall':{'wins':5}}}}},
         }
