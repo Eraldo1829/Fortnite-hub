@@ -1,9 +1,14 @@
 import os
 import requests
+from copy import deepcopy
+from time import monotonic
+
+_CACHE = {}
+_CACHE_TTL = 300
 
 
 API_BASE_URL = "https://fortnite-api.com"
-API_TIMEOUT = 30
+API_TIMEOUT = 10
 
 
 # ============================================================
@@ -33,10 +38,11 @@ def get_headers():
 
 def api_get(endpoint, params=None, timeout=API_TIMEOUT):
 
-    headers = get_headers()
-
-    if not headers:
-        return None
+    headers = get_headers() or {}
+    cache_key = (endpoint, tuple(sorted((params or {}).items())))
+    cached = _CACHE.get(cache_key)
+    if cached and monotonic() - cached[0] < _CACHE_TTL:
+        return deepcopy(cached[1])
 
     url = f"{API_BASE_URL}{endpoint}"
 
@@ -62,7 +68,12 @@ def api_get(endpoint, params=None, timeout=API_TIMEOUT):
 
             return None
 
-        return response.json()
+        payload = response.json()
+        if isinstance(payload, dict):
+            if len(_CACHE) >= 128:
+                _CACHE.pop(next(iter(_CACHE)))
+            _CACHE[cache_key] = (monotonic(), payload)
+        return deepcopy(payload)
 
     except requests.Timeout:
 
@@ -765,7 +776,7 @@ def get_all_cosmetics():
         params={
             "language": "it"
         },
-        timeout=60
+        timeout=15
     )
 
     if not result:

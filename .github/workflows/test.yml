@@ -1,32 +1,14 @@
 name: Test Fortnite Hub
-
-on:
-  push:
-  workflow_dispatch:
-
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
 jobs:
   test:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
     steps:
-      - name: Scarica il progetto
-        uses: actions/checkout@v4
-
-      - name: Installa Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
-
-      - name: Installa dipendenze
-        run: pip install -r requirements.txt
-
-      - name: Test database
-        run: python test.py
-
-      - name: Test Flask
-        run: python -c "from app import app; print('✅ Flask funziona!')"
-
-      - name: Test Fortnite API
-        env:
-          FORTNITE_API_KEY: ${{ secrets.FORTNITE_API_KEY }}
-        run: python api_test.py
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
