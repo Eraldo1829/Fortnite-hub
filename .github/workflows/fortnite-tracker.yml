@@ -6,34 +6,14 @@ on:
 jobs:
   check-shop:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
 
-      - name: Test Fortnite Hub
+      - name: Check deployed tracker
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-
-          echo "================================"
-          echo "TEST FORTNITE HUB"
-          echo "================================"
-
-          RESPONSE=$(curl -sS \
-            -w "\nHTTP_STATUS:%{http_code}" \
-            --max-time 60 \
-            "https://fortnite-hub-g6u2.onrender.com/api/tracker/check?secret=${{ secrets.CRON_SECRET }}")
-
-          echo ""
-          echo "RISPOSTA:"
-          echo "$RESPONSE"
-
-          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | sed 's/HTTP_STATUS://')
-
-          echo ""
-          echo "HTTP STATUS: $STATUS"
-
-          if [ "$STATUS" != "200" ]; then
-            echo "❌ ERRORE SERVER"
-            exit 1
-          fi
-
-          echo "✅ SERVER RAGGIUNGIBILE"
+          curl --fail-with-body --silent --show-error --max-time 120 \
+            -H "X-Cron-Secret: $CRON_SECRET" \
+            https://fortnite-hub-g6u2.onrender.com/api/tracker/check

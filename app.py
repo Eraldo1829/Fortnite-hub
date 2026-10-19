@@ -1,6 +1,9 @@
 import os
 import json
 import sqlite3
+import hmac
+import sys
+from urllib.parse import urlsplit
 from datetime import datetime, timezone
 
 from flask import (
@@ -25,6 +28,8 @@ from services.fortnite_api import (
     get_all_cosmetics,
     get_current_shop_prices,
     get_cosmetic_category,
+    api_get,
+    normalize_cosmetic,
 )
 
 
@@ -38,6 +43,19 @@ app.secret_key = os.getenv(
     "SECRET_KEY",
     "fortnite-hub-dev-secret-key",
 )
+
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
+
+
+@app.before_request
+def protect_cross_site_writes():
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+        origin = request.headers.get("Origin")
+        if request.headers.get("Sec-Fetch-Site") == "cross-site":
+            abort(403)
+        if origin and urlsplit(origin).netloc != request.host:
+            abort(403)
+
 
 DATABASE = os.getenv(
     "DATABASE_PATH",
@@ -130,6 +148,15 @@ def init_db():
         """
     )
 
+    # Additive migrations preserve existing accounts and favorites.
+    for table, columns in {
+        "notification_settings": {"enabled": "INTEGER NOT NULL DEFAULT 0"},
+        "notification_log": {"shop_date": "TEXT"},
+    }.items():
+        existing = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+        for name, definition in columns.items():
+            if name not in existing:
+                conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {definition}")
     conn.commit()
     conn.close()
 
@@ -349,11 +376,11 @@ def prepare_shop_template_items(
 # SHOP HISTORY
 # ============================================================
 
-def save_shop_history(shop_items):
+def save_shop_history(shop_items, shop_date=None):
     if not shop_items:
         return
 
-    shop_date = get_shop_date()
+    shop_date = shop_date or get_shop_date()
 
     conn = get_db()
     cursor = conn.cursor()
@@ -661,6 +688,7 @@ def login():
             )
         ):
 
+            session.clear()
             session["user_id"] = user["id"]
             session["username"] = user[
                 "username"
@@ -1583,10 +1611,7 @@ def favorites():
 
                 item = None
 
-        if not isinstance(
-            item,
-            dict,
-        ):
+        if not isinstance(item, dict) or not item:
 
             item = {
                 "id": str(
@@ -1882,10 +1907,7 @@ def shop_history_detail(shop_date):
 
                 item = None
 
-        if not isinstance(
-            item,
-            dict,
-        ):
+        if not isinstance(item, dict) or not item:
 
             item = {
                 "id": row["item_id"],
@@ -1897,10 +1919,11 @@ def shop_history_detail(shop_date):
                 ),
             }
 
+        decorate_item_for_template(item, item_id=row["item_id"])
         items.append(item)
 
     return render_template(
-        "shop_history_detail.html",
+        "shop_history_date.html",
         shop_date=shop_date,
         items=items,
         history_items=items,
@@ -1913,51 +1936,79 @@ def shop_history_detail(shop_date):
 
 @app.route("/tracker")
 def tracker():
-
-    return render_template(
-        "tracker.html"
-    )
+    return redirect(url_for("tracker_notifications"))
 
 
-# ============================================================
-# TRACKER NOTIFICATIONS
-# ============================================================
-
-@app.route(
-    "/tracker/notifications"
-)
+@app.route("/notifications", methods=["GET", "POST"])
+@app.route("/tracker/notifications", methods=["GET", "POST"])
 def tracker_notifications():
-
     if not login_required():
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+    error = None
+    with get_db() as conn:
+        if request.method == "POST":
+            address = request.form.get("email_address", "").strip()
+            enabled = request.form.get("enabled") == "1"
+            if enabled and ("@" not in address or len(address) > 254):
+                error = "Inserisci un indirizzo email valido."
+            else:
+                conn.execute("""INSERT INTO notification_settings
+                    (user_id, enabled, email_enabled, email_address, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(user_id) DO UPDATE SET enabled=excluded.enabled,
+                    email_enabled=excluded.email_enabled, email_address=excluded.email_address,
+                    updated_at=excluded.updated_at""",
+                    (user_id, int(enabled), int(enabled), address, now_iso(), now_iso()))
+                conn.commit()
+                return redirect(url_for("tracker_notifications"))
+        settings = conn.execute("SELECT * FROM notification_settings WHERE user_id=?", (user_id,)).fetchone()
+        tracked = conn.execute("SELECT * FROM favorites WHERE user_id=?", (user_id,)).fetchall()
+    return render_template("notifications.html", settings=settings, tracked=tracked, error=error,
+                           email_ready=bool(os.getenv("RESEND_API_KEY")))
 
-        return redirect(
-            url_for(
-                "login",
-                next=request.path,
-            )
-        )
 
-    user_id = session[
-        "user_id"
-    ]
+@app.route("/profile")
+def profile():
+    if not login_required():
+        return redirect(url_for("login"))
+    return render_template("profile.html")
 
-    conn = get_db()
 
-    settings = conn.execute(
-        """
-        SELECT *
-        FROM notification_settings
-        WHERE user_id = ?
-        """,
-        (user_id,),
-    ).fetchone()
+@app.route("/players")
+def players():
+    name = request.args.get("q", "").strip()[:100]
+    account_type = request.args.get("platform", "epic")
+    if account_type not in {"epic", "psn", "xbl"}:
+        account_type = "epic"
+    result = api_get("/v2/stats/br/v2", {"name": name, "accountType": account_type}, timeout=10) if name else None
+    data = (result or {}).get("data") or {}
+    overall = ((data.get("stats") or {}).get("all") or {}).get("overall") or {}
+    return render_template("players.html", query=name, platform=account_type, player=data, stats=overall)
 
-    conn.close()
 
-    return render_template(
-        "tracker_notifications.html",
-        settings=settings,
-    )
+@app.route("/news")
+def news():
+    result = api_get("/v2/news/br", {"language": "it"}, timeout=10)
+    data = (result or {}).get("data") or {}
+    return render_template("news.html", articles=data.get("motds") or data.get("messages") or [])
+
+
+@app.route("/leaks")
+def leaks():
+    result = api_get("/v2/cosmetics/new", {"language": "it"}, timeout=10)
+    data = (result or {}).get("data") or {}
+    raw = data.get("items") or {}
+    raw = raw.get("br", []) if isinstance(raw, dict) else raw
+    items = [normalize_cosmetic(item) for item in raw if isinstance(item, dict)]
+    return render_template("leaks.html", items=[item for item in items if item])
+
+
+@app.route("/chests")
+def chests():
+    result = api_get("/v1/map", {"language": "it"}, timeout=10)
+    data = (result or {}).get("data") or {}
+    return render_template("map.html", map_data=data)
 
 
 # ============================================================
@@ -1969,30 +2020,13 @@ def tracker_notifications():
 )
 def tracker_check():
 
-    shop = get_shop()
-
-    if not shop:
-
-        return jsonify(
-            {
-                "success": False,
-                "error": (
-                    "Shop non disponibile."
-                ),
-            }
-        ), 503
-
-    shop_items = prepare_shop(
-        shop
-    )
-
-    return jsonify(
-        {
-            "success": True,
-            "count": len(shop_items),
-            "shop_date": get_shop_date(),
-        }
-    )
+    expected = os.getenv("CRON_SECRET", "")
+    provided = request.headers.get("X-Cron-Secret", "")
+    if not expected or not hmac.compare_digest(expected, provided):
+        return jsonify({"success": False, "error": "Non autorizzato."}), 401
+    from services.shop_tracker import check_shop
+    result = check_shop(sys.modules[__name__], send_email=True)
+    return jsonify(result), 200 if result["success"] else 503
 
 
 # ============================================================

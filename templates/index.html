@@ -777,6 +777,9 @@
                 Home
             </a>
 
+            <a href="/all-items">Catalogo</a>
+            <a href="/shop-history">Storico</a>
+            <a href="/favorites">Preferiti</a>
             <a href="/skins">
                 Shop
             </a>
@@ -870,11 +873,11 @@
         </p>
 
 
-        <div class="search-box">
+        <form class="search-box" action="/players" method="get">
 
             <input
                 type="text"
-                placeholder="Cerca un giocatore..."
+                name="q" required aria-label="Nome giocatore" placeholder="Cerca un giocatore..."
             >
 
 
@@ -882,7 +885,7 @@
                 Cerca
             </button>
 
-        </div>
+        </form>
 
     </section>
 
@@ -915,7 +918,7 @@
                 <p>
 
                     Controlla lo Shop e scopri
-                    quando tornano le tue skin preferite.
+                    le tue skin preferite nello Shop.
 
                 </p>
 
@@ -951,13 +954,13 @@
             >
 
                 <h3>
-                    🎁 Chest Tracker
+                    🗺️ Mappa e POI
                 </h3>
 
                 <p>
 
                     Esplora la mappa e trova
-                    informazioni sui chest.
+                    i punti di interesse.
 
                 </p>
 

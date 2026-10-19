@@ -10,7 +10,7 @@ import resend
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
-FROM_EMAIL = "Fortnite Hub <onboarding@resend.dev>"
+FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "Fortnite Hub <onboarding@resend.dev>")
 
 
 # ============================================================
