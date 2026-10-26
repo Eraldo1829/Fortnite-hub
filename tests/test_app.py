@@ -23,7 +23,7 @@ class HubTests(unittest.TestCase):
             mock.start()
         self.addCleanup(patch.stopall)
         with hub.get_db() as conn:
-            for table in ['notification_log','notification_settings','favorites','users','shop_history']:
+            for table in ['sprite_collection','notification_log','notification_settings','favorites','users','shop_history']:
                 conn.execute('DELETE FROM '+table)
 
     def login(self):
@@ -91,6 +91,51 @@ class HubTests(unittest.TestCase):
                 self.assertIn('&lt;script&gt;', send.call_args.args[0]['html'])
                 self.assertTrue(send_welcome_email('test@example.com', '<script>'))
                 self.assertIn('&lt;script&gt;', send.call_args.args[0]['html'])
+
+    def test_sprite_collection_validation_isolation_and_import(self):
+        from services import sprite_catalog
+        catalog = {'items': [{'id': 'water-base', 'name': 'Acqua', 'family': 'Acqua',
+                    'style': 'base', 'released': True, 'active': True, 'archived': False,
+                    'image': '', 'rarity': 'rare', 'name_official': True},
+                    {'id': 'future-base', 'released': False}],
+                   'checked_at': '2026-10-26T00:00:00Z', 'source': sprite_catalog.SOURCE, 'stale': False}
+        with patch.object(sprite_catalog, 'get_catalog', return_value=catalog):
+            self.assertEqual(self.client.get('/api/sprites/collection').status_code, 401)
+            self.login()
+            for data in [{'id': 'unknown', 'owned': True}, {'id': 'future-base', 'owned': True},
+                         {'id': 'water-base', 'owned': 'false'}, {'ids': ['water-base', 'invalid']}]:
+                self.assertEqual(self.client.post('/api/sprites/collection', json=data).status_code, 400)
+            for _ in range(2):
+                response = self.client.post('/api/sprites/collection', json={'id': 'water-base', 'owned': True})
+                self.assertEqual(response.json['ids'], ['water-base'])
+            self.assertEqual(self.client.get('/api/sprites/collection').headers['Cache-Control'], 'no-store')
+            self.assertEqual(self.client.post('/api/sprites/collection', json={'id': 'water-base', 'owned': False}).json['ids'], [])
+            self.assertEqual(self.client.post('/api/sprites/collection', json={'ids': ['water-base', 'water-base']}).json['ids'], ['water-base'])
+            other = hub.app.test_client()
+            other.post('/register', data={'username':'second', 'password':'test-password'})
+            other.post('/login', data={'username':'second', 'password':'test-password'})
+            self.assertEqual(other.get('/api/sprites/collection').json['ids'], [])
+            response = self.client.post('/api/sprites/collection', json={'id':'water-base','owned':True}, headers={'Origin':'https://evil.example'})
+            self.assertEqual(response.status_code, 403)
+
+    def test_sprite_snapshot_and_offline_catalog(self):
+        import json
+        from services import sprite_catalog as sc
+        snapshot = json.loads(sc.SNAPSHOT.read_text())
+        self.assertGreater(len(snapshot['items']), 250)
+        self.assertEqual(len({x['id'] for x in snapshot['items']}), len(snapshot['items']))
+        with patch.object(sc, '_cache', None), patch.object(sc, '_next_refresh', 0), patch.object(sc.requests, 'get', side_effect=sc.requests.Timeout):
+            result = sc.get_catalog()
+            self.assertTrue(result['stale'])
+            self.assertEqual(result['checked_at'], snapshot['checked_at'])
+            response = self.client.get('/sprites')
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'sprite-catalog', response.data)
+            self.assertIn(b'ultima copia verificata', response.data)
+        with self.assertRaises(ValueError): sc.parse_catalog('no data')
+        with self.assertRaises(ValueError): sc.parse_catalog('const SPIRITS = []')
+        raw = [{'key': 'water-base', 'icon': 'javascript:alert(1)'}] * 20
+        with self.assertRaises(ValueError): sc.parse_catalog('const SPIRITS = '+json.dumps(raw))
 
     def test_live_data_templates(self):
         responses = {

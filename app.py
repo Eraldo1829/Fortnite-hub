@@ -151,6 +151,11 @@ def init_db():
         """
     )
 
+    cursor.execute("""CREATE TABLE IF NOT EXISTS sprite_collection (
+        user_id INTEGER NOT NULL, sprite_id TEXT NOT NULL, updated_at TEXT NOT NULL,
+        PRIMARY KEY(user_id, sprite_id), FOREIGN KEY(user_id) REFERENCES users(id)
+    )""")
+
     # Additive migrations preserve existing accounts and favorites.
     for table, columns in {
         "notification_settings": {"enabled": "INTEGER NOT NULL DEFAULT 0"},
@@ -1996,6 +2001,52 @@ def export_favorites():
                     mimetype="application/json",
                     headers={"Content-Disposition": 'attachment; filename="fortnite-hub-favorites.json"',
                              "Cache-Control": "no-store"})
+
+
+@app.route("/sprites")
+def sprites():
+    from services.sprite_catalog import get_catalog, STYLES
+    catalog = get_catalog()
+    return render_template("sprites.html", catalog=catalog, styles=STYLES)
+
+
+@app.route("/api/sprites/collection", methods=["GET", "POST"])
+def sprite_collection():
+    if not login_required():
+        return jsonify({"error": "Accedi per salvare nell'account."}), 401
+    user_id = session["user_id"]
+    conn = get_db()
+    try:
+        if request.method == "POST":
+            from services.sprite_catalog import get_catalog
+            data = request.get_json(silent=True)
+            if not isinstance(data, dict):
+                return jsonify({"error": "Dati non validi."}), 400
+            known = {item['id'] for item in get_catalog()['items'] if item['released']}
+            if 'ids' in data:
+                ids = data['ids']
+                if (not isinstance(ids, list) or len(ids) > 2000
+                        or any(not isinstance(key, str) or key not in known for key in ids)):
+                    return jsonify({"error": "La copia contiene spiritelli non riconosciuti."}), 400
+                conn.executemany("INSERT OR IGNORE INTO sprite_collection VALUES (?, ?, ?)",
+                                 [(user_id, key, now_iso()) for key in set(ids)])
+            else:
+                key, owned = data.get('id'), data.get('owned')
+                if not isinstance(key, str) or key not in known or type(owned) is not bool:
+                    return jsonify({"error": "Spiritello o selezione non valida."}), 400
+                if owned:
+                    conn.execute("INSERT OR IGNORE INTO sprite_collection VALUES (?, ?, ?)",
+                                 (user_id, key, now_iso()))
+                else:
+                    conn.execute("DELETE FROM sprite_collection WHERE user_id=? AND sprite_id=?", (user_id, key))
+            conn.commit()
+        ids = [row['sprite_id'] for row in conn.execute(
+            "SELECT sprite_id FROM sprite_collection WHERE user_id=? ORDER BY sprite_id", (user_id,))]
+        response = jsonify({"ids": ids})
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    finally:
+        conn.close()
 
 
 @app.route("/players")
