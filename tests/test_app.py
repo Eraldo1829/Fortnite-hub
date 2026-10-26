@@ -61,6 +61,37 @@ class HubTests(unittest.TestCase):
                 self.assertEqual(response.status_code,200)
             self.assertEqual(send.call_count,1)
 
+    def test_export_is_private_and_excludes_other_users(self):
+        self.assertEqual(self.client.get('/profile/favorites.json').status_code, 302)
+        self.login()
+        self.client.post('/api/favorite/toggle', json={'item_id': 'skin1', 'item_name': 'My Skin'})
+        with hub.get_db() as conn:
+            conn.execute("INSERT INTO users(username,password_hash,created_at) VALUES('other','hash','now')")
+            other = conn.execute("SELECT id FROM users WHERE username='other'").fetchone()['id']
+            conn.execute("INSERT INTO favorites(user_id,item_id,item_name,created_at) VALUES(?, 'private', 'Other skin', 'now')", (other,))
+        response = self.client.get('/profile/favorites.json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([item['item_id'] for item in response.json['favorites']], ['skin1'])
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertIn('attachment', response.headers['Content-Disposition'])
+
+    def test_email_configuration_and_safe_content(self):
+        from services.notification_service import email_is_configured, send_skin_notification
+        from services.email_service import send_welcome_email
+        with patch.dict(os.environ, {'RESEND_API_KEY': 'test-key', 'RESEND_FROM_EMAIL': ''}):
+            self.assertFalse(email_is_configured())
+            with patch('resend.Emails.send') as send:
+                self.assertFalse(send_skin_notification('test@example.com', 'User', 'Skin'))
+                self.assertFalse(send_welcome_email('test@example.com', 'User'))
+                send.assert_not_called()
+        with patch.dict(os.environ, {'RESEND_API_KEY': 'test-key', 'RESEND_FROM_EMAIL': 'Hub <alerts@example.com>'}):
+            with patch('resend.Emails.send', return_value={'id': 'test'}) as send:
+                self.assertTrue(send_skin_notification('test@example.com', '<script>', 'Skin'))
+                self.assertEqual(send.call_args.args[0]['from'], 'Hub <alerts@example.com>')
+                self.assertIn('&lt;script&gt;', send.call_args.args[0]['html'])
+                self.assertTrue(send_welcome_email('test@example.com', '<script>'))
+                self.assertIn('&lt;script&gt;', send.call_args.args[0]['html'])
+
     def test_live_data_templates(self):
         responses = {
             '/v2/news/br':{'data':{'motds':[{'title':'News','body':'Body','image':'https://example.com/image.png'}]}},

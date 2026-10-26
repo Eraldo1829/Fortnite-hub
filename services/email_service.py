@@ -1,5 +1,7 @@
 import os
 import resend
+from html import escape
+from services.notification_service import email_is_configured
 
 
 # ============================================================
@@ -24,14 +26,15 @@ def send_welcome_email(
 
     api_key = get_resend_api_key()
 
-    if not api_key:
+    if not email_is_configured():
 
         print(
-            "⚠️ RESEND_API_KEY non configurata."
+            "⚠️ Configurare RESEND_API_KEY e RESEND_FROM_EMAIL."
         )
 
         return False
 
+    username = escape(str(username or "Utente"))
     resend.api_key = api_key
 
     html = f"""
@@ -177,7 +180,7 @@ def send_welcome_email(
 
         response = resend.Emails.send(
             {
-                "from": "Fortnite Hub <onboarding@resend.dev>",
+                "from": os.environ["RESEND_FROM_EMAIL"],
 
                 "to": [email],
 
@@ -218,16 +221,19 @@ def send_skin_shop_notification(
 
     api_key = get_resend_api_key()
 
-    if not api_key:
+    if not email_is_configured():
 
         print(
-            "⚠️ RESEND_API_KEY non configurata."
+            "⚠️ Configurare RESEND_API_KEY e RESEND_FROM_EMAIL."
         )
 
         return False
 
+    username = escape(str(username or "Utente"))
     resend.api_key = api_key
 
+    skin_name = escape(str(skin_name or "Oggetto"))
+    skin_image = escape(str(skin_image or ""), quote=True)
     image_html = ""
 
     if skin_image:
@@ -442,7 +448,7 @@ def send_skin_shop_notification(
 
         response = resend.Emails.send(
             {
-                "from": "Fortnite Hub <onboarding@resend.dev>",
+                "from": os.environ["RESEND_FROM_EMAIL"],
 
                 "to": [email],
 

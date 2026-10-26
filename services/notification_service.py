@@ -8,9 +8,9 @@ import resend
 # CONFIGURAZIONE RESEND
 # ============================================================
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-
-FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "Fortnite Hub <onboarding@resend.dev>")
+def email_is_configured():
+    return bool(os.getenv("RESEND_API_KEY", "").strip()
+                and os.getenv("RESEND_FROM_EMAIL", "").strip())
 
 
 # ============================================================
@@ -32,8 +32,8 @@ def send_skin_notification(
         print("❌ Nessun destinatario.")
         return False
 
-    if not RESEND_API_KEY:
-        print("❌ RESEND_API_KEY non configurata.")
+    if not email_is_configured():
+        print("❌ Configurare RESEND_API_KEY e RESEND_FROM_EMAIL.")
         return False
 
     # --------------------------------------------------------
@@ -218,11 +218,11 @@ def send_skin_notification(
 
     try:
 
-        resend.api_key = RESEND_API_KEY
+        resend.api_key = os.environ["RESEND_API_KEY"]
 
         response = resend.Emails.send(
             {
-                "from": FROM_EMAIL,
+                "from": os.environ["RESEND_FROM_EMAIL"],
                 "to": [recipient],
                 "subject": subject,
                 "html": html_content
@@ -234,10 +234,6 @@ def send_skin_notification(
             f"{item_name}"
         )
 
-        print(
-            "📨 Resend response:",
-            response
-        )
 
         return True
 
