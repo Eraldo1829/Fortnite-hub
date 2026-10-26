@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import sqlite3
 import hmac
 import sys
@@ -158,6 +159,7 @@ def init_db():
 
     # Additive migrations preserve existing accounts and favorites.
     for table, columns in {
+        "users": {"email": "TEXT"},
         "notification_settings": {"enabled": "INTEGER NOT NULL DEFAULT 0"},
         "notification_log": {"shop_date": "TEXT"},
     }.items():
@@ -165,6 +167,7 @@ def init_db():
         for name, definition in columns.items():
             if name not in existing:
                 conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {definition}")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_email_unique ON users(lower(email)) WHERE email IS NOT NULL")
     conn.commit()
     conn.close()
 
@@ -574,149 +577,56 @@ def home():
     methods=["GET", "POST"],
 )
 def register():
-
     if request.method == "POST":
-
-        username = (
-            request.form.get(
-                "username",
-                "",
-            )
-            .strip()
-        )
-
-        password = request.form.get(
-            "password",
-            "",
-        )
-
-        if not username or not password:
-
-            return render_template(
-                "register.html",
-                error=(
-                    "Username e password "
-                    "sono obbligatori."
-                ),
-            )
-
-        password_hash = (
-            generate_password_hash(
-                password
-            )
-        )
-
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        if (not 3 <= len(username) <= 80 or "@" in username
+                or not 6 <= len(password) <= 1024
+                or len(email) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email)):
+            return render_template("register.html", error=(
+                "Inserisci un nome utente da 3 a 80 caratteri senza @, "
+                "un'email valida e una password di almeno 6 caratteri."))
         conn = get_db()
-
         try:
-
-            conn.execute(
-                """
-                INSERT INTO users (
-                    username,
-                    password_hash,
-                    created_at
-                )
-                VALUES (?, ?, ?)
-                """,
-                (
-                    username,
-                    password_hash,
-                    now_iso(),
-                ),
-            )
-
+            conn.execute("INSERT INTO users(username,email,password_hash,created_at) VALUES(?,?,?,?)",
+                         (username, email, generate_password_hash(password), now_iso()))
             conn.commit()
-
         except sqlite3.IntegrityError:
-
+            return render_template("register.html", error="Nome utente o email già utilizzati.")
+        finally:
             conn.close()
-
-            return render_template(
-                "register.html",
-                error=(
-                    "Username già esistente."
-                ),
-            )
-
-        conn.close()
-
-        return redirect(
-            url_for("login")
-        )
-
-    return render_template(
-        "register.html"
-    )
+        return redirect(url_for("login", registered="1"))
+    return render_template("register.html")
 
 
-# ============================================================
-# LOGIN
-# ============================================================
-
-@app.route(
-    "/login",
-    methods=["GET", "POST"],
-)
+@app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-
-        username = (
-            request.form.get(
-                "username",
-                "",
-            )
-            .strip()
-        )
-
-        password = request.form.get(
-            "password",
-            "",
-        )
-
+        # Accept old form field names as well as the current combined field.
+        identifier = (request.form.get("identifier") or request.form.get("username")
+                      or request.form.get("email") or "").strip()
+        password = request.form.get("password", "")
         conn = get_db()
-
-        user = conn.execute(
-            """
-            SELECT *
-            FROM users
-            WHERE username = ?
-            """,
-            (username,),
-        ).fetchone()
-
-        conn.close()
-
-        if (
-            user
-            and check_password_hash(
-                user["password_hash"],
-                password,
-            )
-        ):
-
+        try:
+            user = conn.execute("SELECT * FROM users WHERE username=?", (identifier,)).fetchone()
+            if user is None:
+                user = conn.execute("SELECT * FROM users WHERE lower(email)=?", (identifier.lower(),)).fetchone()
+        finally:
+            conn.close()
+        valid = False
+        if user and len(password) <= 1024:
+            try:
+                valid = check_password_hash(user["password_hash"], password)
+            except (ValueError, TypeError):
+                valid = False
+        if valid:
             session.clear()
             session["user_id"] = user["id"]
-            session["username"] = user[
-                "username"
-            ]
-
-            return redirect(
-                url_for("home")
-            )
-
-        return render_template(
-            "login.html",
-            error=(
-                "Username o password "
-                "non corretti."
-            ),
-        )
-
-    return render_template(
-        "login.html"
-    )
+            session["username"] = user["username"]
+            return redirect(url_for("home"))
+        return render_template("login.html", error="Email, nome utente o password non corretti.")
+    return render_template("login.html", registered=request.args.get("registered") == "1")
 
 
 # ============================================================

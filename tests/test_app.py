@@ -27,7 +27,7 @@ class HubTests(unittest.TestCase):
                 conn.execute('DELETE FROM '+table)
 
     def login(self):
-        self.client.post('/register', data={'username':'tester','password':'test-password'})
+        self.client.post('/register', data={'username':'tester','email':'tester@example.com','password':'test-password'})
         self.client.post('/login', data={'username':'tester','password':'test-password'})
 
     def test_public_pages_and_offline_fallbacks(self):
@@ -112,7 +112,7 @@ class HubTests(unittest.TestCase):
             self.assertEqual(self.client.post('/api/sprites/collection', json={'id': 'water-base', 'owned': False}).json['ids'], [])
             self.assertEqual(self.client.post('/api/sprites/collection', json={'ids': ['water-base', 'water-base']}).json['ids'], ['water-base'])
             other = hub.app.test_client()
-            other.post('/register', data={'username':'second', 'password':'test-password'})
+            other.post('/register', data={'username':'second', 'email':'second@example.com', 'password':'test-password'})
             other.post('/login', data={'username':'second', 'password':'test-password'})
             self.assertEqual(other.get('/api/sprites/collection').json['ids'], [])
             response = self.client.post('/api/sprites/collection', json={'id':'water-base','owned':True}, headers={'Origin':'https://evil.example'})
@@ -136,6 +136,50 @@ class HubTests(unittest.TestCase):
         with self.assertRaises(ValueError): sc.parse_catalog('const SPIRITS = []')
         raw = [{'key': 'water-base', 'icon': 'javascript:alert(1)'}] * 20
         with self.assertRaises(ValueError): sc.parse_catalog('const SPIRITS = '+json.dumps(raw))
+
+    def test_registration_and_actual_login_form_fields(self):
+        response = self.client.post('/register', data={'username':'NewUser', 'email':'  Player@Example.com ', 'password':'Secret123'})
+        self.assertEqual(response.status_code, 302)
+        with hub.get_db() as conn:
+            row = conn.execute("SELECT * FROM users WHERE username='NewUser'").fetchone()
+            self.assertEqual(row['email'], 'player@example.com')
+            self.assertNotEqual(row['password_hash'], 'Secret123')
+        for fields in [{'identifier':'PLAYER@example.com'}, {'identifier':'NewUser'}, {'email':'player@example.com'}, {'username':'NewUser'}]:
+            self.client.get('/logout')
+            self.assertEqual(self.client.post('/login', data={**fields, 'password':'Secret123'}).status_code, 302)
+            with self.client.session_transaction() as session:
+                self.assertEqual(session['username'], 'NewUser')
+        self.client.get('/logout')
+        response = self.client.post('/login', data={'identifier':'player@example.com', 'password':'wrong'})
+        self.assertIn(b'non corretti', response.data)
+        for name, email in [('Another','PLAYER@example.com'), ('NewUser','another@example.com')]:
+            response = self.client.post('/register', data={'username':name, 'email':email, 'password':'Secret123'})
+            self.assertNotEqual(response.status_code, 302)
+        self.assertIn(b'name="identifier"', self.client.get('/login').data)
+
+    def test_legacy_user_and_additive_email_migration(self):
+        with hub.get_db() as conn:
+            conn.execute("INSERT INTO users(username,password_hash,created_at) VALUES(?,?,?)",
+                         ('legacy', hub.generate_password_hash('Legacy123'), hub.now_iso()))
+        hub.init_db()
+        self.assertEqual(self.client.post('/login', data={'identifier':'legacy', 'password':'Legacy123'}).status_code,302)
+        with tempfile.TemporaryDirectory() as directory:
+            old_path = os.path.join(directory, 'legacy.db')
+            with hub.sqlite3.connect(old_path) as conn:
+                conn.execute("CREATE TABLE users(id INTEGER PRIMARY KEY, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, created_at TEXT NOT NULL)")
+                conn.execute("INSERT INTO users VALUES(7,?,?,?)", ('olduser', hub.generate_password_hash('Old12345'), hub.now_iso()))
+            with patch.object(hub, 'DATABASE', old_path):
+                hub.init_db()
+                hub.init_db()
+                response = self.client.post('/login', data={'identifier':'olduser', 'password':'Old12345'})
+                self.assertEqual(response.status_code, 302)
+                with hub.get_db() as conn:
+                    user = conn.execute("SELECT * FROM users WHERE id=7").fetchone()
+                    self.assertEqual(user['username'], 'olduser')
+                    self.assertIsNone(user['email'])
+        for data in [{'username':'new', 'email':'invalid','password':'abcdef'},
+                     {'username':'new', 'email':'new@example.com','password':'123'}]:
+            self.assertNotEqual(self.client.post('/register', data=data).status_code,302)
 
     def test_live_data_templates(self):
         responses = {
