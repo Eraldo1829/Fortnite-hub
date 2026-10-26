@@ -15,7 +15,10 @@ from flask import (
     session,
     jsonify,
     abort,
+    Response,
 )
+
+from services.notification_service import email_is_configured
 
 from werkzeug.security import (
     generate_password_hash,
@@ -1965,7 +1968,7 @@ def tracker_notifications():
         settings = conn.execute("SELECT * FROM notification_settings WHERE user_id=?", (user_id,)).fetchone()
         tracked = conn.execute("SELECT * FROM favorites WHERE user_id=?", (user_id,)).fetchall()
     return render_template("notifications.html", settings=settings, tracked=tracked, error=error,
-                           email_ready=bool(os.getenv("RESEND_API_KEY")))
+                           email_ready=email_is_configured())
 
 
 @app.route("/profile")
@@ -1973,6 +1976,26 @@ def profile():
     if not login_required():
         return redirect(url_for("login"))
     return render_template("profile.html")
+
+
+@app.route("/profile/favorites.json")
+def export_favorites():
+    if not login_required():
+        return redirect(url_for("login"))
+    conn = get_db()
+    try:
+        rows = conn.execute(
+            "SELECT item_id, item_name, image_url, data_json, created_at "
+            "FROM favorites WHERE user_id=? ORDER BY id", (session["user_id"],)
+        ).fetchall()
+    finally:
+        conn.close()
+    payload = {"version": 1, "exported_at": now_iso(),
+               "favorites": [dict(row) for row in rows]}
+    return Response(json.dumps(payload, ensure_ascii=False, indent=2),
+                    mimetype="application/json",
+                    headers={"Content-Disposition": 'attachment; filename="fortnite-hub-favorites.json"',
+                             "Cache-Control": "no-store"})
 
 
 @app.route("/players")
